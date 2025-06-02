@@ -11,16 +11,20 @@ CONFIG += c++17
 SOURCES += \
     areadamage.cpp \
     avatar.cpp \
+    enemy.cpp \
     game.cpp \
     main.cpp \
     gui.cpp \
+    powerup.cpp \
     projectile.cpp
 
 HEADERS += \
     areadamage.h \
     avatar.h \
+    enemy.h \
     game.h \
     gui.h \
+    powerup.h \
     projectile.h
 
 # Default rules for deployment.
