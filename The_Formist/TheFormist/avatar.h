@@ -16,7 +16,7 @@ private :
     /**
  * @brief Current position of the avatar (x, y).
  */
-    std::pair<int,int> itsPosition;
+    std::pair<float,float> itsPosition;
 
     /**
  * @brief Indicates whether the avatar is currently invincible.
@@ -26,8 +26,14 @@ private :
     /**
  * @brief Visual representation (sprite) of the avatar.
  */
-    QImage itsSprite;
+    QImage* itsSprite;
 
+    QRect* itsQRect;
+
+    bool isLeft = 0;
+    bool isRight = 0;
+    bool isUp = 0;
+    bool isDown = 0;
     /**
  * @brief Current level of the avatar.
  */
@@ -36,7 +42,9 @@ private :
     /**
  * @brief Movement speed of the avatar.
  */
-    int itsSpeed;
+    int itsBaseSpeed;
+
+    float itsSpeedMult;
 
     /**
  * @brief Current health points of the avatar.
@@ -62,7 +70,7 @@ public:
     /**
  * @brief Default constructor initializing the avatar.
  */
-    Avatar();
+    Avatar(QImage* aSprite, std::pair<int, int> aStartPos);
 
     /**
  * @brief Moves the avatar according to input or game logic.
@@ -89,7 +97,13 @@ public:
  * @brief Returns the current position of the avatar.
  * @return A pair containing the (x, y) coordinates.
  */
-    std::pair<int, int> getItsPosition() const;
+    std::pair<float, float> getItsPosition() const;
+
+    void moveLeft(bool enable);
+    void moveRight(bool enable);
+    void moveUp(bool enable);
+    void moveDown(bool enable);
+    QRect *getItsQRect() const;
 };
 
 #endif // AVATAR_H

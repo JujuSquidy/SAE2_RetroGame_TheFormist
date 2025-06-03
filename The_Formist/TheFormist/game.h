@@ -6,7 +6,7 @@
 #include "enemy.h"
 #include "powerup.h"
 #include "projectile.h"
-#include "qelapsedtimer.h"
+#include <QElapsedtimer>
 #include "weapon.h"
 /**
  * @class Game
@@ -16,13 +16,15 @@
  * power-ups, and weapon logic. Coordinates input, collisions, and rendering updates.
  */
 
-class Game
+class Game : public QObject
 {
+    Q_OBJECT
+
 private :
     /**
  * @brief Timer used to show time elapsed in the game and manage enemies apparition.
  */
-    QTimer itsTimer;
+    QTimer *itsTimer;
 
     /**
  * @brief Timer used to manage firing rate (e.g., one shot per second).
@@ -62,7 +64,7 @@ private :
     /**
  * @brief The current power-up present in the game.
  */
-    PowerUp itsPowerUp;
+    PowerUp *itsPowerUp = nullptr;
 
     /**
  * @brief The latest target position from the mouse (used for aiming).
@@ -74,7 +76,7 @@ public:
     /**
  * @brief Constructs the Game object and initializes components.
  */
-    Game();
+    Game(QObject *parent = nullptr);
 
     /**
  * @brief Destructor that cleans up dynamically allocated resources.
@@ -103,6 +105,7 @@ public:
  */
     void updateMouseTarget(int x, int y);
 
+    Avatar *getItsAvatar() const;
 
 public slots:
     /**

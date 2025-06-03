@@ -26,7 +26,7 @@ private:
     /**
      * @brief Qt timer that regularly triggers screen updates and game loop refresh.
      */
-    QTimer itsTimer;
+    QTimer* itsTimer;
 
 public:
     /**
@@ -47,25 +47,25 @@ protected:
  * @brief Handles the paint event to draw the game elements.
  * @param event Paint event from Qt.
  */
-    void paintEvent(QPaintEvent* event);
+    void paintEvent(QPaintEvent* event) override;
 
     /**
  * @brief Handles key press events for controlling the avatar or actions.
  * @param event Key event containing the pressed key.
  */
-    void keyPressEvent(QKeyEvent * event);
+    void keyPressEvent(QKeyEvent * event) override;
 
     /**
  * @brief Handles key release events to stop actions or movement.
  * @param event Key event containing the released key.
  */
-    void keyReleaseEvent(QKeyEvent* event);
+    void keyReleaseEvent(QKeyEvent* event) override;
 
     /**
  * @brief Handles mouse movement events for targeting.
  * @param event Mouse move event containing the cursor position.
  */
-    void mouseMoveEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event) override;
 
 private:
     /**
