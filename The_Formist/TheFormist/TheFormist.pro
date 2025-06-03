@@ -18,6 +18,7 @@ SOURCES += \
     gui.cpp \
     powerup.cpp \
     projectile.cpp \
+    rangedweapon.cpp \
     weapon.cpp
 
 HEADERS += \
@@ -29,6 +30,7 @@ HEADERS += \
     gun.h \
     powerup.h \
     projectile.h \
+    rangedweapon.h \
     weapon.h
 
 # Default rules for deployment.

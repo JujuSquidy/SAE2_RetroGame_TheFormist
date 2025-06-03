@@ -15,6 +15,7 @@ private:
 public:
     Weapon(int aBaseDamage, float aAttackSpeed, QImage aSprite);
     virtual void attack();
+    float getItsAttackSpeed() const;
 };
 
 #endif // WEAPON_H

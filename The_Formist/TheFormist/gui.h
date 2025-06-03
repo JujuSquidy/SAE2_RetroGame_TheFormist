@@ -2,6 +2,7 @@
 #define GUI_H
 
 #include "game.h"
+#include <QMouseEvent>
 #include <QWidget>
 
 class GUI : public QWidget
@@ -19,6 +20,7 @@ protected:
     void paintEvent(QPaintEvent* event);
     void keyPressEvent(QKeyEvent * event);
     void keyReleaseEvent(QKeyEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
 
 private:
     void drawAvatar(QPainter * aPainter);

@@ -2,9 +2,14 @@
 
 GUI::GUI(Game * aGame, QWidget *parent)
     : QWidget(parent), itsGame(aGame)
-{}
+{
+    setMouseTracking(true);
+}
 
-GUI::~GUI() {}
+GUI::~GUI()
+{
+
+}
 
 void GUI::paintEvent(QPaintEvent *event)
 {
@@ -21,6 +26,11 @@ void GUI::keyReleaseEvent(QKeyEvent *event)
 
 }
 
+void GUI::mouseMoveEvent(QMouseEvent* event)
+{
+    QPoint pos = event->pos();
+    itsGame->updateMouseTarget(pos.x(), pos.y());
+}
 
 void GUI::drawAvatar(QPainter *aPainter)
 {

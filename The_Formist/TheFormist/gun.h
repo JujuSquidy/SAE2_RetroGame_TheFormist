@@ -1,12 +1,12 @@
 #ifndef GUN_H
 #define GUN_H
 
-#include "weapon.h"
+#include "rangedweapon.h"
 
-class Gun : public Weapon
+class Gun : public RangedWeapon
 {
 public:
-    Gun();
+    Gun(int aBaseDamage, float aAttackSpeed, QImage aSprite);
 };
 
 #endif // GUN_H

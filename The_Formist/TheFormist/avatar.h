@@ -23,6 +23,7 @@ public:
     void addXP(int aNB);
     void upgrade();
     void levelUp();
+    std::pair<int, int> getItsPosition() const;
 };
 
 #endif // AVATAR_H
