@@ -1,8 +1,20 @@
 #include "game.h"
 
-Game::Game()
+Avatar *Game::getItsAvatar() const
+{
+    return itsAvatar;
+}
+
+Game::Game(QObject *parent)
+    : QObject{parent}
 {
     fireTimer.start(); // démarrer le chrono
+    QImage* img = new QImage("Patate.txt");
+    itsBorder = std::pair(4000,2000);
+    itsAvatar = new Avatar(img, std::pair(0,0));
+    itsTimer = new QTimer(this);
+    connect(itsTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
+    itsTimer->start(10);
 }
 
 Game::~Game()
@@ -23,7 +35,7 @@ Game::~Game()
     delete itsAvatar;
     itsAvatar = nullptr;
 
-    itsTimer.stop();
+    itsTimer->stop();
 
 }
 void Game::updateMouseTarget(int x, int y)
@@ -33,22 +45,21 @@ void Game::updateMouseTarget(int x, int y)
 
 void Game::PowerUp()
 {
-
+    return;
 }
 
 void Game::Collision()
 {
-
+    return;
 }
 
 void Game::GameOver()
 {
-
+    return;
 }
 
 void Game::GameLoop()
 {
-
     // Tir de l'arme
     if (fireTimer.elapsed() >= 1000 * itsWeapon->getItsAttackSpeed())
     {
@@ -64,5 +75,7 @@ void Game::GameLoop()
     // Mettre à jour la position des projectiles
     for (Projectile * proj : itsProjectiles)
         proj->move();
+
+    itsAvatar->move();
 }
 
