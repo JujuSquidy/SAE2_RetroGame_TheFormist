@@ -3,7 +3,7 @@
 
 #include "projectile.h"
 
-class AreaDamage
+class AreaDamage : public Projectile
 {
 private:
     std::pair<int,int> itsArea;

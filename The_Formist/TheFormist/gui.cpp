@@ -1,7 +1,7 @@
 #include "gui.h"
 
-GUI::GUI(Game aGame, QWidget *parent)
-    : QWidget(parent)
+GUI::GUI(Game * aGame, QWidget *parent)
+    : QWidget(parent), itsGame(aGame)
 {}
 
 GUI::~GUI() {}

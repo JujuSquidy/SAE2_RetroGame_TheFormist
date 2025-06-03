@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "QTimer"
+#include <QTimer>
 #include "avatar.h"
 #include "enemy.h"
 #include "powerup.h"

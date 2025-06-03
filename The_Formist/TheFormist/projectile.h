@@ -5,12 +5,14 @@
 class Projectile
 {
 private :
-    int itsSpeed;
-    std::pair<int,int> itsPosition;
-    int itsDamage;
     std::pair<int,int> itsTarget;
+    std::pair<int,int> itsPosition;
+    std::pair<int,int> itsSize;
+    int itsSpeed;
+    int itsDamage;
+
 public:
-    Projectile(std::pair<int,int> aTarget,std::pair<int,int> aPosition, int aSpeed, int aDamage);
+    Projectile(std::pair<int,int> aTarget, std::pair<int,int> aPosition, std::pair<int,int> aSize, int aSpeed, int aDamage);
     void move();
     void createArea();
 

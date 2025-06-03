@@ -1,6 +1,7 @@
 #include "projectile.h"
 
-Projectile::Projectile(std::pair<int, int> aTarget, std::pair<int, int> aPosition, int aSpeed, int aDamage)
+Projectile::Projectile(std::pair<int, int> aTarget, std::pair<int, int> aPosition, std::pair<int,int> aSize, int aSpeed, int aDamage)
+    : itsTarget(aTarget), itsPosition(aPosition), itsSize(aSize), itsSpeed(aSpeed), itsDamage(aDamage)
 {
 
 }

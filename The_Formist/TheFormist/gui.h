@@ -10,13 +10,15 @@ class GUI : public QWidget
 private:
     Game* itsGame;
     QTimer itsTimer;
+
+public:
+    GUI(Game * aGame, QWidget *parent = nullptr);
+    ~GUI();
+
 protected:
     void paintEvent(QPaintEvent* event);
     void keyPressEvent(QKeyEvent * event);
     void keyReleaseEvent(QKeyEvent* event);
-public:
-    GUI(Game aGame, QWidget *parent = nullptr);
-    ~GUI();
 
 private:
     void drawAvatar(QPainter * aPainter);

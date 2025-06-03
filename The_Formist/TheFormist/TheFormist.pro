@@ -13,10 +13,12 @@ SOURCES += \
     avatar.cpp \
     enemy.cpp \
     game.cpp \
+    gun.cpp \
     main.cpp \
     gui.cpp \
     powerup.cpp \
-    projectile.cpp
+    projectile.cpp \
+    weapon.cpp
 
 HEADERS += \
     areadamage.h \
@@ -24,8 +26,10 @@ HEADERS += \
     enemy.h \
     game.h \
     gui.h \
+    gun.h \
     powerup.h \
-    projectile.h
+    projectile.h \
+    weapon.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
