@@ -75,11 +75,13 @@ void Game::GameLoop()
         if (itsAvatar)
         {
             std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
-            Projectile* p = new Projectile(mouseTarget, avatarPos, {5,5}, 10, 5);
-            itsProjectiles.push_back(p);
-            itsWeapon->setIsShooting(false);
+            if(mouseTarget != avatarPos)
+            {
+                Projectile* p = new Projectile(mouseTarget, avatarPos, {5,5}, 10, 5);
+                itsProjectiles.push_back(p);
+                itsWeapon->setIsShooting(false);
+            }
         }
-
     }
 
     // Mettre à jour la position des projectiles
