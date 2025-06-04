@@ -10,6 +10,11 @@ std::vector<Projectile *> Game::getItsProjectiles() const
     return itsProjectiles;
 }
 
+std::pair<int,int> Game::getItsBorder() const
+{
+    return itsBorder;
+}
+
 Game::Game(QObject *parent)
     : QObject{parent}
 {
@@ -86,6 +91,11 @@ void Game::GameLoop()
     // Mettre à jour la position des projectiles
     for (Projectile * proj : itsProjectiles)
         proj->move();
+<<<<<<< HEAD
     itsAvatar->move();
+=======
+
+    itsAvatar->move(itsBorder);
+>>>>>>> b06142cc7668ef999ebd56d8d9d6cf931c31a7b2
 }
 

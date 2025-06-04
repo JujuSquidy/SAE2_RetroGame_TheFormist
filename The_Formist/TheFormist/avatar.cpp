@@ -24,47 +24,36 @@ Avatar::Avatar(QImage* aSprite, std::pair<int,int> aStartPos) : itsSprite(aSprit
     itsQRect = new QRect(itsPosition.first, itsPosition.second, 30, 30);
 }
 
-void Avatar::move()
+void Avatar::move(std::pair<int,int> aBorder)
 {
-    if(isLeft and !isRight)
-    {
-        if(isUp and !isDown)
-        {
-            itsPosition.first-=float(0.7*itsBaseSpeed*itsSpeedMult);
-            itsPosition.second-=float(0.7*itsBaseSpeed*itsSpeedMult);
-        }
-        else if(isDown and !isUp)
-        {
-            itsPosition.first-=float(0.7*itsBaseSpeed*itsSpeedMult);
-            itsPosition.second+=float(0.7*itsBaseSpeed*itsSpeedMult);
-        }
-        else
-            itsPosition.first-=float(itsBaseSpeed*itsSpeedMult);
+    float dx = 0;
+    float dy = 0;
+
+    if (isLeft && !isRight)
+        dx -= 1;
+    else if (isRight && !isLeft)
+        dx += 1;
+
+    if (isUp && !isDown)
+        dy -= 1;
+    else if (isDown && !isUp)
+        dy += 1;
+
+    // Normalisation pour ne pas aller plus vite en diagonale
+    float length = std::sqrt(dx*dx + dy*dy);
+    if (length > 0) {
+        dx /= length;
+        dy /= length;
     }
 
-    else if(isRight and !isLeft)
-    {
-        if(isUp and !isDown)
-        {
-            itsPosition.first+=float(0.7*itsBaseSpeed*itsSpeedMult);
-            itsPosition.second-=float(0.7*itsBaseSpeed*itsSpeedMult);
-        }
-        else if(isDown and !isUp)
-        {
-            itsPosition.first+=float(0.7*itsBaseSpeed*itsSpeedMult);
-            itsPosition.second+=float(0.7*itsBaseSpeed*itsSpeedMult);
-        }
-        else
-            itsPosition.first+=float(itsBaseSpeed*itsSpeedMult);
-    }
-    else if(isUp and !isDown)
-    {
-        itsPosition.second-=float(itsBaseSpeed*itsSpeedMult);
-    }
-    else if(isDown and !isUp)
-    {
-        itsPosition.second+=float(itsBaseSpeed*itsSpeedMult);
-    }
+    float speed = itsBaseSpeed * itsSpeedMult;
+    float futurePosX = itsPosition.first  + dx * speed;
+    float futurePosY = itsPosition.second + dy * speed;
+    if(futurePosX >= 0 and futurePosX <= aBorder.first)
+        itsPosition.first  += dx * speed;
+    if(futurePosY >= 0 and futurePosY <= aBorder.second)
+        itsPosition.second += dy * speed;
+
     itsQRect->moveTo(itsPosition.first, itsPosition.second);
 }
 

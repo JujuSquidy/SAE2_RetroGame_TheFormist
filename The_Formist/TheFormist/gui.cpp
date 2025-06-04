@@ -25,11 +25,33 @@ GUI::~GUI()
 void GUI::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
-
     QPainter painter(this);
 
-    painter.setBrushOrigin(itsGame->getItsAvatar()->getItsPosition().first+avatarWidth/2, itsGame->getItsAvatar()->getItsPosition().second+avatarHeight/2);
+    // Position de l'avatar
+    std::pair<float, float> avatarPos = itsGame->getItsAvatar()->getItsPosition();
 
+    // Taille de la zone d'affichage
+    int screenW = width();
+    int screenH = height();
+
+    // Taille de la carte
+    int mapW = itsGame->getItsBorder().first;
+    int mapH = itsGame->getItsBorder().second;
+
+    // Calcul de l’offset pour centrer l’avatar
+    float offsetX = avatarPos.first + avatarWidth/2 - screenW / 2;
+    float offsetY = avatarPos.second + avatarHeight/2 - screenH / 2;
+
+    // Empêcher l’offset de sortir de la carte
+    if (offsetX < 0) offsetX = 0;
+    if (offsetY < 0) offsetY = 0;
+    if (offsetX > mapW - screenW) offsetX = mapW - screenW;
+    if (offsetY > mapH - screenH) offsetY = mapH - screenH;
+
+    // Appliquer la translation inversée
+    painter.translate(-offsetX, -offsetY);
+
+    // Dessin relatif à la carte
     drawAvatar(&painter);
     drawProjectiles(&painter);
 }
@@ -97,7 +119,8 @@ void GUI::drawProjectiles(QPainter *aPainter)
     for (const Projectile* proj : projectiles)
     {
         std::pair<int, int> pos = proj->getItsPosition();
-        aPainter->drawRect(pos.first, pos.second, 5, 5);}
+        aPainter->drawRect(pos.first, pos.second, 5, 5);
+    }
 }
 void GUI::drawPowerUP(QPainter *aPainter)
 {

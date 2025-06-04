@@ -85,7 +85,7 @@ public:
     /**
  * @brief Moves the avatar according to input or game logic.
  */
-    void move();
+    void move(std::pair<int,int> aBorder);
 
     /**
  * @brief Adds experience points to the avatar.
