@@ -14,12 +14,13 @@ enum EType{
 class Enemy
 {
 private:
-    std::pair<int,int> itsPosition;
+    std::pair<float,float> itsPosition;
     float itsSpeed;
     int itsStrength;
     int itsHP;
     int itsMaxHP;
     int itsGivenXP;
+    QRectF itsRectF;
     /**
  * @brief Direction vector X component (normalized).
  */
@@ -38,14 +39,15 @@ public:
     void shoot(std::pair<int,int> aTarget);
     bool isDead();
     void move(std::pair<int, int> aTarget);
+    void takeDamage(int amount);
+    int getHP() const;
     /**
  * @brief Returns the current position of the enemy.
  * @return A pair containing the (x, y) coordinates.
  */
     std::pair<float, float> getItsPosition() const;
     EType getType() const;
-
-
+    QRectF getItsRectF() const;
 };
 
 #endif // ENEMY_H

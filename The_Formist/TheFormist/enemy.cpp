@@ -2,8 +2,15 @@
 #include <QRandomGenerator>
 #include <random>
 
+QRectF Enemy::getItsRectF() const
+{
+    return itsRectF;
+}
+
 Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
 {
+    itsPosition = aPosition;
+
     if (bossTimer >= 210000)
     {
         itsType = BOSS;
@@ -29,6 +36,8 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
         itsGivenXP=50;
         itsStrength = 20;
         itsSpeed = 1;
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 50.0, 50.0);
+
         break;
 
     case TRIANGLE:
@@ -37,6 +46,9 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
         itsGivenXP=1;
         itsStrength = 10;
         itsSpeed = 1;
+
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 10.0, 10.0);
+
         break;
 
     case SQUARE:
@@ -45,6 +57,8 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
         itsGivenXP=2;
         itsStrength = 15;
         itsSpeed = 0.5;
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 10.0, 10.0);
+
         break;
 
     case CIRCLE:
@@ -53,6 +67,8 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
         itsGivenXP=1;
         itsStrength = 5;
         itsSpeed = 1.5;
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 10.0, 10.0);
+
         break;
 
     }
@@ -66,13 +82,7 @@ void Enemy::shoot(std::pair<int, int> aTarget)
 
 bool Enemy::isDead()
 {
-    if (itsHP <= 0)
-    {
-
-        return true;
-    }
-    else
-        return false;
+    return itsHP <= 0;
 }
 
 void Enemy::move(std::pair<int, int> aTarget)
@@ -96,6 +106,7 @@ void Enemy::move(std::pair<int, int> aTarget)
 
     itsPosition.first += (dirX * itsSpeed);
     itsPosition.second += (dirY * itsSpeed);
+    itsRectF.moveTo(itsPosition.first, itsPosition.second);
 
 }
 
@@ -108,4 +119,16 @@ std::pair<float, float> Enemy::getItsPosition() const
 EType Enemy::getType() const
 {
     return itsType;
+}
+
+void Enemy::takeDamage(int amount)
+{
+    itsHP -= amount;
+    if (itsHP < 0)
+        itsHP = 0;
+}
+
+int Enemy::getHP() const
+{
+    return itsHP;
 }
