@@ -3,6 +3,7 @@
 
 #include <QImage>
 #include <utility>
+
 /**
  * @class Avatar
  * @brief Represents the player character in the game.
