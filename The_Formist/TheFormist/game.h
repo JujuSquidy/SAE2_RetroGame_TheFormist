@@ -28,7 +28,7 @@ private :
      * @brief Timer used to manage boss apparition
      */
 
-    QTimer itsBossTimer; // à chaque construction d'ennemi dans la game loop on devra passer le timer en paramètre du constructeur d'enemy (dernière valeur). ça permet de crée le boss à intervales régulières
+    QTimer *itsEnemyTimer;
     /**
  * @brief Timer used to show time elapsed in the game and manage enemies apparition.
  */
@@ -110,6 +110,7 @@ public:
 
     Avatar *getItsAvatar() const;
 
+    std::vector<Enemy *> getItsEnemies() const;
 
     std::vector<Projectile *> getItsProjectiles() const;
 
@@ -119,6 +120,8 @@ public slots:
     /**
  * @brief Core game loop executed on a timer tick; updates all game logic.
  */
-    void GameLoop();};
+    void GameLoop();
+    void spawnEnemy();
+};
 
 #endif // GAME_H

@@ -1,33 +1,31 @@
 #include "enemy.h"
-#include "game.h"
 #include <QRandomGenerator>
+#include <random>
 
-
-Enemy::Enemy(std::pair<int,int> aPosition, QImage aSprite, int aHP, EType aType, int bossTimer)
+Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
 {
-    aPosition = std::make_pair(1, 2);
     if (bossTimer >= 210000)
     {
-        aType = BOSS;
+        itsType = BOSS;
         bossTimer = 0;
     }
     else
     {
         std::uniform_int_distribution<int> dist(1, 3);
-        int value = dist(*QRandomGenerator::global());
+        int typeValue = dist(*QRandomGenerator::global());
 
-        switch (value) {
-        case 1: aType = TRIANGLE; break;
-        case 2: aType = SQUARE; break;
-        case 3: aType = CIRCLE; break;
+        switch (typeValue) {
+        case 1: itsType = TRIANGLE; break;
+        case 2: itsType = SQUARE; break;
+        case 3: itsType = CIRCLE; break;
         }
     }
 
-    switch (aType)
+    switch (itsType)
     {
     case BOSS:
         itsMaxHP=50;
-        aHP=itsMaxHP;
+        itsHP=itsMaxHP;
         itsGivenXP=50;
         itsStrength = 20;
         itsSpeed = 1;
@@ -35,7 +33,7 @@ Enemy::Enemy(std::pair<int,int> aPosition, QImage aSprite, int aHP, EType aType,
 
     case TRIANGLE:
         itsMaxHP=10;
-        aHP=itsMaxHP;
+        itsHP=itsMaxHP;
         itsGivenXP=1;
         itsStrength = 10;
         itsSpeed = 1;
@@ -43,7 +41,7 @@ Enemy::Enemy(std::pair<int,int> aPosition, QImage aSprite, int aHP, EType aType,
 
     case SQUARE:
         itsMaxHP=15;
-        aHP=itsMaxHP;
+        itsHP=itsMaxHP;
         itsGivenXP=2;
         itsStrength = 15;
         itsSpeed = 0.5;
@@ -51,7 +49,7 @@ Enemy::Enemy(std::pair<int,int> aPosition, QImage aSprite, int aHP, EType aType,
 
     case CIRCLE:
         itsMaxHP=10;
-        aHP=itsMaxHP;
+        itsHP=itsMaxHP;
         itsGivenXP=1;
         itsStrength = 5;
         itsSpeed = 1.5;
@@ -73,21 +71,41 @@ bool Enemy::isDead()
 
         return true;
     }
+    else
+        return false;
 }
 
-void Enemy::move(std::pair<int, int> targetPos)
+void Enemy::move(std::pair<int, int> aTarget)
 {
-    int dx = targetPos.first - itsPosition.first;
-    int dy = targetPos.second - itsPosition.second;
+    float dx = aTarget.first - itsPosition.first;
+    float dy = aTarget.second - itsPosition.second;
 
     float distance = std::sqrt(dx * dx + dy * dy);
-    if (distance == 0) return;
 
-    float vx = itsSpeed * dx / distance;
-    float vy = itsSpeed * dy / distance;
+    if (distance != 0)
+    {
+        dirX = dx / distance;
+        dirY = dy / distance;
+    }
 
-    itsPosition.first += vx;
-    itsPosition.second += vy;
+    else
+    {
+        dirX = 0;
+        dirY = 0;
+    }
 
-    itsEnemy.moveTo(itsPosition.first, itsPosition.second);
+    itsPosition.first += (dirX * itsSpeed);
+    itsPosition.second += (dirY * itsSpeed);
+
+}
+
+std::pair<float, float> Enemy::getItsPosition() const
+{
+    return itsPosition;
+}
+
+
+EType Enemy::getType() const
+{
+    return itsType;
 }
