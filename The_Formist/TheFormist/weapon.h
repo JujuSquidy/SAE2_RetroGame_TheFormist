@@ -44,6 +44,11 @@ private:
     bool isShooting = false;
 
 public slots:
+    /**
+ * @brief Executes the weapon's attack behavior.
+ *
+ * Can be overridden by derived classes to define specific attack patterns.
+ */
     virtual void attack();
 
 public:
@@ -58,12 +63,7 @@ public:
     /**
  * @brief Destruct a weapon.
  */
-   virtual ~Weapon();
-    /**
- * @brief Executes the weapon's attack behavior.
- *
- * Can be overridden by derived classes to define specific attack patterns.
- */
+    virtual ~Weapon();
 
     /**
  * @brief Returns the effective attack speed, factoring in multipliers.
@@ -71,7 +71,7 @@ public:
  */
     float getItsAttackSpeed() const;
 
-   bool getIsShooting() const;
+    bool getIsShooting() const;
     void setIsShooting(bool newIsShooting);
 };
 

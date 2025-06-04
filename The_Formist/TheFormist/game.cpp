@@ -79,7 +79,6 @@ void Game::GameLoop()
             itsProjectiles.push_back(p);
             itsWeapon->setIsShooting(false);
         }
-
     }
 
     // Mettre à jour la position des projectiles
