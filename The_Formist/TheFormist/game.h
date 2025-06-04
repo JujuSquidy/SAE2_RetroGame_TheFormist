@@ -10,12 +10,14 @@ class Game
 {
 private :
     QTimer itsTimer;
+    QTimer itsBossTimer; // à chaque construction d'ennemi dans la game loop on devra passer le timer en paramètre du constructeur d'enemy (dernière valeur). ça permet de crée le boss à intervales régulières
     std::pair<int,int> itsBorder;
     long int itsScore;
     std::vector<Projectile*> itsProjectiles;
     Avatar* itsAvatar;
     std::vector<Enemy*> itsEnemies;
     PowerUp itsPowerUp;
+    Game *itsgame;
 
 public:
     Game();
