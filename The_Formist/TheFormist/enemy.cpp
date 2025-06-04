@@ -7,6 +7,11 @@ QRectF Enemy::getItsRectF() const
     return itsRectF;
 }
 
+int Enemy::getItsGivenXP() const
+{
+    return itsGivenXP;
+}
+
 Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
 {
     itsPosition = aPosition;

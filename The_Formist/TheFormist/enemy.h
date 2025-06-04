@@ -48,6 +48,7 @@ public:
     std::pair<float, float> getItsPosition() const;
     EType getType() const;
     QRectF getItsRectF() const;
+    int getItsGivenXP() const;
 };
 
 #endif // ENEMY_H
