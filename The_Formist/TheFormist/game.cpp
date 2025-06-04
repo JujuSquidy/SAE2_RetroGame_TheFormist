@@ -1,116 +1,81 @@
-#ifndef GAME_H
-#define GAME_H
+#include "game.h"
 
-#include <QTimer>
-#include "avatar.h"
-#include "enemy.h"
-#include "powerup.h"
-#include "projectile.h"
-#include <QElapsedtimer>
-#include "weapon.h"
-/**
- * @class Game
- * @brief Manages the core game logic, entities, and real-time updates.
- *
- * Handles the state of the game including the avatar, enemies, projectiles,
- * power-ups, and weapon logic. Coordinates input, collisions, and rendering updates.
- */
-
-class Game : public QObject
+Avatar *Game::getItsAvatar() const
 {
-    Q_OBJECT
+    return itsAvatar;
+}
 
-private :
-    /**
- * @brief Timer used to show time elapsed in the game and manage enemies apparition.
- */
-    QTimer *itsTimer;
+Game::Game(QObject *parent)
+    : QObject{parent}
+{
+    fireTimer.start(); // démarrer le chrono
+    QImage* img = new QImage("Patate.txt");
+    itsBorder = std::pair(4000,2000);
+    itsAvatar = new Avatar(img, std::pair(0,0));
+    itsTimer = new QTimer(this);
+    connect(itsTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
+    itsTimer->start(10);
+}
 
-    /**
- * @brief Timer used to manage firing rate (e.g., one shot per second).
- */
-    QElapsedTimer fireTimer;
+Game::~Game()
+{
+    // Supprimer tous les projectiles
+    for (Projectile* p : itsProjectiles) {
+        delete p;
+    }
+    itsProjectiles.clear();
 
-    /**
- * @brief Defines the game area boundaries (width, height).
- */
-    std::pair<int,int> itsBorder;
+    // Supprimer les ennemis
+    for (Enemy* e : itsEnemies) {
+        delete e;
+    }
+    itsEnemies.clear();
 
-    /**
- * @brief Stores the player's current score.
- */
-    long int itsScore;
+    // Supprimer l'avatar
+    delete itsAvatar;
+    itsAvatar = nullptr;
 
-    /**
- * @brief List of active projectiles in the game.
- */
-    std::vector<Projectile*> itsProjectiles;
+    itsTimer->stop();
 
-    /**
- * @brief Pointer to the player's avatar.
- */
-    Avatar* itsAvatar;
+}
+void Game::updateMouseTarget(int x, int y)
+{
+    mouseTarget = {x, y};
+}
 
-    /**
- * @brief Pointer to the player's equipped weapon.
- */
-    Weapon* itsWeapon;
+void Game::PowerUp()
+{
+    return;
+}
 
-    /**
- * @brief List of active enemies in the game.
- */
-    std::vector<Enemy*> itsEnemies;
+void Game::Collision()
+{
+    return;
+}
 
-    /**
- * @brief The current power-up present in the game.
- */
-    PowerUp *itsPowerUp = nullptr;
+void Game::GameOver()
+{
+    return;
+}
 
-    /**
- * @brief The latest target position from the mouse (used for aiming).
- */
-    std::pair<int,int> mouseTarget;
+void Game::GameLoop()
+{
+    // Tir de l'arme
+    if (fireTimer.elapsed() >= 1000 * itsWeapon->getItsAttackSpeed())
+    {
+        if (itsAvatar)
+        {
+            std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
+            Projectile* p = new Projectile(mouseTarget, avatarPos, {5,5}, 10, 5);
+            itsProjectiles.push_back(p);
+        }
+        fireTimer.restart(); // réinitialiser pour la prochaine seconde
+    }
 
+    // Mettre à jour la position des projectiles
+    for (Projectile * proj : itsProjectiles)
+        proj->move();
 
-public:
-    /**
- * @brief Constructs the Game object and initializes components.
- */
-    Game(QObject *parent = nullptr);
+    itsAvatar->move();
+}
 
-    /**
- * @brief Destructor that cleans up dynamically allocated resources.
- */
-    ~Game();
-
-    /**
- * @brief Handles logic for applying or spawning power-ups.
- */
-    void PowerUp();
-
-    /**
- * @brief Detects and handles collisions and damages between entities.
- */
-    void Collision();
-
-    /**
- * @brief Ends the game, stopping the loop and triggering endgame behavior.
- */
-    void GameOver();
-
-    /**
- * @brief Updates the current mouse target position for aiming.
- * @param x X-coordinate of the mouse.
- * @param y Y-coordinate of the mouse.
- */
-    void updateMouseTarget(int x, int y);
-
-    Avatar *getItsAvatar() const;
-
-public slots:
-    /**
- * @brief Core game loop executed on a timer tick; updates all game logic.
- */
-    void GameLoop();};
-
-#endif // GAME_H
