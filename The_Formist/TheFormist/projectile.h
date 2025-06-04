@@ -15,7 +15,7 @@ private :
     /**
  * @brief Current position of the projectile (x, y).
  */
-    std::pair<int,int> itsPosition;
+    std::pair<float,float> itsPosition;
 
     /**
  * @brief Size of the projectile (width, height).
@@ -51,7 +51,7 @@ public:
  * @param aSpeed Movement speed of the projectile.
  * @param aDamage Amount of damage the projectile will deal.
  */
-    Projectile(std::pair<int,int> aTarget, std::pair<int,int> aPosition, std::pair<int,int> aSize, int aSpeed, int aDamage);
+    Projectile(std::pair<float,float> aTarget, std::pair<float,float> aPosition, std::pair<int,int> aSize, int aSpeed, int aDamage);
 
     /**
  * @brief Updates the position of the projectile based on its direction and speed.
@@ -67,7 +67,7 @@ public:
  * @brief Returns the current position of the projectile.
  * @return A pair representing the (x, y) coordinates.
  */
-    std::pair<int, int> getItsPosition() const;
+    std::pair<float, float> getItsPosition() const;
 };
 
 #endif // PROJECTILE_H

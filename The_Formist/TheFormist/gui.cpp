@@ -9,8 +9,8 @@ int avatarWidth = 30;
 GUI::GUI(Game * aGame, QWidget *parent)
     : QWidget(parent), itsGame(aGame)
 {
-    setMouseTracking(true);
     setFixedSize(960, 540);
+    setMouseTracking(true);
 
     itsTimer = new QTimer(this);
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(update()));
@@ -32,6 +32,7 @@ void GUI::paintEvent(QPaintEvent *event)
     painter.setBrushOrigin(itsGame->getItsAvatar()->getItsPosition().first+avatarWidth/2, itsGame->getItsAvatar()->getItsPosition().second+avatarHeight/2);
 
     drawAvatar(&painter);
+    drawProjectiles(&painter);
 }
 
 void GUI::keyPressEvent(QKeyEvent *event)
@@ -105,9 +106,16 @@ void GUI::drawEnemies(QPainter *aPainter)
 
 void GUI::drawProjectiles(QPainter *aPainter)
 {
+    aPainter->setPen(Qt::red);
+    aPainter->setBrush(Qt::SolidPattern);
 
+    const std::vector<Projectile*>& projectiles = itsGame->getItsProjectiles();
+
+    for (const Projectile* proj : projectiles)
+    {
+        std::pair<int, int> pos = proj->getItsPosition();
+        aPainter->drawRect(pos.first, pos.second, 5, 5);}
 }
-
 void GUI::drawPowerUP(QPainter *aPainter)
 {
 

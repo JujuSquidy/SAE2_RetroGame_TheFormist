@@ -8,6 +8,8 @@
 #include "projectile.h"
 #include <QElapsedtimer>
 #include "weapon.h"
+#include "gun.h"
+
 /**
  * @class Game
  * @brief Manages the core game logic, entities, and real-time updates.
@@ -25,11 +27,6 @@ private :
  * @brief Timer used to show time elapsed in the game and manage enemies apparition.
  */
     QTimer *itsTimer;
-
-    /**
- * @brief Timer used to manage firing rate (e.g., one shot per second).
- */
-    QElapsedTimer fireTimer;
 
     /**
  * @brief Defines the game area boundaries (width, height).
@@ -106,6 +103,9 @@ public:
     void updateMouseTarget(int x, int y);
 
     Avatar *getItsAvatar() const;
+
+
+    std::vector<Projectile *> getItsProjectiles() const;
 
 public slots:
     /**

@@ -3,7 +3,7 @@
 
 
 
-Projectile::Projectile(std::pair<int, int> aTarget, std::pair<int, int> aPosition, std::pair<int,int> aSize, int aSpeed, int aDamage)
+Projectile::Projectile(std::pair<float, float> aTarget, std::pair<float, float> aPosition, std::pair<int,int> aSize, int aSpeed, int aDamage)
     : itsPosition(aPosition), itsSize(aSize), itsSpeed(aSpeed), itsDamage(aDamage)
 {
     float dx = aTarget.first - aPosition.first;
@@ -22,8 +22,8 @@ Projectile::Projectile(std::pair<int, int> aTarget, std::pair<int, int> aPositio
 
 void Projectile::move()
 {
-    itsPosition.first += static_cast<int>(dirX * itsSpeed);
-    itsPosition.second += static_cast<int>(dirY * itsSpeed);
+    itsPosition.first += (dirX * itsSpeed);
+    itsPosition.second += (dirY * itsSpeed);
 }
 
 void Projectile::createArea()
@@ -31,7 +31,7 @@ void Projectile::createArea()
 
 }
 
-std::pair<int, int> Projectile::getItsPosition() const
+std::pair<float, float> Projectile::getItsPosition() const
 {
     return itsPosition;
 }

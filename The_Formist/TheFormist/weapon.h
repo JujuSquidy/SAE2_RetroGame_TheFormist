@@ -1,6 +1,7 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
+#include "qtimer.h"
 #include <QImage>
 /**
  * @class Weapon
@@ -8,8 +9,10 @@
  *
  * Defines the core attributes and behavior shared by all weapon types, such as damage and attack speed.
  */
-class Weapon
+class Weapon : public QObject
 {
+    Q_OBJECT
+
 private:
     /**
  * @brief Base damage value of the weapon.
@@ -36,6 +39,12 @@ private:
  */
     QImage itsSprite;
 
+    QTimer * itsTimer;
+
+    bool isShooting = false;
+
+public slots:
+    virtual void attack();
 
 public:
     /**
@@ -47,17 +56,23 @@ public:
     Weapon(int aBaseDamage, float anAttackSpeed, QImage aSprite);
 
     /**
+ * @brief Destruct a weapon.
+ */
+   virtual ~Weapon();
+    /**
  * @brief Executes the weapon's attack behavior.
  *
  * Can be overridden by derived classes to define specific attack patterns.
  */
-    virtual void attack();
 
     /**
  * @brief Returns the effective attack speed, factoring in multipliers.
  * @return A float representing the current attack speed.
  */
     float getItsAttackSpeed() const;
+
+   bool getIsShooting() const;
+    void setIsShooting(bool newIsShooting);
 };
 
 #endif // WEAPON_H

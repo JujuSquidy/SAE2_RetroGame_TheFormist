@@ -18,6 +18,7 @@ public:
  * @param aSprite Visual representation of the gun.
  */
     Gun(int aBaseDamage, float aAttackSpeed, QImage aSprite);
+
 };
 
 #endif // GUN_H

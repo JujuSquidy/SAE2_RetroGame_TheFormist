@@ -28,6 +28,7 @@ public:
  * @param aSprite Visual representation of the weapon.
  */
     RangedWeapon(int aBaseDamage, float aAttackSpeed, QImage aSprite);
+
 };
 
 #endif // RANGEDWEAPON_H

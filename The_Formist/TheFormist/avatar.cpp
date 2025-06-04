@@ -87,8 +87,6 @@ void Avatar::moveLeft(bool enable)
     isLeft = enable;
 }
 
-
-
 void Avatar::moveRight(bool enable)
 {
     isRight = enable;
