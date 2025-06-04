@@ -18,8 +18,11 @@ Game::Game(QObject *parent)
     itsAvatar = new Avatar(img, std::pair(0,0));
     itsWeapon = new Gun(10, 1, *img);
     itsTimer = new QTimer(this);
+    itsEnemyTimer = new QTimer(this);
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
+    connect(itsEnemyTimer, SIGNAL(timeout()), this, SLOT(spawnEnemy()));
     itsTimer->start(10);
+    itsEnemyTimer->start(1000);
 }
 
 Game::~Game()
@@ -68,7 +71,6 @@ void Game::GameOver()
 
 void Game::GameLoop()
 {
-
     // Tir de l'arme
     if (itsWeapon->getIsShooting())
     {
@@ -86,6 +88,25 @@ void Game::GameLoop()
     for (Projectile * proj : itsProjectiles)
         proj->move();
 
+    for (Enemy * enemi : itsEnemies)
+        enemi->move(itsAvatar->getItsPosition());
     itsAvatar->move();
+}
+
+
+std::vector<Enemy *> Game::getItsEnemies() const
+{
+    return itsEnemies;
+}
+
+void Game::spawnEnemy()
+{
+    QImage* img = new QImage("enemy.txt");
+    if (itsAvatar)
+    {
+        Enemy* e = new Enemy (itsAvatar->getItsPosition(),img,10);
+        itsEnemies.push_back(e);
+    }
+
 }
 

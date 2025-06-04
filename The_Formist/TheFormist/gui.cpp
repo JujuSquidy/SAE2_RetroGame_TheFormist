@@ -33,6 +33,7 @@ void GUI::paintEvent(QPaintEvent *event)
 
     drawAvatar(&painter);
     drawProjectiles(&painter);
+    drawEnemies(&painter);
 }
 
 void GUI::keyPressEvent(QKeyEvent *event)
@@ -101,6 +102,39 @@ void GUI::drawAvatar(QPainter *aPainter)
 
 void GUI::drawEnemies(QPainter *aPainter)
 {
+    aPainter->setBrush(Qt::SolidPattern);
+    const std::vector<Enemy*>& enemies = itsGame->getItsEnemies();
+    std::pair<int, int> aPosition;
+    for (const Enemy* enemi : enemies)
+    {
+        switch (enemi->getType())
+        {
+            case TRIANGLE :
+                aPainter->setPen(Qt::green);
+                aPosition = enemi->getItsPosition();
+                aPainter->drawRect(aPosition.first, aPosition.second, 10, 10);
+                break;
+
+            case SQUARE :
+                aPainter->setPen(Qt::green);
+                aPosition = enemi->getItsPosition();
+                aPainter->drawRect(aPosition.first, aPosition.second, 10, 10);
+                break;
+
+            case CIRCLE :
+                aPainter->setPen(Qt::green);
+                aPosition = enemi->getItsPosition();
+                aPainter->drawRect(aPosition.first, aPosition.second, 10, 10);
+                break;
+
+            case BOSS :
+                aPainter->setPen(Qt::yellow);
+                aPosition = enemi->getItsPosition();
+                aPainter->drawRect(aPosition.first, aPosition.second, 50, 50);
+                break;
+        }
+    }
+
 
 }
 
