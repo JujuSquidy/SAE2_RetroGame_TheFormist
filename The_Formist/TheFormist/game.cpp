@@ -10,6 +10,11 @@ std::vector<Projectile *> Game::getItsProjectiles() const
     return itsProjectiles;
 }
 
+std::pair<int,int> Game::getItsBorder() const
+{
+    return itsBorder;
+}
+
 Game::Game(QObject *parent)
     : QObject{parent}
 {
@@ -77,11 +82,13 @@ void Game::GameLoop()
         if (itsAvatar)
         {
             std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
-            Projectile* p = new Projectile(mouseTarget, avatarPos, {5,5}, 10, 5);
-            itsProjectiles.push_back(p);
-            itsWeapon->setIsShooting(false);
+            if(mouseTarget != avatarPos)
+            {
+                Projectile* p = new Projectile(mouseTarget, avatarPos, {5,5}, 10, 5);
+                itsProjectiles.push_back(p);
+                itsWeapon->setIsShooting(false);
+            }
         }
-
     }
 
     // Mettre à jour la position des projectiles
@@ -90,7 +97,8 @@ void Game::GameLoop()
 
     for (Enemy * enemi : itsEnemies)
         enemi->move(itsAvatar->getItsPosition());
-    itsAvatar->move();
+    itsAvatar->move(itsBorder);
+
 }
 
 

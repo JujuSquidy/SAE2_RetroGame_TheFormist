@@ -114,6 +114,8 @@ public:
 
     std::vector<Projectile *> getItsProjectiles() const;
 
+    std::pair<int,int> getItsBorder() const;
+
 public slots:
     /**
  * @brief Core game loop executed on a timer tick; updates all game logic.
