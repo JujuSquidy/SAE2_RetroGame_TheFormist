@@ -23,6 +23,12 @@ class Game : public QObject
     Q_OBJECT
 
 private :
+
+    /**
+     * @brief Timer used to manage boss apparition
+     */
+
+    QTimer itsBossTimer; // à chaque construction d'ennemi dans la game loop on devra passer le timer en paramètre du constructeur d'enemy (dernière valeur). ça permet de crée le boss à intervales régulières
     /**
  * @brief Timer used to show time elapsed in the game and manage enemies apparition.
  */

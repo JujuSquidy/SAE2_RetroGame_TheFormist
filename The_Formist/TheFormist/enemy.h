@@ -66,7 +66,7 @@ private:
  * @brief Visual representation of the enemy.
  */
     QImage itsSprite;
-
+    QRect itsEnemy;
 public:
     /**
  * @brief Constructs an Enemy.
@@ -75,7 +75,8 @@ public:
  * @param aHP Initial health points.
  * @param aType Type of enemy from EType enum.
  */
-    Enemy(std::pair<int,int> aPosition, QImage aSprite, int aHP, EType aType);
+    Enemy(std::pair<int,int> aPosition, QImage aSprite, int aHP, EType aType, int bossTimer); //bossTimer correspond au chrono du boss, il devra être passé en paramètre à chaque construction d'un ennemi dans la game loop
+
 
     /**
  * @brief Enemy shoots toward a target position.
@@ -88,11 +89,17 @@ public:
  * @return true if enemy is dead, false otherwise.
  */
     bool isDead();
-
     /**
  * @brief Moves the enemy based on its speed and logic.
  */
-    void move();
+    void move(std::pair<int, int> aTarget);
+
+
+    /**
+ * @brief Returns the current position of the enemy.
+ * @return A pair containing the (x, y) coordinates.
+ */
+    std::pair<float, float> getItsPosition() const;
 };
 
 #endif // ENEMY_H
