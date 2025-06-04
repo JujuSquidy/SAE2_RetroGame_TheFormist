@@ -59,7 +59,7 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
 
 }
 
-void Enemy::shoot(std::pair<int, int> aTarget)
+void Enemy::shoot(std::pair<float, float> aTarget)
 {
 
 }
@@ -75,7 +75,7 @@ bool Enemy::isDead()
         return false;
 }
 
-void Enemy::move(std::pair<int, int> aTarget)
+void Enemy::move(std::pair<float, float> aTarget)
 {
     float dx = aTarget.first - itsPosition.first;
     float dy = aTarget.second - itsPosition.second;
