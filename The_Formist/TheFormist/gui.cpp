@@ -1,7 +1,6 @@
 #include "gui.h"
 #include <QKeyEvent>
 #include <QPainter>
-#include <iostream>
 
 int avatarHeight = 30;
 int avatarWidth = 30;
@@ -9,7 +8,7 @@ int avatarWidth = 30;
 GUI::GUI(Game * aGame, QWidget *parent)
     : QWidget(parent), itsGame(aGame)
 {
-    setFixedSize(960, 540);
+    setFixedSize(960,540);
     setMouseTracking(true);
 
     itsTimer = new QTimer(this);
@@ -39,50 +38,34 @@ void GUI::keyPressEvent(QKeyEvent *event)
 {
     // Handle key press events for left and right arrow keys
     if (event->key() == Qt::Key_Left)
-    {
         itsGame->getItsAvatar()->moveLeft(true);
-        std::cout << "Gauche" << std::endl;
-    }
+
     if (event->key() == Qt::Key_Right)
-    {
         itsGame->getItsAvatar()->moveRight(true);
-        std::cout << "Droite" << std::endl;
-    }
+
     if (event->key() == Qt::Key_Up)
-    {
         itsGame->getItsAvatar()->moveUp(true);
-        std::cout << "Haut" << std::endl;
-    }
+
     if (event->key() == Qt::Key_Down)
-    {
         itsGame->getItsAvatar()->moveDown(true);
-        std::cout << "Bas" << std::endl;
-    }
+
 }
 
 void GUI::keyReleaseEvent(QKeyEvent *event)
 {
     // Handle key release events for left and right arrow keys
     if (event->key() == Qt::Key_Left)
-    {
         itsGame->getItsAvatar()->moveLeft(false);
-        std::cout << "GaucheL" << std::endl;
-    }
+
     if (event->key() == Qt::Key_Right)
-    {
         itsGame->getItsAvatar()->moveRight(false);
-        std::cout << "DroiteL" << std::endl;
-    }
+
     if (event->key() == Qt::Key_Up)
-    {
         itsGame->getItsAvatar()->moveUp(false);
-        std::cout << "HautL" << std::endl;
-    }
+
     if (event->key() == Qt::Key_Down)
-    {
         itsGame->getItsAvatar()->moveDown(false);
-        std::cout << "BasL" << std::endl;
-    }
+
 }
 
 void GUI::mouseMoveEvent(QMouseEvent* event)

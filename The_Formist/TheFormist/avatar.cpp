@@ -38,7 +38,8 @@ void Avatar::move()
             itsPosition.first-=float(0.7*itsBaseSpeed*itsSpeedMult);
             itsPosition.second+=float(0.7*itsBaseSpeed*itsSpeedMult);
         }
-        itsPosition.first-=float(itsBaseSpeed*itsSpeedMult);
+        else
+            itsPosition.first-=float(itsBaseSpeed*itsSpeedMult);
     }
 
     else if(isRight and !isLeft)
@@ -53,7 +54,8 @@ void Avatar::move()
             itsPosition.first+=float(0.7*itsBaseSpeed*itsSpeedMult);
             itsPosition.second+=float(0.7*itsBaseSpeed*itsSpeedMult);
         }
-        itsPosition.first+=float(itsBaseSpeed*itsSpeedMult);
+        else
+            itsPosition.first+=float(itsBaseSpeed*itsSpeedMult);
     }
     else if(isUp and !isDown)
     {
