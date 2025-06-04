@@ -121,13 +121,13 @@ void GUI::drawEnemies(QPainter *aPainter)
                 break;
 
             case SQUARE :
-                aPainter->setPen(Qt::green);
+                aPainter->setPen(Qt::blue);
                 aPosition = enemi->getItsPosition();
                 aPainter->drawRect(aPosition.first, aPosition.second, 10, 10);
                 break;
 
             case CIRCLE :
-                aPainter->setPen(Qt::green);
+                aPainter->setPen(Qt::red);
                 aPosition = enemi->getItsPosition();
                 aPainter->drawRect(aPosition.first, aPosition.second, 10, 10);
                 break;
