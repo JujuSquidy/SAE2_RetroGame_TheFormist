@@ -93,6 +93,13 @@ public:
  * @brief Moves the enemy based on its speed and logic.
  */
     void move(std::pair<int, int> aTarget);
+
+
+    /**
+ * @brief Returns the current position of the enemy.
+ * @return A pair containing the (x, y) coordinates.
+ */
+    std::pair<float, float> getItsPosition() const;
 };
 
 #endif // ENEMY_H

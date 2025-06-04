@@ -5,21 +5,27 @@
 
 Enemy::Enemy(std::pair<int,int> aPosition, QImage aSprite, int aHP, EType aType, int bossTimer)
 {
-    aPosition = 1,2;
-    if (Game->bossSpawnElapsed >= 210000)
+    aPosition = std::make_pair(1, 2);
+    if (bossTimer >= 210000)
     {
-        aType = "BOSS";
-        Game->bossSpawnElapsed = 0;
+        aType = BOSS;
+        bossTimer = 0;
     }
     else
     {
-        std::uniform_real_distribution dist(1, 3);
-        aType = dist(*QRandomGenerator::global());
+        std::uniform_int_distribution<int> dist(1, 3);
+        int value = dist(*QRandomGenerator::global());
+
+        switch (value) {
+        case 1: aType = TRIANGLE; break;
+        case 2: aType = SQUARE; break;
+        case 3: aType = CIRCLE; break;
+        }
     }
 
     switch (aType)
     {
-    case "BOSS":
+    case BOSS:
         itsMaxHP=50;
         aHP=itsMaxHP;
         itsGivenXP=50;
@@ -27,7 +33,7 @@ Enemy::Enemy(std::pair<int,int> aPosition, QImage aSprite, int aHP, EType aType,
         itsSpeed = 1;
         break;
 
-    case "TRIANGLE":
+    case TRIANGLE:
         itsMaxHP=10;
         aHP=itsMaxHP;
         itsGivenXP=1;
@@ -35,7 +41,7 @@ Enemy::Enemy(std::pair<int,int> aPosition, QImage aSprite, int aHP, EType aType,
         itsSpeed = 1;
         break;
 
-    case "SQUARE":
+    case SQUARE:
         itsMaxHP=15;
         aHP=itsMaxHP;
         itsGivenXP=2;
@@ -43,7 +49,7 @@ Enemy::Enemy(std::pair<int,int> aPosition, QImage aSprite, int aHP, EType aType,
         itsSpeed = 0.5;
         break;
 
-    case "CIRCLE":
+    case CIRCLE:
         itsMaxHP=10;
         aHP=itsMaxHP;
         itsGivenXP=1;
@@ -65,7 +71,7 @@ bool Enemy::isDead()
     if (itsHP <= 0)
     {
 
-        return True;
+        return true;
     }
 }
 
