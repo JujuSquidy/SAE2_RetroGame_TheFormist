@@ -20,7 +20,7 @@ Game::Game(QObject *parent)
 {
     QImage* img = new QImage("Patate.txt");
     itsBorder = std::pair(4000,2000);
-    itsAvatar = new Avatar(img, std::pair(0,0));
+    itsAvatar = new Avatar(img, std::pair(itsBorder.first/2,itsBorder.second/2));
     itsWeapon = new Gun(10, 1, *img);
     itsTimer = new QTimer(this);
     itsEnemyTimer = new QTimer(this);

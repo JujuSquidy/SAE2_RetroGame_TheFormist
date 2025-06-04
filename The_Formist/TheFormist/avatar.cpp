@@ -41,7 +41,8 @@ void Avatar::move(std::pair<int,int> aBorder)
 
     // Normalisation pour ne pas aller plus vite en diagonale
     float length = std::sqrt(dx*dx + dy*dy);
-    if (length > 0) {
+    if (length > 0)
+    {
         dx /= length;
         dy /= length;
     }
@@ -49,9 +50,9 @@ void Avatar::move(std::pair<int,int> aBorder)
     float speed = itsBaseSpeed * itsSpeedMult;
     float futurePosX = itsPosition.first  + dx * speed;
     float futurePosY = itsPosition.second + dy * speed;
-    if(futurePosX >= 0 and futurePosX <= aBorder.first)
+    if(futurePosX >= 0 and futurePosX+itsQRect->width() <= aBorder.first)
         itsPosition.first  += dx * speed;
-    if(futurePosY >= 0 and futurePosY <= aBorder.second)
+    if(futurePosY >= 0 and futurePosY+itsQRect->height() <= aBorder.second)
         itsPosition.second += dy * speed;
 
     itsQRect->moveTo(itsPosition.first, itsPosition.second);
