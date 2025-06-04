@@ -39,8 +39,14 @@ private:
  */
     QImage itsSprite;
 
+/**
+ * @brief Internal timer for managing attack intervals.
+ */
     QTimer * itsTimer;
 
+/**
+ * @brief Indicates whether the weapon is currently firing.
+ */
     bool isShooting = false;
 
 public slots:
@@ -71,7 +77,16 @@ public:
  */
     float getItsAttackSpeed() const;
 
+    /**
+     * @brief Returns whether the weapon is currently firing.
+     * @return True if shooting, false otherwise.
+     */
     bool getIsShooting() const;
+
+    /**
+     * @brief Sets whether the weapon is currently firing.
+     * @param newIsShooting Boolean flag to set shooting state.
+     */
     void setIsShooting(bool newIsShooting);
 };
 

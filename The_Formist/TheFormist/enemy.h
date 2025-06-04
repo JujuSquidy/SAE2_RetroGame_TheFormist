@@ -66,6 +66,7 @@ private:
  * @brief Visual representation of the enemy.
  */
     QImage itsSprite;
+
     QRect itsEnemy;
 public:
     /**

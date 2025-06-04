@@ -29,12 +29,19 @@ private :
  */
     QImage* itsSprite;
 
+/**
+ * @brief Graphical rectangle used for drawing and collision detection.
+ */
     QRect* itsQRect;
 
+/**
+ * @brief Movement flags for each direction.
+ */
     bool isLeft = 0;
     bool isRight = 0;
     bool isUp = 0;
     bool isDown = 0;
+
     /**
  * @brief Current level of the avatar.
  */
@@ -45,8 +52,10 @@ private :
  */
     int itsBaseSpeed;
 
-    float itsSpeedMult;
-
+/**
+ * @brief Speed multiplier for the avatar's movement.
+ */
+float itsSpeedMult;
     /**
  * @brief Current health points of the avatar.
  */
@@ -100,11 +109,33 @@ public:
  */
     std::pair<float, float> getItsPosition() const;
 
+/**
+ * @brief Enables or disables left movement.
+ * @param enable True to enable movement, false to disable.
+ */
     void moveLeft(bool enable);
+
+/**
+ * @brief Enables or disables right movement.
+ * @param enable True to enable movement, false to disable.
+ */
     void moveRight(bool enable);
+
+/**
+ * @brief Enables or disables upward movement.
+ * @param enable True to enable movement, false to disable.
+ */
     void moveUp(bool enable);
+/**
+ * @brief Enables or disables downward movement.
+ * @param enable True to enable movement, false to disable.
+ */
     void moveDown(bool enable);
-    QRect *getItsQRect() const;
+/**
+ * @brief Gets the QRect used for rendering or collisions.
+ * @return Pointer to the avatar's QRect.
+ */
+    QRect* getItsQRect() const;
 };
 
 #endif // AVATAR_H

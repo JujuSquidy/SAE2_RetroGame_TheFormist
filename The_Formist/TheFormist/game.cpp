@@ -68,7 +68,6 @@ void Game::GameOver()
 
 void Game::GameLoop()
 {
-
     // Tir de l'arme
     if (itsWeapon->getIsShooting())
     {
@@ -87,7 +86,6 @@ void Game::GameLoop()
     // Mettre à jour la position des projectiles
     for (Projectile * proj : itsProjectiles)
         proj->move();
-
     itsAvatar->move();
 }
 
