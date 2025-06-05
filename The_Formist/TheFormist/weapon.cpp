@@ -45,7 +45,7 @@ float Weapon::getItsBaseDamage() const
     return itsBaseDamage;
 }
 
-void Weapon::AddaBaseDamage(float aBaseDamage)
+void Weapon::AddBaseDamage(float aBaseDamage)
 {
     itsBaseDamage+=aBaseDamage;
 }
