@@ -1,8 +1,4 @@
 #include "avatar.h"
-#include <QRandomGenerator>
-#include <random>
-#include "weapon.h"
-#include "rangedweapon.h"
 
 
 std::pair<float, float> Avatar::getItsPosition() const
