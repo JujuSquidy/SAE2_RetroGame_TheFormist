@@ -158,6 +158,8 @@ public:
 
     int getItsLevel() const;
 
+    void takeDamage(int amount);
+    
     void AddLevel();
 };
 

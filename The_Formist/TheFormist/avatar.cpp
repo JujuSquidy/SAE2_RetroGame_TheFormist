@@ -139,3 +139,10 @@ void Avatar::AddLevel()
 {
     itsLevel++;
 }
+
+void Avatar::takeDamage(int amount)
+{
+    itsHP -= amount;
+    if (itsHP < 0)
+        itsHP = 0;
+}

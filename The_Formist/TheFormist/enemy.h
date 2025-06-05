@@ -51,11 +51,19 @@ public:
  * @return A pair containing the (x, y) coordinates.
  */
     std::pair<float, float> getItsPosition() const;
+
     EType getType() const;
+
     QRectF getItsRectF() const;
+
     int getItsGivenXP() const;
+
     void setIsShooting(bool newIsShooting);
+
     bool getIsShooting() const;
+
+    void setItsPosition(const std::pair<float, float> &newItsPosition);
+    
     int getItsStrength() const;
 };
 

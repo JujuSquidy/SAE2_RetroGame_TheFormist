@@ -2,6 +2,7 @@
 #include "gun.h"
 #include "rangedweapon.h"
 #include <QRandomGenerator>
+#include <iostream>
 #include <random>
 
 
@@ -105,19 +106,31 @@ void Game::Collision()
                     delete e;
                     enemyIt = itsEnemies.erase(enemyIt);
                 }
+                else
+                    ++enemyIt;
+
                 break; // projectile touche un ennemi, on sort
             }
-            ++enemyIt;
+            else
+                ++enemyIt;
         }
-
         if (hit)
         {
             delete proj;
             avProjIt = itsAvatarProjectiles.erase(avProjIt);
         }
         else
-        {
             ++avProjIt;
+    }
+
+    // === COLLISION ENNEMIS / AVATAR ===
+    for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); ++enemyIt)
+    {
+        Enemy* e = *enemyIt;
+
+        if (e->getItsRectF().intersects(*itsAvatar->getItsQRect()) && e->getType() != TRIANGLE)
+        {
+            itsAvatar->takeDamage(e->getItsStrength());
         }
     }
 }
@@ -163,6 +176,22 @@ void Game::GameLoop()
     for (Projectile * eProj : itsEnemyProjectiles)
         eProj->move();
 
+    QRect* avatarRect = itsAvatar->getItsQRect();
+    for (Enemy* enemy : itsEnemies)
+    {
+        std::pair<float, float> oldPos = enemy->getItsPosition();
+
+        // Tentative de déplacement vers l'avatar
+        enemy->move(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
+
+        // Empêche de traverser l'avatar
+        if (enemy->getItsRectF().intersects(*itsAvatar->getItsQRect()))
+        {
+            enemy->setItsPosition(oldPos);
+        }
+    }
+
+
     itsAvatar->move(itsBorder);
 
     Collision();
@@ -173,7 +202,6 @@ void Game::GameLoop()
         itsAvatar->levelUp();
         itsAvatar->AddMaxXP(2);
     }
-
 }
 
 
