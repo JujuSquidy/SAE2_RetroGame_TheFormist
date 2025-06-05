@@ -10,7 +10,7 @@ Weapon::Weapon(int aBaseDamage, float anAttackSpeed, QImage *aSprite) :
 {
     itsTimer = new QTimer;
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(attack()));
-    itsTimer->start(10);
+    itsTimer->start(1000);
 }
 
 Weapon::~Weapon()

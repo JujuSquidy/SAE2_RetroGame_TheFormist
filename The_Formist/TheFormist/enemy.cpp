@@ -52,7 +52,7 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
         itsStrength = 10;
         itsSpeed = 1;
 
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 10.0, 10.0);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 30.0, 30.0);
 
         break;
 
@@ -62,7 +62,7 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
         itsGivenXP=2;
         itsStrength = 15;
         itsSpeed = 0.5;
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 10.0, 10.0);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 30.0, 30.0);
 
         break;
 
@@ -72,7 +72,7 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
         itsGivenXP=1;
         itsStrength = 5;
         itsSpeed = 1.5;
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 10.0, 10.0);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 30.0, 30.0);
 
         break;
 
@@ -92,8 +92,8 @@ bool Enemy::isDead()
 
 void Enemy::move(std::pair<float, float> aTarget)
 {
-    float dx = aTarget.first - itsPosition.first;
-    float dy = aTarget.second - itsPosition.second;
+    float dx = aTarget.first - itsRectF.width()/2 - itsPosition.first;
+    float dy = aTarget.second - itsRectF.height()/2 - itsPosition.second;
 
     float distance = std::sqrt(dx * dx + dy * dy);
 
@@ -112,7 +112,6 @@ void Enemy::move(std::pair<float, float> aTarget)
     itsPosition.first += (dirX * itsSpeed);
     itsPosition.second += (dirY * itsSpeed);
     itsRectF.moveTo(itsPosition.first, itsPosition.second);
-
 }
 
 std::pair<float, float> Enemy::getItsPosition() const

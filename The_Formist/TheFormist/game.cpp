@@ -78,7 +78,7 @@ void Game::Collision()
 
             if (proj->getItsRectF().intersects(e->getItsRectF()))
             {
-                e->takeDamage(itsWeapon->getItsDamage());  // Utilisation de la méthode publique
+                e->takeDamage(itsWeapon->getItsDamage());
                 hit = true;
 
                 if (e->isDead())
@@ -138,10 +138,11 @@ void Game::GameLoop()
     for (Projectile * proj : itsProjectiles)
         proj->move();
 
-    for (Enemy * enemy : itsEnemies)
-        enemy->move(itsAvatar->getItsPosition());
-    itsAvatar->move(itsBorder);
+    QRect* avatarRect = itsAvatar->getItsQRect();
+    for (Enemy* enemy : itsEnemies)
+        enemy->move(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
 
+    itsAvatar->move(itsBorder);
     Collision();
 }
 
