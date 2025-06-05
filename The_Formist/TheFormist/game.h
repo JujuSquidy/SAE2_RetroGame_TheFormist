@@ -109,6 +109,8 @@ public:
 
     Avatar *getItsAvatar() const;
 
+    Weapon *getItsWeapon() const;
+
     std::vector<Enemy *> getItsEnemies() const;
 
     std::vector<Projectile *> getItsProjectiles() const;
@@ -121,6 +123,7 @@ public slots:
  */
     void GameLoop();
     void spawnEnemy();
+    void upgrade();
 };
 
 #endif // GAME_H

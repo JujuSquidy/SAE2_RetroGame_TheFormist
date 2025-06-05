@@ -89,6 +89,18 @@ public:
      */
     void setIsShooting(bool newIsShooting);
     int getItsDamage() const;
+
+    /**
+     * @brief Get the damage multiplicator
+     * @return A float representing current damage multiplicator
+     */
+    float getItsBaseDamage() const;
+
+    /**
+     * @brief Set the damage multiplicator
+     * @param aDamageMult float to set the new value
+     */
+    void setItsBaseDamage(float aBaseDamage);
 };
 
 #endif // WEAPON_H

@@ -22,12 +22,12 @@ private:
     int itsGivenXP;
     QRectF itsRectF;
     /**
- * @brief Direction vector X component.
+ * @brief Direction vector X component (normalized).
  */
     float dirX;
 
     /**
- * @brief Direction vector Y component.
+ * @brief Direction vector Y component (normalized).
  */
     float dirY;
     QImage *itsSprite;
@@ -36,7 +36,7 @@ private:
     EType itsType;
 public:
     Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer);
-    void shoot(std::pair<float,float> aTarget);
+    void shoot(std::pair<int,int> aTarget);
     bool isDead();
     void move(std::pair<float, float> aTarget);
     void takeDamage(int amount);

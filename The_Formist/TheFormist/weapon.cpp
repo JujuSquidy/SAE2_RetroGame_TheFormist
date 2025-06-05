@@ -39,3 +39,13 @@ void Weapon::attack()
     isShooting = true;
 }
 
+
+float Weapon::getItsBaseDamage() const
+{
+    return itsBaseDamage;
+}
+
+void Weapon::setItsBaseDamage(float aBaseDamage)
+{
+    itsBaseDamage+=aBaseDamage;
+}

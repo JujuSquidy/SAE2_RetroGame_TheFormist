@@ -80,7 +80,7 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
 
 }
 
-void Enemy::shoot(std::pair<float, float> aTarget)
+void Enemy::shoot(std::pair<int, int> aTarget)
 {
 
 }

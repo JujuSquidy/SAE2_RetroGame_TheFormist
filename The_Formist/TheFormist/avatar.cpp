@@ -1,4 +1,8 @@
 #include "avatar.h"
+#include <QRandomGenerator>
+#include <random>
+#include "weapon.h"
+#include "rangedweapon.h"
 
 
 std::pair<float, float> Avatar::getItsPosition() const
@@ -63,10 +67,6 @@ void Avatar::addXP(int aNB)
     itsXP += aNB;
 }
 
-void Avatar::upgrade()
-{
-
-}
 
 void Avatar::levelUp()
 {
@@ -94,3 +94,52 @@ void Avatar::moveDown(bool enable)
     isDown = enable;
 }
 
+int Avatar::getItsXP() const
+{
+    return itsXP;
+}
+
+void Avatar::setItsXP(int aXP)
+{
+    itsXP+=aXP;
+}
+
+int Avatar::getItsMaxXP() const
+{
+    return itsMaxXP;
+}
+
+void Avatar::setItsMaxXP(int aMaxXP)
+{
+    itsMaxXP+=aMaxXP;
+}
+
+int Avatar::getItsMaxHP() const
+{
+    return itsMaxHP;
+}
+
+void Avatar::setItsMaxHP(int aMaxHP)
+{
+    itsMaxHP+=aMaxHP;
+}
+
+int Avatar::getItsHP() const
+{
+    return itsHP;
+}
+
+void Avatar::setItsHP(int aHP)
+{
+    itsHP+=aHP;
+}
+
+int Avatar::getItsLevel() const
+{
+    return itsLevel;
+}
+
+void Avatar::setItsLevel(int aLevel)
+{
+    itsLevel+=aLevel;
+}
