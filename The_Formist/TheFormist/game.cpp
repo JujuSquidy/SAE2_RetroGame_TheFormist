@@ -205,7 +205,7 @@ void Game::upgrade()
             break;
 
         case MORE_DAMAGE:
-            rw->setItsDamageMult(itsWeapon->getItsDamageMult());
+            rw->setItsBaseDamage(itsWeapon->getItsBaseDamage());
 
             break;
 

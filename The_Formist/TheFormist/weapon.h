@@ -94,13 +94,13 @@ public:
      * @brief Get the damage multiplicator
      * @return A float representing current damage multiplicator
      */
-    float getItsDamageMult() const;
+    float getItsBaseDamage() const;
 
     /**
      * @brief Set the damage multiplicator
      * @param aDamageMult float to set the new value
      */
-    void setItsDamageMult(float aDamageMult);
+    void setItsBaseDamage(float aBaseDamage);
 };
 
 #endif // WEAPON_H
