@@ -133,28 +133,28 @@ void GUI::drawEnemies(QPainter *aPainter)
 {
     aPainter->setBrush(Qt::SolidPattern);
     const std::vector<Enemy*>& enemies = itsGame->getItsEnemies();
-    for (const Enemy* enemi : enemies)
+    for (const Enemy* enemy : enemies)
     {
-        switch (enemi->getType())
+        switch (enemy->getType())
         {
             case TRIANGLE :
                 aPainter->setPen(Qt::blue);
-                aPainter->drawRect(enemi->getItsRectF());
+                aPainter->drawRect(enemy->getItsRectF());
                 break;
 
             case SQUARE :
                 aPainter->setPen(Qt::red);
-                aPainter->drawRect(enemi->getItsRectF());
+                aPainter->drawRect(enemy->getItsRectF());
                 break;
 
             case CIRCLE :
                 aPainter->setPen(Qt::green);
-                aPainter->drawRect(enemi->getItsRectF());
+                aPainter->drawRect(enemy->getItsRectF());
                 break;
 
             case BOSS :
                 aPainter->setPen(Qt::yellow);
-                aPainter->drawRect(enemi->getItsRectF());
+                aPainter->drawRect(enemy->getItsRectF());
                 break;
         }
     }
