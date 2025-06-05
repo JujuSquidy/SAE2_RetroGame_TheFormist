@@ -19,7 +19,13 @@ private:
     /**
  * @brief Number of projectiles fired per attack.
  */
-    int itsNbProjectile = 1;
+    int itsNbProjectile =1;
+
+    /**
+ * @brief Number of reverse projectiles fired by attack
+ */
+    int   itsNbReverseProjectile=0;
+
 public:
     /**
  * @brief Constructs a RangedWeapon with specified damage, attack speed, and sprite.
@@ -28,6 +34,14 @@ public:
  * @param aSprite Visual representation of the weapon.
  */
     RangedWeapon(int aBaseDamage, float aAttackSpeed, QImage *aSprite);
+
+    int getItsNbProjectiles() const;
+
+    void setItsNbProjectiles(int aNbProjectile);
+
+    int getItsNbReverseProjectile() const;
+
+    void setItsNbReverseProjectile(int aNbReverseProjectile);
 
 };
 

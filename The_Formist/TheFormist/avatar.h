@@ -11,6 +11,14 @@
  * Handles the avatar's position, movement, experience, level, health, and invincibility state.
  */
 
+enum UType{
+    REVERSE_PROJECTILE,
+    MORE_PROJECTILE,
+    MORE_DAMAGE,
+    MORE_HP
+
+};
+
 class Avatar
 {
 private :
@@ -94,11 +102,6 @@ public:
     void addXP(int aNB);
 
     /**
- * @brief Upgrades the avatar’s attributes or abilities.
- */
-    void upgrade();
-
-    /**
  * @brief Levels up the avatar when enough experience is gained.
  */
     void levelUp();
@@ -136,6 +139,26 @@ public:
  * @return Pointer to the avatar's QRect.
  */
     QRect* getItsQRect() const;
+
+    int getItsXP() const;
+
+    void setItsXP(int aXP);
+
+    int getItsMaxXP() const;
+
+    void setItsMaxXP(int aMaxXP);
+
+    int getItsMaxHP() const;
+
+    void setItsMaxHP(int aMaxHP);
+
+    int getItsHP() const;
+
+    void setItsHP(int aHP);
+
+    int getItsLevel() const;
+
+    void setItsLevel(int aLevel);
 };
 
 #endif // AVATAR_H

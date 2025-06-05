@@ -1,9 +1,18 @@
 #include "game.h"
 #include "gun.h"
+#include "rangedweapon.h"
+#include <QRandomGenerator>
+#include <random>
+
 
 Avatar *Game::getItsAvatar() const
 {
     return itsAvatar;
+}
+
+Weapon *Game::getItsWeapon() const
+{
+    return itsWeapon;
 }
 
 std::vector<Projectile *> Game::getItsProjectiles() const
@@ -117,6 +126,7 @@ void Game::GameOver()
     return;
 }
 
+
 void Game::GameLoop()
 {
     // Tir de l'arme
@@ -138,11 +148,21 @@ void Game::GameLoop()
     for (Projectile * proj : itsProjectiles)
         proj->move();
 
-    for (Enemy * enemy : itsEnemies)
-        enemy->move(itsAvatar->getItsPosition());
+    //Mettre à jour la position des ennemis
+    for (Enemy * enemi : itsEnemies)
+        enemi->move(itsAvatar->getItsPosition());
     itsAvatar->move(itsBorder);
 
+
     Collision();
+
+    //prise de niveau et améliorations
+    if (itsAvatar->getItsXP() >= itsAvatar->getItsMaxXP())
+    {
+        itsAvatar->levelUp();
+        itsAvatar->setItsMaxXP(2);
+    }
+
 }
 
 
@@ -161,3 +181,40 @@ void Game::spawnEnemy()
     }
     delete img;
 }
+
+void Game::upgrade()
+{
+    RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon);
+    if (itsAvatar->getItsLevel()%5)
+    {
+        std::uniform_int_distribution<int> dist(1, 4);
+        int aUpgrade = dist(*QRandomGenerator::global());
+        switch(aUpgrade) {
+        case MORE_PROJECTILE:
+            if (rw->getItsNbProjectiles() < 3)
+                rw->setItsNbProjectiles(1);
+            else
+                aUpgrade++;
+            break;
+
+        case REVERSE_PROJECTILE:
+            if (rw->getItsNbReverseProjectile() < 2)
+                rw->setItsNbReverseProjectile(1);
+            else
+                aUpgrade++;
+            break;
+
+        case MORE_DAMAGE:
+            rw->setItsBaseDamage(itsWeapon->getItsBaseDamage());
+
+            break;
+
+        case MORE_HP:
+            itsAvatar->setItsHP(5);
+            itsAvatar->setItsMaxHP(5);
+            break;
+        }
+    }
+
+}
+
