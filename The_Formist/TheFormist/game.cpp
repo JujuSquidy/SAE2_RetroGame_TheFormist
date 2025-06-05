@@ -67,8 +67,50 @@ void Game::PowerUp()
 
 void Game::Collision()
 {
-    return;
+    for (std::vector<Projectile*>::iterator projIt = itsProjectiles.begin(); projIt != itsProjectiles.end(); )
+    {
+        Projectile* proj = *projIt;
+        bool hit = false;
+
+        for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
+        {
+            Enemy* e = *enemyIt;
+
+            if (proj->getItsRectF().intersects(e->getItsRectF()))
+            {
+                e->takeDamage(itsWeapon->getItsDamage());  // Utilisation de la méthode publique
+                hit = true;
+
+                if (e->isDead())
+                {
+                    delete e;
+                    enemyIt = itsEnemies.erase(enemyIt);
+                }
+                else
+                {
+                    ++enemyIt;
+                }
+
+                break; // projectile touche un ennemi, on sort
+            }
+            else
+            {
+                ++enemyIt;
+            }
+        }
+
+        if (hit)
+        {
+            delete proj;
+            projIt = itsProjectiles.erase(projIt);
+        }
+        else
+        {
+            ++projIt;
+        }
+    }
 }
+
 
 void Game::GameOver()
 {
@@ -100,6 +142,7 @@ void Game::GameLoop()
         enemy->move(itsAvatar->getItsPosition());
     itsAvatar->move(itsBorder);
 
+    Collision();
 }
 
 
@@ -113,9 +156,8 @@ void Game::spawnEnemy()
     QImage* img = new QImage("enemy.txt");
     if (itsAvatar)
     {
-        Enemy* e = new Enemy (itsAvatar->getItsPosition(),img,10);
+        Enemy* e = new Enemy ({60,60},img,10);
         itsEnemies.push_back(e);
     }
     delete img;
 }
-

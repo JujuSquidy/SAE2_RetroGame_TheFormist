@@ -20,6 +20,7 @@ private:
     int itsHP;
     int itsMaxHP;
     int itsGivenXP;
+    QRectF itsRectF;
     /**
  * @brief Direction vector X component.
  */
@@ -38,14 +39,17 @@ public:
     void shoot(std::pair<float,float> aTarget);
     bool isDead();
     void move(std::pair<float, float> aTarget);
+    void takeDamage(int amount);
+    int getHP() const;
+    
     /**
  * @brief Returns the current position of the enemy.
  * @return A pair containing the (x, y) coordinates.
  */
     std::pair<float, float> getItsPosition() const;
     EType getType() const;
-
-
+    QRectF getItsRectF() const;
+    int getItsGivenXP() const;
 };
 
 #endif // ENEMY_H

@@ -1,7 +1,12 @@
 #include "projectile.h"
+
 #include <cmath>
 
 
+QRectF Projectile::getItsRectF() const
+{
+    return itsRectF;
+}
 
 Projectile::Projectile(std::pair<float, float> aTarget, std::pair<float, float> aPosition, std::pair<int,int> aSize, int aSpeed, int aDamage)
     : itsPosition(aPosition), itsSize(aSize), itsSpeed(aSpeed), itsDamage(aDamage)
@@ -18,12 +23,16 @@ Projectile::Projectile(std::pair<float, float> aTarget, std::pair<float, float> 
         dirX = 0;
         dirY = 0;
     }
+
+    itsRectF = QRectF(itsPosition.first, itsPosition.second, aSize.first, aSize.second);
+
 }
 
 void Projectile::move()
 {
     itsPosition.first += (dirX * itsSpeed);
     itsPosition.second += (dirY * itsSpeed);
+    itsRectF = QRectF(itsPosition.first, itsPosition.second, itsSize.first, itsSize.second);
 }
 
 void Projectile::createArea()

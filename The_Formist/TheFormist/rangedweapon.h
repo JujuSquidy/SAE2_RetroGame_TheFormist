@@ -19,7 +19,7 @@ private:
     /**
  * @brief Number of projectiles fired per attack.
  */
-    int itsNbProjectile;
+    int itsNbProjectile = 1;
 public:
     /**
  * @brief Constructs a RangedWeapon with specified damage, attack speed, and sprite.

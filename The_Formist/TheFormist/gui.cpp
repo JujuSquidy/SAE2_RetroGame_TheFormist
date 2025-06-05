@@ -71,7 +71,6 @@ void GUI::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_Down)
         itsGame->getItsAvatar()->moveDown(true);
-
 }
 
 void GUI::keyReleaseEvent(QKeyEvent *event)
@@ -88,7 +87,6 @@ void GUI::keyReleaseEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_Down)
         itsGame->getItsAvatar()->moveDown(false);
-
 }
 
 void GUI::mouseMoveEvent(QMouseEvent* event)
@@ -135,38 +133,31 @@ void GUI::drawEnemies(QPainter *aPainter)
 {
     aPainter->setBrush(Qt::SolidPattern);
     const std::vector<Enemy*>& enemies = itsGame->getItsEnemies();
-    std::pair<int, int> aPosition;
     for (const Enemy* enemi : enemies)
     {
         switch (enemi->getType())
         {
             case TRIANGLE :
-                aPainter->setPen(Qt::green);
-                aPosition = enemi->getItsPosition();
-                aPainter->drawRect(aPosition.first, aPosition.second, 10, 10);
+                aPainter->setPen(Qt::blue);
+                aPainter->drawRect(enemi->getItsRectF());
                 break;
 
             case SQUARE :
-                aPainter->setPen(Qt::blue);
-                aPosition = enemi->getItsPosition();
-                aPainter->drawRect(aPosition.first, aPosition.second, 10, 10);
+                aPainter->setPen(Qt::red);
+                aPainter->drawRect(enemi->getItsRectF());
                 break;
 
             case CIRCLE :
-                aPainter->setPen(Qt::red);
-                aPosition = enemi->getItsPosition();
-                aPainter->drawRect(aPosition.first, aPosition.second, 10, 10);
+                aPainter->setPen(Qt::green);
+                aPainter->drawRect(enemi->getItsRectF());
                 break;
 
             case BOSS :
                 aPainter->setPen(Qt::yellow);
-                aPosition = enemi->getItsPosition();
-                aPainter->drawRect(aPosition.first, aPosition.second, 50, 50);
+                aPainter->drawRect(enemi->getItsRectF());
                 break;
         }
     }
-
-
 }
 
 void GUI::drawProjectiles(QPainter *aPainter)
@@ -178,8 +169,7 @@ void GUI::drawProjectiles(QPainter *aPainter)
 
     for (const Projectile* proj : projectiles)
     {
-        std::pair<int, int> pos = proj->getItsPosition();
-        aPainter->drawRect(pos.first, pos.second, 5, 5);
+        aPainter->drawRect(proj->getItsRectF());
     }
 }
 void GUI::drawPowerUP(QPainter *aPainter)

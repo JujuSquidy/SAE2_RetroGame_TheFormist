@@ -22,7 +22,7 @@ private:
     /**
  * @brief Multiplier applied to the base damage (e.g., for upgrades or power-ups).
  */
-    float itsDamageMult;
+    float itsDamageMult = 1;
 
     /**
  * @brief Base attack speed (e.g., shots per second or time between attacks).
@@ -32,7 +32,7 @@ private:
     /**
  * @brief Multiplier applied to the base attack speed.
  */
-    float itsAttackSpeedMult;
+    float itsAttackSpeedMult = 1;
 
     /**
  * @brief Sprite used to visually represent the weapon.
@@ -88,6 +88,7 @@ public:
      * @param newIsShooting Boolean flag to set shooting state.
      */
     void setIsShooting(bool newIsShooting);
+    int getItsDamage() const;
 };
 
 #endif // WEAPON_H
