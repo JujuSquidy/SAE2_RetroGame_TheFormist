@@ -2,8 +2,6 @@
 #include "gun.h"
 #include "rangedweapon.h"
 #include <QRandomGenerator>
-#include <random>
-#include <iostream>
 
 
 Avatar *Game::getItsAvatar() const
@@ -90,38 +88,66 @@ void Game::Collision()
     for (std::vector<Projectile*>::iterator avProjIt = itsAvatarProjectiles.begin(); avProjIt != itsAvatarProjectiles.end(); )
     {
         Projectile* proj = *avProjIt;
-        bool hit = false;
-
-        for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
+        if(proj->getItsPosition().first < 0 || proj->getItsPosition().first > 4000 || proj->getItsPosition().second < 0 || proj->getItsPosition().second > 2000)
         {
-            Enemy* e = *enemyIt;
+            delete proj;
+            itsAvatarProjectiles.erase(avProjIt);
+        }
+        else
+        {
+            bool hit = false;
 
-            if (proj->getItsRectF().intersects(e->getItsRectF()))
+            for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
             {
-                e->takeDamage(itsWeapon->getItsDamage());
-                hit = true;
+                Enemy* e = *enemyIt;
 
-                if (e->isDead())
+                if (proj->getItsRectF().intersects(e->getItsRectF()))
                 {
-                    delete e;
-                    enemyIt = itsEnemies.erase(enemyIt);
-                    itsAvatar->addXP(e->getItsGivenXP());
+                    e->takeDamage(itsWeapon->getItsDamage());
+                    hit = true;
+                    if (e->isDead())
+                    {
+                        delete e;
+                        enemyIt = itsEnemies.erase(enemyIt);
+                        itsAvatar->addXP(e->getItsGivenXP());
+                    }
+                    else
+                        ++enemyIt;
+
+                    break; // projectile touche un ennemi, on sort
                 }
                 else
                     ++enemyIt;
-
-                break; // projectile touche un ennemi, on sort
+            }
+            if (hit)
+            {
+                delete proj;
+                avProjIt = itsAvatarProjectiles.erase(avProjIt);
             }
             else
-                ++enemyIt;
+                ++avProjIt;
         }
-        if (hit)
+    }
+
+    for (std::vector<Projectile*>::iterator enProjIt = itsEnemyProjectiles.begin(); enProjIt != itsEnemyProjectiles.end(); )
+    {
+        Projectile * proj = *enProjIt;
+        if(proj->getItsPosition().first < 0 || proj->getItsPosition().first > 4000 || proj->getItsPosition().second < 0 || proj->getItsPosition().second > 2000)
         {
             delete proj;
-            avProjIt = itsAvatarProjectiles.erase(avProjIt);
+            enProjIt = itsEnemyProjectiles.erase(enProjIt);
         }
         else
-            ++avProjIt;
+        {
+            if(proj->getItsRectF().intersects(itsAvatar->getItsQRect()->toRectF()))
+            {
+                itsAvatar->takeDamage(proj->getItsDamage());
+                delete proj;
+                enProjIt = itsEnemyProjectiles.erase(enProjIt);
+            }
+            else
+                ++enProjIt;
+        }
     }
 
     // === COLLISION ENNEMIS / AVATAR ===
@@ -203,7 +229,7 @@ void Game::GameLoop()
     if (itsAvatar->getItsXP() >= itsAvatar->getItsMaxXP())
     {
         itsAvatar->levelUp();
-        itsAvatar->setItsMaxXP(2);
+        itsAvatar->addMaxXP(2);
         itsAvatar->setItsXP(0);
     }
 }
@@ -258,8 +284,8 @@ void Game::upgrade()
                 return;
 
             case MORE_HP:
-                itsAvatar->AddHP(5);
-                itsAvatar->AddMaxHP(5);
+                itsAvatar->addHP(5);
+                itsAvatar->addMaxHP(5);
                 return;
             }
         }

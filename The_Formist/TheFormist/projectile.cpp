@@ -8,6 +8,11 @@ QRectF Projectile::getItsRectF() const
     return itsRectF;
 }
 
+int Projectile::getItsDamage() const
+{
+    return itsDamage;
+}
+
 Projectile::Projectile(std::pair<float, float> aTarget, std::pair<float, float> aPosition, std::pair<int,int> aSize, int aSpeed, int aDamage)
     : itsPosition(aPosition), itsSize(aSize), itsSpeed(aSpeed), itsDamage(aDamage)
 {

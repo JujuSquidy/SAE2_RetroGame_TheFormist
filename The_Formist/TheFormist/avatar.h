@@ -146,21 +146,21 @@ public:
 
     int getItsMaxXP() const;
 
-    void AddMaxXP(int aMaxXP);
+    void addMaxXP(int aMaxXP);
 
     int getItsMaxHP() const;
 
-    void AddMaxHP(int aMaxHP);
+    void addMaxHP(int aMaxHP);
 
     int getItsHP() const;
 
-    void AddHP(int aHP);
+    void addHP(int aHP);
 
     int getItsLevel() const;
 
     void takeDamage(int amount);
     
-    void AddLevel();
+    void addLevel();
 };
 
 #endif // AVATAR_H
