@@ -1,6 +1,6 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
-
+#include <QImage>
 #include <utility>
 /**
  * @class Projectile
@@ -42,6 +42,8 @@ private :
  */
     int itsDamage;
 
+    QRectF itsRectF;
+
 public:
     /**
  * @brief Constructs a Projectile object.
@@ -68,6 +70,8 @@ public:
  * @return A pair representing the (x, y) coordinates.
  */
     std::pair<float, float> getItsPosition() const;
+
+    QRectF getItsRectF() const;
 };
 
 #endif // PROJECTILE_H

@@ -29,6 +29,11 @@ void Weapon::setIsShooting(bool newIsShooting)
     isShooting = newIsShooting;
 }
 
+int Weapon::getItsDamage() const
+{
+    return itsBaseDamage * itsDamageMult;
+}
+
 void Weapon::attack()
 {
     isShooting = true;
