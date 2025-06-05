@@ -20,13 +20,14 @@ private:
     int itsHP;
     int itsMaxHP;
     int itsGivenXP;
+    QRectF itsRectF;
     /**
- * @brief Direction vector X component.
+ * @brief Direction vector X component (normalized).
  */
     float dirX;
 
     /**
- * @brief Direction vector Y component.
+ * @brief Direction vector Y component (normalized).
  */
     float dirY;
     QImage itsSprite;
@@ -35,17 +36,19 @@ private:
     EType itsType;
 public:
     Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer);
-    void shoot(std::pair<float,float> aTarget);
+    void shoot(std::pair<int,int> aTarget);
     bool isDead();
-    void move(std::pair<float, float> aTarget);
+    void move(std::pair<int, int> aTarget);
+    void takeDamage(int amount);
+    int getHP() const;
     /**
  * @brief Returns the current position of the enemy.
  * @return A pair containing the (x, y) coordinates.
  */
     std::pair<float, float> getItsPosition() const;
     EType getType() const;
-
-
+    QRectF getItsRectF() const;
+    int getItsGivenXP() const;
 };
 
 #endif // ENEMY_H

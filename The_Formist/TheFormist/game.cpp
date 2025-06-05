@@ -1,8 +1,18 @@
 #include "game.h"
+#include "gun.h"
+#include "rangedweapon.h"
+#include <QRandomGenerator>
+#include <random>
+
 
 Avatar *Game::getItsAvatar() const
 {
     return itsAvatar;
+}
+
+Weapon *Game::getItsWeapon() const
+{
+    return itsWeapon;
 }
 
 std::vector<Projectile *> Game::getItsProjectiles() const
@@ -66,13 +76,56 @@ void Game::PowerUp()
 
 void Game::Collision()
 {
-    return;
+    for (std::vector<Projectile*>::iterator projIt = itsProjectiles.begin(); projIt != itsProjectiles.end(); )
+    {
+        Projectile* proj = *projIt;
+        bool hit = false;
+
+        for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
+        {
+            Enemy* e = *enemyIt;
+
+            if (proj->getItsRectF().intersects(e->getItsRectF()))
+            {
+                e->takeDamage(itsWeapon->getItsDamage());  // Utilisation de la méthode publique
+                hit = true;
+
+                if (e->isDead())
+                {
+                    delete e;
+                    enemyIt = itsEnemies.erase(enemyIt);
+                }
+                else
+                {
+                    ++enemyIt;
+                }
+
+                break; // projectile touche un ennemi, on sort
+            }
+            else
+            {
+                ++enemyIt;
+            }
+        }
+
+        if (hit)
+        {
+            delete proj;
+            projIt = itsProjectiles.erase(projIt);
+        }
+        else
+        {
+            ++projIt;
+        }
+    }
+
 }
 
 void Game::GameOver()
 {
     return;
 }
+
 
 void Game::GameLoop()
 {
@@ -95,9 +148,20 @@ void Game::GameLoop()
     for (Projectile * proj : itsProjectiles)
         proj->move();
 
+    //Mettre à jour la position des ennemis
     for (Enemy * enemi : itsEnemies)
         enemi->move(itsAvatar->getItsPosition());
     itsAvatar->move(itsBorder);
+
+
+    Collision();
+
+    //prise de niveau et améliorations
+    if (itsAvatar->getItsXP() >= itsAvatar->getItsMaxXP())
+    {
+        itsAvatar->levelUp();
+        itsAvatar->setItsMaxXP(2);
+    }
 
 }
 
@@ -112,8 +176,44 @@ void Game::spawnEnemy()
     QImage* img = new QImage("enemy.txt");
     if (itsAvatar)
     {
-        Enemy* e = new Enemy (itsAvatar->getItsPosition(),img,10);
+        Enemy* e = new Enemy ({60,60},img,10);
         itsEnemies.push_back(e);
+    }
+
+}
+
+void Game::upgrade()
+{
+    RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon);
+    if (itsAvatar->getItsLevel()%5)
+    {
+        std::uniform_int_distribution<int> dist(1, 4);
+        int aUpgrade = dist(*QRandomGenerator::global());
+        switch(aUpgrade) {
+        case MORE_PROJECTILE:
+            if (rw->getItsNbProjectiles() < 3)
+                rw->setItsNbProjectiles(1);
+            else
+                aUpgrade++;
+            break;
+
+        case REVERSE_PROJECTILE:
+            if (rw->getItsNbReverseProjectile() < 2)
+                rw->setItsNbReverseProjectile(1);
+            else
+                aUpgrade++;
+            break;
+
+        case MORE_DAMAGE:
+            rw->setItsDamageMult(itsWeapon->getItsDamageMult());
+
+            break;
+
+        case MORE_HP:
+            itsAvatar->setItsHP(5);
+            itsAvatar->setItsMaxHP(5);
+            break;
+        }
     }
 
 }
