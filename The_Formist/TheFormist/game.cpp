@@ -16,14 +16,19 @@ Weapon *Game::getItsWeapon() const
     return itsWeapon;
 }
 
-std::vector<Projectile *> Game::getItsProjectiles() const
+std::vector<Projectile *> Game::getItsAvatarProjectiles() const
 {
-    return itsProjectiles;
+    return itsAvatarProjectiles;
 }
 
 std::pair<int,int> Game::getItsBorder() const
 {
     return itsBorder;
+}
+
+std::vector<Projectile *> Game::getItsEnemyProjectiles() const
+{
+    return itsEnemyProjectiles;
 }
 
 Game::Game(QObject *parent)
@@ -44,10 +49,15 @@ Game::Game(QObject *parent)
 Game::~Game()
 {
     // Supprimer tous les projectiles
-    for (Projectile* p : itsProjectiles) {
+    for (Projectile* p : itsAvatarProjectiles) {
         delete p;
     }
-    itsProjectiles.clear();
+    itsAvatarProjectiles.clear();
+
+    for (Projectile* p : itsEnemyProjectiles) {
+        delete p;
+    }
+    itsEnemyProjectiles.clear();
 
     // Supprimer les ennemis
     for (Enemy* e : itsEnemies) {
@@ -77,9 +87,9 @@ void Game::PowerUp()
 
 void Game::Collision()
 {
-    for (std::vector<Projectile*>::iterator projIt = itsProjectiles.begin(); projIt != itsProjectiles.end(); )
+    for (std::vector<Projectile*>::iterator avProjIt = itsAvatarProjectiles.begin(); avProjIt != itsAvatarProjectiles.end(); )
     {
-        Projectile* proj = *projIt;
+        Projectile* proj = *avProjIt;
         bool hit = false;
 
         for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
@@ -88,7 +98,7 @@ void Game::Collision()
 
             if (proj->getItsRectF().intersects(e->getItsRectF()))
             {
-                e->takeDamage(itsWeapon->getItsDamage());  // Utilisation de la méthode publique
+                e->takeDamage(itsWeapon->getItsDamage());
                 hit = true;
 
                 if (e->isDead())
@@ -98,26 +108,30 @@ void Game::Collision()
                     itsAvatar->addXP(e->getItsGivenXP());
                 }
                 else
-                {
                     ++enemyIt;
-                }
 
                 break; // projectile touche un ennemi, on sort
             }
             else
-            {
                 ++enemyIt;
-            }
         }
-
         if (hit)
         {
             delete proj;
-            projIt = itsProjectiles.erase(projIt);
+            avProjIt = itsAvatarProjectiles.erase(avProjIt);
         }
         else
+            ++avProjIt;
+    }
+
+    // === COLLISION ENNEMIS / AVATAR ===
+    for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); ++enemyIt)
+    {
+        Enemy* e = *enemyIt;
+
+        if (e->getItsRectF().intersects(*itsAvatar->getItsQRect()) && e->getType() != TRIANGLE)
         {
-            ++projIt;
+            itsAvatar->takeDamage(e->getItsStrength());
         }
     }
 }
@@ -131,30 +145,57 @@ void Game::GameOver()
 
 void Game::GameLoop()
 {
+    QRect* avatarRect = itsAvatar->getItsQRect();
+
     // Tir de l'arme
     if (itsWeapon->getIsShooting())
     {
-        if (itsAvatar)
+        std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
+        if(mouseTarget != avatarPos)
         {
-            std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
-            if(mouseTarget != avatarPos)
-            {
-                Projectile* p = new Projectile(mouseTarget, std::pair<int,int>(avatarPos.first + itsAvatar->getItsQRect()->width()/2,avatarPos.second + itsAvatar->getItsQRect()->height()/2), {5,5}, 10, 5);
-                itsProjectiles.push_back(p);
-                itsWeapon->setIsShooting(false);
-            }
+            QPoint center = itsAvatar->getItsQRect()->center();
+            Projectile* p = new Projectile(mouseTarget, std::pair<int,int>(center.x(), center.y()), {5,5}, 10, 5);
+            itsAvatarProjectiles.push_back(p);
+            itsWeapon->setIsShooting(false);
+        }
+    }
+
+    for (Enemy* enemy : itsEnemies)
+    {
+        std::pair<float, float> oldPos = enemy->getItsPosition();
+
+        // Déplacement vers l'avatar
+        enemy->act(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
+
+        // l'empêche de traverser l'avatar
+        if (enemy->getItsRectF().intersects(*avatarRect))
+        {
+            enemy->setItsPosition(oldPos);
+        }
+
+        // Tir de l'ennemi
+        if (enemy->getIsShooting())
+        {
+            Projectile* p = new Projectile(
+                std::pair<float,float>(avatarRect->center().x(), avatarRect->center().y()),
+                enemy->getItsPosition(),
+                {5,5}, 10,
+                enemy->getItsStrength()
+                );
+            itsEnemyProjectiles.push_back(p);
+            enemy->setIsShooting(false);
         }
     }
 
     // Mettre à jour la position des projectiles
-    for (Projectile * proj : itsProjectiles)
-        proj->move();
+    for (Projectile * aProj : itsAvatarProjectiles)
+        aProj->move();
 
-    //Mettre à jour la position des ennemis
-    for (Enemy * enemi : itsEnemies)
-        enemi->move(itsAvatar->getItsPosition());
+    for (Projectile * eProj : itsEnemyProjectiles)
+        eProj->move();
+
+
     itsAvatar->move(itsBorder);
-
 
     Collision();
 
@@ -165,7 +206,6 @@ void Game::GameLoop()
         itsAvatar->setItsMaxXP(2);
         itsAvatar->setItsXP(0);
     }
-
 }
 
 
@@ -188,36 +228,40 @@ void Game::spawnEnemy()
 void Game::upgrade()
 {
     RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon);
-    if (itsAvatar->getItsLevel()%5)
+    if (itsAvatar->getItsLevel() % 5 == 0)
     {
-        std::uniform_int_distribution<int> dist(1, 4);
-        int aUpgrade = dist(*QRandomGenerator::global());
-        switch(aUpgrade) {
-        case MORE_PROJECTILE:
-            if (rw->getItsNbProjectiles() < 3)
-                rw->setItsNbProjectiles(1);
-            else
-                aUpgrade++;
-            break;
+        std::vector<int> availableUpgrades = {MORE_PROJECTILE, REVERSE_PROJECTILE, MORE_DAMAGE, MORE_HP};
+        std::shuffle(availableUpgrades.begin(), availableUpgrades.end(), *QRandomGenerator::global());
 
-        case REVERSE_PROJECTILE:
-            if (rw->getItsNbReverseProjectile() < 2)
-                rw->setItsNbReverseProjectile(1);
-            else
-                aUpgrade++;
-            break;
+        for (int upgrade : availableUpgrades)
+        {
+            switch (upgrade)
+            {
+            case MORE_PROJECTILE:
+                if (rw->getItsNbProjectiles() < 3)
+                {
+                    rw->AddNbProjectile();
+                    return;
+                }
+                break;
 
-        case MORE_DAMAGE:
-            rw->setItsBaseDamage(itsWeapon->getItsBaseDamage());
+            case REVERSE_PROJECTILE:
+                if (rw->getItsNbReverseProjectile() < 2)
+                {
+                    rw->AddNbReverseProjectile();
+                    return;
+                }
+                break;
 
-            break;
+            case MORE_DAMAGE:
+                rw->AddBaseDamage(2);
+                return;
 
-        case MORE_HP:
-            itsAvatar->setItsHP(5);
-            itsAvatar->setItsMaxHP(5);
-            break;
+            case MORE_HP:
+                itsAvatar->AddHP(5);
+                itsAvatar->AddMaxHP(5);
+                return;
+            }
         }
     }
-
 }
-

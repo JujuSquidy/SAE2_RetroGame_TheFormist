@@ -44,9 +44,14 @@ private :
     long int itsScore;
 
     /**
- * @brief List of active projectiles in the game.
+ * @brief List of active player projectiles in the game.
  */
-    std::vector<Projectile*> itsProjectiles;
+    std::vector<Projectile*> itsAvatarProjectiles;
+
+    /**
+ * @brief List of active enemies projectiles in the game.
+ */
+    std::vector<Projectile*> itsEnemyProjectiles;
 
     /**
  * @brief Pointer to the player's avatar.
@@ -113,9 +118,11 @@ public:
 
     std::vector<Enemy *> getItsEnemies() const;
 
-    std::vector<Projectile *> getItsProjectiles() const;
+    std::vector<Projectile *> getItsAvatarProjectiles() const;
 
     std::pair<int,int> getItsBorder() const;
+
+    std::vector<Projectile *> getItsEnemyProjectiles() const;
 
 public slots:
     /**
