@@ -2,7 +2,6 @@
 #include "gun.h"
 #include "rangedweapon.h"
 #include <QRandomGenerator>
-#include <iostream>
 #include <random>
 
 
@@ -144,6 +143,8 @@ void Game::GameOver()
 
 void Game::GameLoop()
 {
+    QRect* avatarRect = itsAvatar->getItsQRect();
+
     // Tir de l'arme
     if (itsWeapon->getIsShooting())
     {
@@ -157,7 +158,6 @@ void Game::GameLoop()
         }
     }
 
-    QRect* avatarRect = itsAvatar->getItsQRect();
     for (Enemy* enemy : itsEnemies)
     {
         enemy->act(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
@@ -176,13 +176,12 @@ void Game::GameLoop()
     for (Projectile * eProj : itsEnemyProjectiles)
         eProj->move();
 
-    QRect* avatarRect = itsAvatar->getItsQRect();
     for (Enemy* enemy : itsEnemies)
     {
         std::pair<float, float> oldPos = enemy->getItsPosition();
 
         // Tentative de déplacement vers l'avatar
-        enemy->move(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
+        enemy->act(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
 
         // Empêche de traverser l'avatar
         if (enemy->getItsRectF().intersects(*itsAvatar->getItsQRect()))
@@ -224,39 +223,40 @@ void Game::spawnEnemy()
 void Game::upgrade()
 {
     RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon);
-    if (itsAvatar->getItsLevel()%5)
+    if (itsAvatar->getItsLevel() % 5 == 0)
     {
-        std::uniform_int_distribution<int> dist(1, 4);
-        int aUpgrade = dist(*QRandomGenerator::global());
-        switch(aUpgrade)
+        std::vector<int> availableUpgrades = {MORE_PROJECTILE, REVERSE_PROJECTILE, MORE_DAMAGE, MORE_HP};
+        std::shuffle(availableUpgrades.begin(), availableUpgrades.end(), *QRandomGenerator::global());
+
+        for (int upgrade : availableUpgrades)
+        {
+            switch (upgrade)
             {
             case MORE_PROJECTILE:
                 if (rw->getItsNbProjectiles() < 3)
                 {
                     rw->AddNbProjectile();
-                    break;
+                    return;
                 }
-                else
-                    aUpgrade++;
+                break;
 
             case REVERSE_PROJECTILE:
                 if (rw->getItsNbReverseProjectile() < 2)
                 {
                     rw->AddNbReverseProjectile();
-                    break;
+                    return;
                 }
-                else
-                    aUpgrade++;
+                break;
 
             case MORE_DAMAGE:
                 rw->AddBaseDamage(itsWeapon->getItsBaseDamage());
-                break;
+                return;
 
             case MORE_HP:
                 itsAvatar->AddHP(5);
                 itsAvatar->AddMaxHP(5);
-                break;
+                return;
             }
+        }
     }
 }
-
