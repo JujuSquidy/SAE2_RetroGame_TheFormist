@@ -51,6 +51,7 @@ public:
     QRectF getItsRectF() const;
     int getItsGivenXP() const;
     int getItsStrength() const;
+    void setItsPosition(const std::pair<float, float> &newItsPosition);
 };
 
 #endif // ENEMY_H

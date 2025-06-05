@@ -17,6 +17,11 @@ int Enemy::getItsStrength() const
     return itsStrength;
 }
 
+void Enemy::setItsPosition(const std::pair<float, float> &newItsPosition)
+{
+    itsPosition = newItsPosition;
+}
+
 Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
 {
     itsPosition = aPosition;

@@ -2,6 +2,7 @@
 #include "gun.h"
 #include "rangedweapon.h"
 #include <QRandomGenerator>
+#include <iostream>
 #include <random>
 
 
@@ -112,6 +113,17 @@ void Game::Collision()
         else
             ++projIt;
     }
+
+    // === COLLISION ENNEMIS / AVATAR ===
+    for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); ++enemyIt)
+    {
+        Enemy* e = *enemyIt;
+
+        if (e->getItsRectF().intersects(*itsAvatar->getItsQRect()) && e->getType() != TRIANGLE)
+        {
+            itsAvatar->takeDamage(e->getItsStrength());
+        }
+    }
 }
 
 
@@ -144,7 +156,19 @@ void Game::GameLoop()
 
     QRect* avatarRect = itsAvatar->getItsQRect();
     for (Enemy* enemy : itsEnemies)
+    {
+        std::pair<float, float> oldPos = enemy->getItsPosition();
+
+        // Tentative de déplacement vers l'avatar
         enemy->move(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
+
+        // Empêche de traverser l'avatar
+        if (enemy->getItsRectF().intersects(*itsAvatar->getItsQRect()))
+        {
+            enemy->setItsPosition(oldPos);
+        }
+    }
+
 
     itsAvatar->move(itsBorder);
 
@@ -156,7 +180,6 @@ void Game::GameLoop()
         itsAvatar->levelUp();
         itsAvatar->setItsMaxXP(2);
     }
-
 }
 
 

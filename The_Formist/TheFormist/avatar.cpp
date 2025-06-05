@@ -143,3 +143,10 @@ void Avatar::setItsLevel(int aLevel)
 {
     itsLevel+=aLevel;
 }
+
+void Avatar::takeDamage(int amount)
+{
+    itsHP -= amount;
+    if (itsHP < 0)
+        itsHP = 0;
+}

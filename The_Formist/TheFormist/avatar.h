@@ -159,6 +159,8 @@ public:
     int getItsLevel() const;
 
     void setItsLevel(int aLevel);
+
+    void takeDamage(int amount);
 };
 
 #endif // AVATAR_H
