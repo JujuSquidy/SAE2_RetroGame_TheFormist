@@ -202,7 +202,7 @@ void Game::upgrade()
                     aUpgrade++;
 
             case MORE_DAMAGE:
-                rw->AddaBaseDamage(itsWeapon->getItsBaseDamage());
+                rw->AddBaseDamage(itsWeapon->getItsBaseDamage());
                 break;
 
             case MORE_HP:

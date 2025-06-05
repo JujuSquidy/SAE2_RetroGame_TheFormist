@@ -27,9 +27,9 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
         int typeValue = dist(*QRandomGenerator::global());
 
         switch (typeValue) {
-        case 1: itsType = TRIANGLE; break;
-        case 2: itsType = SQUARE; break;
-        case 3: itsType = CIRCLE; break;
+            case 1: itsType = TRIANGLE; break;
+            case 2: itsType = SQUARE; break;
+            case 3: itsType = CIRCLE; break;
         }
     }
 

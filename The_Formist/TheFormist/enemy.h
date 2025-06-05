@@ -22,6 +22,7 @@ private:
     int itsGivenXP;
     bool isShooting = false;
     QRectF itsRectF;
+
     /**
  * @brief Direction vector X component (normalized).
  */
