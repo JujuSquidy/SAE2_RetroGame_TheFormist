@@ -100,7 +100,7 @@ public:
      * @brief Set the damage multiplicator
      * @param aDamageMult float to set the new value
      */
-    void setItsBaseDamage(float aBaseDamage);
+    void AddBaseDamage(float aBaseDamage);
 };
 
 #endif // WEAPON_H

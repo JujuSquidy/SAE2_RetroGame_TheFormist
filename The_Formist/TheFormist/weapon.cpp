@@ -2,7 +2,7 @@
 
 float Weapon::getItsAttackSpeed() const
 {
-    return itsBaseAttackSpeed*itsAttackSpeedMult;
+    return itsBaseAttackSpeed * itsAttackSpeedMult;
 }
 
 Weapon::Weapon(int aBaseDamage, float anAttackSpeed, QImage *aSprite) :
@@ -45,7 +45,7 @@ float Weapon::getItsBaseDamage() const
     return itsBaseDamage;
 }
 
-void Weapon::setItsBaseDamage(float aBaseDamage)
+void Weapon::AddBaseDamage(float aBaseDamage)
 {
     itsBaseDamage+=aBaseDamage;
 }

@@ -133,28 +133,28 @@ void GUI::drawEnemies(QPainter *aPainter)
 {
     aPainter->setBrush(Qt::SolidPattern);
     const std::vector<Enemy*>& enemies = itsGame->getItsEnemies();
-    for (const Enemy* enemi : enemies)
+    for (const Enemy* enemy : enemies)
     {
-        switch (enemi->getType())
+        switch (enemy->getType())
         {
             case TRIANGLE :
                 aPainter->setPen(Qt::blue);
-                aPainter->drawRect(enemi->getItsRectF());
+                aPainter->drawRect(enemy->getItsRectF());
                 break;
 
             case SQUARE :
                 aPainter->setPen(Qt::red);
-                aPainter->drawRect(enemi->getItsRectF());
+                aPainter->drawRect(enemy->getItsRectF());
                 break;
 
             case CIRCLE :
                 aPainter->setPen(Qt::green);
-                aPainter->drawRect(enemi->getItsRectF());
+                aPainter->drawRect(enemy->getItsRectF());
                 break;
 
             case BOSS :
                 aPainter->setPen(Qt::yellow);
-                aPainter->drawRect(enemi->getItsRectF());
+                aPainter->drawRect(enemy->getItsRectF());
                 break;
         }
     }
@@ -165,9 +165,16 @@ void GUI::drawProjectiles(QPainter *aPainter)
     aPainter->setPen(Qt::red);
     aPainter->setBrush(Qt::SolidPattern);
 
-    const std::vector<Projectile*>& projectiles = itsGame->getItsProjectiles();
+    const std::vector<Projectile*>& aProjectiles = itsGame->getItsAvatarProjectiles();
 
-    for (const Projectile* proj : projectiles)
+    for (const Projectile* proj : aProjectiles)
+    {
+        aPainter->drawRect(proj->getItsRectF());
+    }
+
+    const std::vector<Projectile*>& eProjectiles = itsGame->getItsEnemyProjectiles();
+
+    for (const Projectile* proj : eProjectiles)
     {
         aPainter->drawRect(proj->getItsRectF());
     }

@@ -14,17 +14,17 @@ private:
     /**
  * @brief Speed of the projectiles fired by the weapon.
  */
-    float itsProjectileSpeed;
+    float itsAvatarProjectilespeed;
 
     /**
  * @brief Number of projectiles fired per attack.
  */
-    int itsNbProjectile =1;
+    int itsNbProjectile = 1;
 
     /**
  * @brief Number of reverse projectiles fired by attack
  */
-    int   itsNbReverseProjectile=0;
+    int   itsNbReverseProjectile = 0;
 
 public:
     /**
@@ -37,11 +37,11 @@ public:
 
     int getItsNbProjectiles() const;
 
-    void setItsNbProjectiles(int aNbProjectile);
+    void AddNbProjectile();
 
     int getItsNbReverseProjectile() const;
 
-    void setItsNbReverseProjectile(int aNbReverseProjectile);
+    void AddNbReverseProjectile();
 
 };
 

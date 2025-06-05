@@ -16,14 +16,19 @@ Weapon *Game::getItsWeapon() const
     return itsWeapon;
 }
 
-std::vector<Projectile *> Game::getItsProjectiles() const
+std::vector<Projectile *> Game::getItsAvatarProjectiles() const
 {
-    return itsProjectiles;
+    return itsAvatarProjectiles;
 }
 
 std::pair<int,int> Game::getItsBorder() const
 {
     return itsBorder;
+}
+
+std::vector<Projectile *> Game::getItsEnemyProjectiles() const
+{
+    return itsEnemyProjectiles;
 }
 
 Game::Game(QObject *parent)
@@ -44,10 +49,15 @@ Game::Game(QObject *parent)
 Game::~Game()
 {
     // Supprimer tous les projectiles
-    for (Projectile* p : itsProjectiles) {
+    for (Projectile* p : itsAvatarProjectiles) {
         delete p;
     }
-    itsProjectiles.clear();
+    itsAvatarProjectiles.clear();
+
+    for (Projectile* p : itsEnemyProjectiles) {
+        delete p;
+    }
+    itsEnemyProjectiles.clear();
 
     // Supprimer les ennemis
     for (Enemy* e : itsEnemies) {
@@ -77,9 +87,9 @@ void Game::PowerUp()
 
 void Game::Collision()
 {
-    for (std::vector<Projectile*>::iterator projIt = itsProjectiles.begin(); projIt != itsProjectiles.end(); )
+    for (std::vector<Projectile*>::iterator avProjIt = itsAvatarProjectiles.begin(); avProjIt != itsAvatarProjectiles.end(); )
     {
-        Projectile* proj = *projIt;
+        Projectile* proj = *avProjIt;
         bool hit = false;
 
         for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
@@ -104,14 +114,13 @@ void Game::Collision()
             else
                 ++enemyIt;
         }
-
         if (hit)
         {
             delete proj;
-            projIt = itsProjectiles.erase(projIt);
+            avProjIt = itsAvatarProjectiles.erase(avProjIt);
         }
         else
-            ++projIt;
+            ++avProjIt;
     }
 
     // === COLLISION ENNEMIS / AVATAR ===
@@ -138,21 +147,34 @@ void Game::GameLoop()
     // Tir de l'arme
     if (itsWeapon->getIsShooting())
     {
-        if (itsAvatar)
+        std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
+        if(mouseTarget != avatarPos)
         {
-            std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
-            if(mouseTarget != avatarPos)
-            {
-                Projectile* p = new Projectile(mouseTarget, std::pair<int,int>(avatarPos.first + itsAvatar->getItsQRect()->width()/2,avatarPos.second + itsAvatar->getItsQRect()->height()/2), {5,5}, 10, 5);
-                itsProjectiles.push_back(p);
-                itsWeapon->setIsShooting(false);
-            }
+            QPoint center = itsAvatar->getItsQRect()->center();
+            Projectile* p = new Projectile(mouseTarget, std::pair<int,int>(center.x(), center.y()), {5,5}, 10, 5);
+            itsAvatarProjectiles.push_back(p);
+            itsWeapon->setIsShooting(false);
+        }
+    }
+
+    QRect* avatarRect = itsAvatar->getItsQRect();
+    for (Enemy* enemy : itsEnemies)
+    {
+        enemy->act(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
+        if(enemy->getIsShooting())
+        {
+            Projectile* p = new Projectile(std::pair<float,float>(avatarRect->center().x(), avatarRect->center().y()), enemy->getItsPosition(), {5,5}, 10, enemy->getItsStrength());
+            itsEnemyProjectiles.push_back(p);
+            enemy->setIsShooting(false);
         }
     }
 
     // Mettre à jour la position des projectiles
-    for (Projectile * proj : itsProjectiles)
-        proj->move();
+    for (Projectile * aProj : itsAvatarProjectiles)
+        aProj->move();
+
+    for (Projectile * eProj : itsEnemyProjectiles)
+        eProj->move();
 
     QRect* avatarRect = itsAvatar->getItsQRect();
     for (Enemy* enemy : itsEnemies)
@@ -178,7 +200,7 @@ void Game::GameLoop()
     if (itsAvatar->getItsXP() >= itsAvatar->getItsMaxXP())
     {
         itsAvatar->levelUp();
-        itsAvatar->setItsMaxXP(2);
+        itsAvatar->AddMaxXP(2);
     }
 }
 
@@ -206,32 +228,35 @@ void Game::upgrade()
     {
         std::uniform_int_distribution<int> dist(1, 4);
         int aUpgrade = dist(*QRandomGenerator::global());
-        switch(aUpgrade) {
-        case MORE_PROJECTILE:
-            if (rw->getItsNbProjectiles() < 3)
-                rw->setItsNbProjectiles(1);
-            else
-                aUpgrade++;
-            break;
+        switch(aUpgrade)
+            {
+            case MORE_PROJECTILE:
+                if (rw->getItsNbProjectiles() < 3)
+                {
+                    rw->AddNbProjectile();
+                    break;
+                }
+                else
+                    aUpgrade++;
 
-        case REVERSE_PROJECTILE:
-            if (rw->getItsNbReverseProjectile() < 2)
-                rw->setItsNbReverseProjectile(1);
-            else
-                aUpgrade++;
-            break;
+            case REVERSE_PROJECTILE:
+                if (rw->getItsNbReverseProjectile() < 2)
+                {
+                    rw->AddNbReverseProjectile();
+                    break;
+                }
+                else
+                    aUpgrade++;
 
-        case MORE_DAMAGE:
-            rw->setItsBaseDamage(itsWeapon->getItsBaseDamage());
+            case MORE_DAMAGE:
+                rw->AddBaseDamage(itsWeapon->getItsBaseDamage());
+                break;
 
-            break;
-
-        case MORE_HP:
-            itsAvatar->setItsHP(5);
-            itsAvatar->setItsMaxHP(5);
-            break;
-        }
+            case MORE_HP:
+                itsAvatar->AddHP(5);
+                itsAvatar->AddMaxHP(5);
+                break;
+            }
     }
-
 }
 

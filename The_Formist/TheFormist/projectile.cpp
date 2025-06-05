@@ -25,14 +25,13 @@ Projectile::Projectile(std::pair<float, float> aTarget, std::pair<float, float> 
     }
 
     itsRectF = QRectF(itsPosition.first, itsPosition.second, aSize.first, aSize.second);
-
 }
 
 void Projectile::move()
 {
     itsPosition.first += (dirX * itsSpeed);
     itsPosition.second += (dirY * itsSpeed);
-    itsRectF = QRectF(itsPosition.first, itsPosition.second, itsSize.first, itsSize.second);
+    itsRectF.moveTo(itsPosition.first,itsPosition.second);
 }
 
 void Projectile::createArea()

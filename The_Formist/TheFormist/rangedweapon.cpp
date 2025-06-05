@@ -11,9 +11,9 @@ int RangedWeapon::getItsNbProjectiles() const
     return itsNbProjectile;
 }
 
-void RangedWeapon::setItsNbProjectiles(int aNbProjectile)
+void RangedWeapon::AddNbProjectile()
 {
-    itsNbProjectile+=aNbProjectile;
+    itsNbProjectile++;
 }
 
 int RangedWeapon::getItsNbReverseProjectile() const
@@ -21,7 +21,7 @@ int RangedWeapon::getItsNbReverseProjectile() const
     return itsNbReverseProjectile;
 }
 
-void RangedWeapon::setItsNbReverseProjectile(int aNbReverseProjectile)
+void RangedWeapon::AddNbReverseProjectile()
 {
-    itsNbReverseProjectile+=aNbReverseProjectile;
+    itsNbReverseProjectile++;
 }

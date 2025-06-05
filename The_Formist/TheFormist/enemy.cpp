@@ -12,6 +12,16 @@ int Enemy::getItsGivenXP() const
     return itsGivenXP;
 }
 
+void Enemy::setIsShooting(bool newIsShooting)
+{
+    isShooting = newIsShooting;
+}
+
+bool Enemy::getIsShooting() const
+{
+    return isShooting;
+}
+
 int Enemy::getItsStrength() const
 {
     return itsStrength;
@@ -37,9 +47,9 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
         int typeValue = dist(*QRandomGenerator::global());
 
         switch (typeValue) {
-        case 1: itsType = TRIANGLE; break;
-        case 2: itsType = SQUARE; break;
-        case 3: itsType = CIRCLE; break;
+            case 1: itsType = TRIANGLE; break;
+            case 2: itsType = SQUARE; break;
+            case 3: itsType = CIRCLE; break;
         }
     }
 
@@ -61,7 +71,7 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
         itsGivenXP=1;
         itsStrength = 10;
         itsSpeed = 1;
-
+        itsShootCD.start();
         itsRectF = QRectF(itsPosition.first, itsPosition.second, 30.0, 30.0);
 
         break;
@@ -90,9 +100,9 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
 
 }
 
-void Enemy::shoot(std::pair<int, int> aTarget)
+void Enemy::shoot()
 {
-
+    isShooting = 1;
 }
 
 bool Enemy::isDead()
@@ -100,28 +110,39 @@ bool Enemy::isDead()
     return itsHP <= 0;
 }
 
-void Enemy::move(std::pair<float, float> aTarget)
+void Enemy::act(std::pair<float, float> aTarget)
 {
     float dx = aTarget.first - itsRectF.width()/2 - itsPosition.first;
     float dy = aTarget.second - itsRectF.height()/2 - itsPosition.second;
 
     float distance = std::sqrt(dx * dx + dy * dy);
 
-    if (distance != 0)
+    if(itsType == TRIANGLE and distance <= 250)
     {
-        dirX = dx / distance;
-        dirY = dy / distance;
+        if(itsShootCD.elapsed() > 1000)
+        {
+            itsShootCD.start();
+            shoot();
+        }
     }
-
     else
     {
-        dirX = 0;
-        dirY = 0;
-    }
+        if (distance != 0)
+        {
+            dirX = dx / distance;
+            dirY = dy / distance;
+        }
 
-    itsPosition.first += (dirX * itsSpeed);
-    itsPosition.second += (dirY * itsSpeed);
-    itsRectF.moveTo(itsPosition.first, itsPosition.second);
+        else
+        {
+            dirX = 0;
+            dirY = 0;
+        }
+
+        itsPosition.first += (dirX * itsSpeed);
+        itsPosition.second += (dirY * itsSpeed);
+        itsRectF.moveTo(itsPosition.first, itsPosition.second);
+    }
 }
 
 std::pair<float, float> Enemy::getItsPosition() const
