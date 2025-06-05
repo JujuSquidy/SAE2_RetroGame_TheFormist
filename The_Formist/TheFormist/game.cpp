@@ -53,6 +53,11 @@ Game::~Game()
     }
     itsAvatarProjectiles.clear();
 
+    for (Projectile* p : itsEnemyProjectiles) {
+        delete p;
+    }
+    itsEnemyProjectiles.clear();
+
     // Supprimer les ennemis
     for (Enemy* e : itsEnemies) {
         delete e;
@@ -81,9 +86,9 @@ void Game::PowerUp()
 
 void Game::Collision()
 {
-    for (std::vector<Projectile*>::iterator projIt = itsAvatarProjectiles.begin(); projIt != itsAvatarProjectiles.end(); )
+    for (std::vector<Projectile*>::iterator avProjIt = itsAvatarProjectiles.begin(); avProjIt != itsAvatarProjectiles.end(); )
     {
-        Projectile* proj = *projIt;
+        Projectile* proj = *avProjIt;
         bool hit = false;
 
         for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
@@ -100,21 +105,20 @@ void Game::Collision()
                     delete e;
                     enemyIt = itsEnemies.erase(enemyIt);
                 }
-                else
-                    ++enemyIt;
                 break; // projectile touche un ennemi, on sort
             }
-            else
-                ++enemyIt;
+            ++enemyIt;
         }
 
         if (hit)
         {
             delete proj;
-            projIt = itsAvatarProjectiles.erase(projIt);
+            avProjIt = itsAvatarProjectiles.erase(avProjIt);
         }
         else
-            ++projIt;
+        {
+            ++avProjIt;
+        }
     }
 }
 
@@ -130,25 +134,34 @@ void Game::GameLoop()
     // Tir de l'arme
     if (itsWeapon->getIsShooting())
     {
-        if (itsAvatar)
+        std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
+        if(mouseTarget != avatarPos)
         {
-            std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
-            if(mouseTarget != avatarPos)
-            {
-                Projectile* p = new Projectile(mouseTarget, std::pair<int,int>(avatarPos.first + itsAvatar->getItsQRect()->width()/2,avatarPos.second + itsAvatar->getItsQRect()->height()/2), {5,5}, 10, 5);
-                itsAvatarProjectiles.push_back(p);
-                itsWeapon->setIsShooting(false);
-            }
+            QPoint center = itsAvatar->getItsQRect()->center();
+            Projectile* p = new Projectile(mouseTarget, std::pair<int,int>(center.x(), center.y()), {5,5}, 10, 5);
+            itsAvatarProjectiles.push_back(p);
+            itsWeapon->setIsShooting(false);
+        }
+    }
+
+    QRect* avatarRect = itsAvatar->getItsQRect();
+    for (Enemy* enemy : itsEnemies)
+    {
+        enemy->act(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
+        if(enemy->getIsShooting())
+        {
+            Projectile* p = new Projectile(std::pair<float,float>(avatarRect->center().x(), avatarRect->center().y()), enemy->getItsPosition(), {5,5}, 10, enemy->getItsStrength());
+            itsEnemyProjectiles.push_back(p);
+            enemy->setIsShooting(false);
         }
     }
 
     // Mettre à jour la position des projectiles
-    for (Projectile * proj : itsAvatarProjectiles)
-        proj->move();
+    for (Projectile * aProj : itsAvatarProjectiles)
+        aProj->move();
 
-    QRect* avatarRect = itsAvatar->getItsQRect();
-    for (Enemy* enemy : itsEnemies)
-        enemy->move(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
+    for (Projectile * eProj : itsEnemyProjectiles)
+        eProj->move();
 
     itsAvatar->move(itsBorder);
 

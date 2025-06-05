@@ -3,6 +3,7 @@
 
 #include <QImage>
 #include <utility>
+#include <QElapsedTimer>
 
 enum EType{
     CIRCLE,
@@ -20,6 +21,7 @@ private:
     int itsHP;
     int itsMaxHP;
     int itsGivenXP;
+    QElapsedTimer itsShootCD;
     bool isShooting = false;
     QRectF itsRectF;
 
@@ -40,7 +42,7 @@ public:
     Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer);
     void shoot();
     bool isDead();
-    void move(std::pair<float, float> aTarget);
+    void act(std::pair<float, float> aTarget);
     void takeDamage(int amount);
     int getHP() const;
     
@@ -52,6 +54,9 @@ public:
     EType getType() const;
     QRectF getItsRectF() const;
     int getItsGivenXP() const;
+    void setIsShooting(bool newIsShooting);
+    bool getIsShooting() const;
+    int getItsStrength() const;
 };
 
 #endif // ENEMY_H
