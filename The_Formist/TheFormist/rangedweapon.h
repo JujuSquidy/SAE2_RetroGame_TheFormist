@@ -14,7 +14,7 @@ private:
     /**
  * @brief Speed of the projectiles fired by the weapon.
  */
-    float itsProjectileSpeed;
+    float itsAvatarProjectilespeed;
 
     /**
  * @brief Number of projectiles fired per attack.

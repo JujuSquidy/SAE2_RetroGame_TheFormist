@@ -15,14 +15,19 @@ Weapon *Game::getItsWeapon() const
     return itsWeapon;
 }
 
-std::vector<Projectile *> Game::getItsProjectiles() const
+std::vector<Projectile *> Game::getItsAvatarProjectiles() const
 {
-    return itsProjectiles;
+    return itsAvatarProjectiles;
 }
 
 std::pair<int,int> Game::getItsBorder() const
 {
     return itsBorder;
+}
+
+std::vector<Projectile *> Game::getItsEnemyProjectiles() const
+{
+    return itsEnemyProjectiles;
 }
 
 Game::Game(QObject *parent)
@@ -43,10 +48,10 @@ Game::Game(QObject *parent)
 Game::~Game()
 {
     // Supprimer tous les projectiles
-    for (Projectile* p : itsProjectiles) {
+    for (Projectile* p : itsAvatarProjectiles) {
         delete p;
     }
-    itsProjectiles.clear();
+    itsAvatarProjectiles.clear();
 
     // Supprimer les ennemis
     for (Enemy* e : itsEnemies) {
@@ -76,7 +81,7 @@ void Game::PowerUp()
 
 void Game::Collision()
 {
-    for (std::vector<Projectile*>::iterator projIt = itsProjectiles.begin(); projIt != itsProjectiles.end(); )
+    for (std::vector<Projectile*>::iterator projIt = itsAvatarProjectiles.begin(); projIt != itsAvatarProjectiles.end(); )
     {
         Projectile* proj = *projIt;
         bool hit = false;
@@ -106,7 +111,7 @@ void Game::Collision()
         if (hit)
         {
             delete proj;
-            projIt = itsProjectiles.erase(projIt);
+            projIt = itsAvatarProjectiles.erase(projIt);
         }
         else
             ++projIt;
@@ -131,14 +136,14 @@ void Game::GameLoop()
             if(mouseTarget != avatarPos)
             {
                 Projectile* p = new Projectile(mouseTarget, std::pair<int,int>(avatarPos.first + itsAvatar->getItsQRect()->width()/2,avatarPos.second + itsAvatar->getItsQRect()->height()/2), {5,5}, 10, 5);
-                itsProjectiles.push_back(p);
+                itsAvatarProjectiles.push_back(p);
                 itsWeapon->setIsShooting(false);
             }
         }
     }
 
     // Mettre à jour la position des projectiles
-    for (Projectile * proj : itsProjectiles)
+    for (Projectile * proj : itsAvatarProjectiles)
         proj->move();
 
     QRect* avatarRect = itsAvatar->getItsQRect();
@@ -188,6 +193,7 @@ void Game::upgrade()
                 if (rw->getItsNbProjectiles() < 3)
                 {
                     rw->AddNbProjectile();
+                    break;
                 }
                 else
                     aUpgrade++;

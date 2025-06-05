@@ -165,7 +165,7 @@ void GUI::drawProjectiles(QPainter *aPainter)
     aPainter->setPen(Qt::red);
     aPainter->setBrush(Qt::SolidPattern);
 
-    const std::vector<Projectile*>& projectiles = itsGame->getItsProjectiles();
+    const std::vector<Projectile*>& projectiles = itsGame->getItsAvatarProjectiles();
 
     for (const Projectile* proj : projectiles)
     {
