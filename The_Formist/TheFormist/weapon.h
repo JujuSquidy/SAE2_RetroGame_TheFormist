@@ -1,7 +1,7 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#include "qtimer.h"
+#include <QTimer>
 #include <QImage>
 /**
  * @class Weapon
@@ -22,7 +22,7 @@ private:
     /**
  * @brief Multiplier applied to the base damage (e.g., for upgrades or power-ups).
  */
-    float itsDamageMult =1;
+    float itsDamageMult = 1;
 
     /**
  * @brief Base attack speed (e.g., shots per second or time between attacks).
@@ -32,12 +32,12 @@ private:
     /**
  * @brief Multiplier applied to the base attack speed.
  */
-    float itsAttackSpeedMult =1;
+    float itsAttackSpeedMult = 1;
 
     /**
  * @brief Sprite used to visually represent the weapon.
  */
-    QImage itsSprite;
+    QImage *itsSprite;
 
 /**
  * @brief Internal timer for managing attack intervals.
@@ -64,7 +64,7 @@ public:
  * @param aAttackSpeed The base interval between attacks.
  * @param aSprite The graphical sprite representing the weapon.
  */
-    Weapon(int aBaseDamage, float anAttackSpeed, QImage aSprite);
+    Weapon(int aBaseDamage, float anAttackSpeed, QImage *aSprite);
 
     /**
  * @brief Destruct a weapon.

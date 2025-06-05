@@ -30,8 +30,8 @@ Game::Game(QObject *parent)
 {
     QImage* img = new QImage("Patate.txt");
     itsBorder = std::pair(4000,2000);
-    itsAvatar = new Avatar(img, std::pair(0,0));
-    itsWeapon = new Gun(10, 1, *img);
+    itsAvatar = new Avatar(img, std::pair(itsBorder.first/2,itsBorder.second/2));
+    itsWeapon = new Gun(10, 1, img);
     itsTimer = new QTimer(this);
     itsEnemyTimer = new QTimer(this);
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
@@ -61,7 +61,7 @@ Game::~Game()
     delete itsWeapon;
     itsWeapon = nullptr;
 
-    itsTimer->stop();
+    delete itsTimer;
 
 }
 void Game::updateMouseTarget(int x, int y)
@@ -118,8 +118,8 @@ void Game::Collision()
             ++projIt;
         }
     }
-
 }
+
 
 void Game::GameOver()
 {
@@ -137,7 +137,7 @@ void Game::GameLoop()
             std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
             if(mouseTarget != avatarPos)
             {
-                Projectile* p = new Projectile(mouseTarget, avatarPos, {5,5}, 10, 5);
+                Projectile* p = new Projectile(mouseTarget, std::pair<int,int>(avatarPos.first + itsAvatar->getItsQRect()->width()/2,avatarPos.second + itsAvatar->getItsQRect()->height()/2), {5,5}, 10, 5);
                 itsProjectiles.push_back(p);
                 itsWeapon->setIsShooting(false);
             }
@@ -179,7 +179,7 @@ void Game::spawnEnemy()
         Enemy* e = new Enemy ({60,60},img,10);
         itsEnemies.push_back(e);
     }
-
+    delete img;
 }
 
 void Game::upgrade()

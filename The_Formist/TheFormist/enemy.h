@@ -30,7 +30,7 @@ private:
  * @brief Direction vector Y component (normalized).
  */
     float dirY;
-    QImage itsSprite;
+    QImage *itsSprite;
 
     QRect itsEnemy;
     EType itsType;
@@ -38,9 +38,10 @@ public:
     Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer);
     void shoot(std::pair<int,int> aTarget);
     bool isDead();
-    void move(std::pair<int, int> aTarget);
+    void move(std::pair<float, float> aTarget);
     void takeDamage(int amount);
     int getHP() const;
+    
     /**
  * @brief Returns the current position of the enemy.
  * @return A pair containing the (x, y) coordinates.
