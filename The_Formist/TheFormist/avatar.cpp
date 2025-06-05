@@ -97,7 +97,7 @@ int Avatar::getItsXP() const
 
 void Avatar::setItsXP(int aXP)
 {
-    itsXP+=aXP;
+    itsXP=aXP;
 }
 
 int Avatar::getItsMaxXP() const

@@ -32,17 +32,10 @@ void Enemy::setItsPosition(const std::pair<float, float> &newItsPosition)
     itsPosition = newItsPosition;
 }
 
-Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
+Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite)
 {
     itsPosition = aPosition;
 
-    if (bossTimer >= 210000)
-    {
-        itsType = BOSS;
-        bossTimer = 0;
-    }
-    else
-    {
         std::uniform_int_distribution<int> dist(1, 3);
         int typeValue = dist(*QRandomGenerator::global());
 
@@ -51,7 +44,6 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
             case 2: itsType = SQUARE; break;
             case 3: itsType = CIRCLE; break;
         }
-    }
 
     switch (itsType)
     {

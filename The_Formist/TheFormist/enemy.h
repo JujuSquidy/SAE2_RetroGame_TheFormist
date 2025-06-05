@@ -39,7 +39,7 @@ private:
     EType itsType;
 
 public:
-    Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer);
+    Enemy(std::pair<float,float> aPosition, QImage* aSprite);
     void shoot();
     bool isDead();
     void act(std::pair<float, float> aTarget);
