@@ -41,7 +41,7 @@ private:
     /**
  * @brief Visual representation of the power-up.
  */
-    QImage itsSprite;
+    QImage *itsSprite;
 
     /**
  * @brief Type of the power-up, determining the effect it applies.

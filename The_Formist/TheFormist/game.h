@@ -8,7 +8,6 @@
 #include "projectile.h"
 #include <QElapsedtimer>
 #include "weapon.h"
-#include "gun.h"
 
 /**
  * @class Game

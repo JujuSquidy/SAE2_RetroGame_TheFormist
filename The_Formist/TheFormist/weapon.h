@@ -1,7 +1,7 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#include "qtimer.h"
+#include <QTimer>
 #include <QImage>
 /**
  * @class Weapon
@@ -37,7 +37,7 @@ private:
     /**
  * @brief Sprite used to visually represent the weapon.
  */
-    QImage itsSprite;
+    QImage *itsSprite;
 
 /**
  * @brief Internal timer for managing attack intervals.
@@ -64,7 +64,7 @@ public:
  * @param aAttackSpeed The base interval between attacks.
  * @param aSprite The graphical sprite representing the weapon.
  */
-    Weapon(int aBaseDamage, float anAttackSpeed, QImage aSprite);
+    Weapon(int aBaseDamage, float anAttackSpeed, QImage *aSprite);
 
     /**
  * @brief Destruct a weapon.
