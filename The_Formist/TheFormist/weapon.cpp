@@ -5,12 +5,12 @@ float Weapon::getItsAttackSpeed() const
     return itsBaseAttackSpeed*itsAttackSpeedMult;
 }
 
-Weapon::Weapon(int aBaseDamage, float anAttackSpeed, QImage aSprite) :
+Weapon::Weapon(int aBaseDamage, float anAttackSpeed, QImage *aSprite) :
     itsBaseDamage(aBaseDamage), itsBaseAttackSpeed(anAttackSpeed), itsSprite(aSprite)
 {
     itsTimer = new QTimer;
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(attack()));
-    itsTimer->start(1000);
+    itsTimer->start(10);
 }
 
 Weapon::~Weapon()

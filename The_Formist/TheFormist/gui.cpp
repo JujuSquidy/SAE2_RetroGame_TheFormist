@@ -91,8 +91,34 @@ void GUI::keyReleaseEvent(QKeyEvent *event)
 
 void GUI::mouseMoveEvent(QMouseEvent* event)
 {
-    QPoint pos = event->pos();
-    itsGame->updateMouseTarget(pos.x(), pos.y());
+    QPoint mousePos = event->pos();  // Position dans le widget (0-960, 0-540)
+
+    // Obtenir la position de l'avatar
+    std::pair<float, float> avatarPos = itsGame->getItsAvatar()->getItsPosition();
+
+    // Taille du widget (écran)
+    int screenW = width();
+    int screenH = height();
+
+    // Taille de la carte
+    int mapW = itsGame->getItsBorder().first;
+    int mapH = itsGame->getItsBorder().second;
+
+    // Calcul de l'offset (identique à paintEvent)
+    float offsetX = avatarPos.first + avatarWidth / 2 - screenW / 2;
+    float offsetY = avatarPos.second + avatarHeight / 2 - screenH / 2;
+
+    if (offsetX < 0) offsetX = 0;
+    if (offsetY < 0) offsetY = 0;
+    if (offsetX > mapW - screenW) offsetX = mapW - screenW;
+    if (offsetY > mapH - screenH) offsetY = mapH - screenH;
+
+    // Corriger la position de la souris pour qu'elle soit dans la zone de jeu
+    int worldMouseX = mousePos.x() + offsetX;
+    int worldMouseY = mousePos.y() + offsetY;
+
+    // Envoyer les coordonnées à ton système
+    itsGame->updateMouseTarget(worldMouseX, worldMouseY);
 }
 
 void GUI::drawAvatar(QPainter *aPainter)

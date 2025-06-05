@@ -30,7 +30,7 @@ private:
  * @brief Direction vector Y component.
  */
     float dirY;
-    QImage itsSprite;
+    QImage *itsSprite;
 
     QRect itsEnemy;
     EType itsType;

@@ -17,7 +17,7 @@ public:
  * @param aAttackSpeed Time interval between shots.
  * @param aSprite Visual representation of the gun.
  */
-    Gun(int aBaseDamage, float aAttackSpeed, QImage aSprite);
+    Gun(int aBaseDamage, float aAttackSpeed, QImage *aSprite);
 
 };
 
