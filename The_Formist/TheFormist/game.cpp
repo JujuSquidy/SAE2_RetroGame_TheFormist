@@ -107,9 +107,9 @@ void Game::Collision()
                     hit = true;
                     if (e->isDead())
                     {
+                        itsAvatar->addXP(e->getItsGivenXP());
                         delete e;
                         enemyIt = itsEnemies.erase(enemyIt);
-                        itsAvatar->addXP(e->getItsGivenXP());
                     }
                     else
                         ++enemyIt;
