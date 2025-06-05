@@ -105,7 +105,7 @@ int Avatar::getItsMaxXP() const
     return itsMaxXP;
 }
 
-void Avatar::AddMaxXP(int aMaxXP)
+void Avatar::addMaxXP(int aMaxXP)
 {
     itsMaxXP+=aMaxXP;
 }
@@ -115,7 +115,7 @@ int Avatar::getItsMaxHP() const
     return itsMaxHP;
 }
 
-void Avatar::AddMaxHP(int aMaxHP)
+void Avatar::addMaxHP(int aMaxHP)
 {
     itsMaxHP+=aMaxHP;
 }
@@ -125,7 +125,7 @@ int Avatar::getItsHP() const
     return itsHP;
 }
 
-void Avatar::AddHP(int aHP)
+void Avatar::addHP(int aHP)
 {
     itsHP+=aHP;
 }
@@ -135,7 +135,7 @@ int Avatar::getItsLevel() const
     return itsLevel;
 }
 
-void Avatar::AddLevel()
+void Avatar::addLevel()
 {
     itsLevel++;
 }

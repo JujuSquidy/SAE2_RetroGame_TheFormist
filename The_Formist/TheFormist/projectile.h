@@ -72,6 +72,7 @@ public:
     std::pair<float, float> getItsPosition() const;
 
     QRectF getItsRectF() const;
+    int getItsDamage() const;
 };
 
 #endif // PROJECTILE_H
