@@ -35,7 +35,7 @@ private:
     QRect itsEnemy;
     EType itsType;
 public:
-    Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer);
+    Enemy(std::pair<float,float> aPosition, QImage* aSprite);
     void shoot(std::pair<int,int> aTarget);
     bool isDead();
     void move(std::pair<float, float> aTarget);

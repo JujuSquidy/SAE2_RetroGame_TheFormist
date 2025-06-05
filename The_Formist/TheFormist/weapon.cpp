@@ -39,11 +39,6 @@ void Weapon::attack()
     isShooting = true;
 }
 
-int Weapon::getItsDamage() const
-{
-    return itsBaseDamage * itsDamageMult;
-}
-
 
 float Weapon::getItsBaseDamage() const
 {

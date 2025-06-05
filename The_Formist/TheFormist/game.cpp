@@ -3,6 +3,7 @@
 #include "rangedweapon.h"
 #include <QRandomGenerator>
 #include <random>
+#include <iostream>
 
 
 Avatar *Game::getItsAvatar() const
@@ -94,6 +95,7 @@ void Game::Collision()
                 {
                     delete e;
                     enemyIt = itsEnemies.erase(enemyIt);
+                    itsAvatar->addXP(e->getItsGivenXP());
                 }
                 else
                 {
@@ -161,6 +163,7 @@ void Game::GameLoop()
     {
         itsAvatar->levelUp();
         itsAvatar->setItsMaxXP(2);
+        itsAvatar->setItsXP(0);
     }
 
 }
@@ -176,7 +179,7 @@ void Game::spawnEnemy()
     QImage* img = new QImage("enemy.txt");
     if (itsAvatar)
     {
-        Enemy* e = new Enemy ({60,60},img,10);
+        Enemy* e = new Enemy ({60,60},img);
         itsEnemies.push_back(e);
     }
     delete img;
