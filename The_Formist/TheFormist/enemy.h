@@ -20,6 +20,7 @@ private:
     int itsHP;
     int itsMaxHP;
     int itsGivenXP;
+    bool isShooting = false;
     QRectF itsRectF;
     /**
  * @brief Direction vector X component (normalized).
@@ -30,13 +31,13 @@ private:
  * @brief Direction vector Y component (normalized).
  */
     float dirY;
-    QImage *itsSprite;
 
-    QRect itsEnemy;
+    QImage *itsSprite;
     EType itsType;
+
 public:
     Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer);
-    void shoot(std::pair<int,int> aTarget);
+    void shoot();
     bool isDead();
     void move(std::pair<float, float> aTarget);
     void takeDamage(int amount);

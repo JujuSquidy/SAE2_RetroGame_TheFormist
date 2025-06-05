@@ -51,7 +51,6 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
         itsGivenXP=1;
         itsStrength = 10;
         itsSpeed = 1;
-
         itsRectF = QRectF(itsPosition.first, itsPosition.second, 30.0, 30.0);
 
         break;
@@ -80,9 +79,9 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
 
 }
 
-void Enemy::shoot(std::pair<int, int> aTarget)
+void Enemy::shoot()
 {
-
+    isShooting = 1;
 }
 
 bool Enemy::isDead()
