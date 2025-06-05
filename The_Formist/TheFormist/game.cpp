@@ -96,16 +96,11 @@ void Game::Collision()
                     enemyIt = itsEnemies.erase(enemyIt);
                 }
                 else
-                {
                     ++enemyIt;
-                }
-
                 break; // projectile touche un ennemi, on sort
             }
             else
-            {
                 ++enemyIt;
-            }
         }
 
         if (hit)
@@ -114,9 +109,7 @@ void Game::Collision()
             projIt = itsProjectiles.erase(projIt);
         }
         else
-        {
             ++projIt;
-        }
     }
 }
 
@@ -160,7 +153,7 @@ void Game::GameLoop()
     if (itsAvatar->getItsXP() >= itsAvatar->getItsMaxXP())
     {
         itsAvatar->levelUp();
-        itsAvatar->setItsMaxXP(2);
+        itsAvatar->AddMaxXP(2);
     }
 
 }
@@ -189,32 +182,34 @@ void Game::upgrade()
     {
         std::uniform_int_distribution<int> dist(1, 4);
         int aUpgrade = dist(*QRandomGenerator::global());
-        switch(aUpgrade) {
-        case MORE_PROJECTILE:
-            if (rw->getItsNbProjectiles() < 3)
-                rw->setItsNbProjectiles(1);
-            else
-                aUpgrade++;
-            break;
+        switch(aUpgrade)
+            {
+            case MORE_PROJECTILE:
+                if (rw->getItsNbProjectiles() < 3)
+                {
+                    rw->AddNbProjectile();
+                }
+                else
+                    aUpgrade++;
 
-        case REVERSE_PROJECTILE:
-            if (rw->getItsNbReverseProjectile() < 2)
-                rw->setItsNbReverseProjectile(1);
-            else
-                aUpgrade++;
-            break;
+            case REVERSE_PROJECTILE:
+                if (rw->getItsNbReverseProjectile() < 2)
+                {
+                    rw->AddNbReverseProjectile();
+                    break;
+                }
+                else
+                    aUpgrade++;
 
-        case MORE_DAMAGE:
-            rw->setItsBaseDamage(itsWeapon->getItsBaseDamage());
+            case MORE_DAMAGE:
+                rw->AddaBaseDamage(itsWeapon->getItsBaseDamage());
+                break;
 
-            break;
-
-        case MORE_HP:
-            itsAvatar->setItsHP(5);
-            itsAvatar->setItsMaxHP(5);
-            break;
-        }
+            case MORE_HP:
+                itsAvatar->AddHP(5);
+                itsAvatar->AddMaxHP(5);
+                break;
+            }
     }
-
 }
 
