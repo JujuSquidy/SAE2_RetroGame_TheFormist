@@ -50,6 +50,7 @@ public:
     EType getType() const;
     QRectF getItsRectF() const;
     int getItsGivenXP() const;
+    int getItsStrength() const;
 };
 
 #endif // ENEMY_H

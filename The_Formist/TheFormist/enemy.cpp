@@ -12,6 +12,11 @@ int Enemy::getItsGivenXP() const
     return itsGivenXP;
 }
 
+int Enemy::getItsStrength() const
+{
+    return itsStrength;
+}
+
 Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite, int bossTimer)
 {
     itsPosition = aPosition;

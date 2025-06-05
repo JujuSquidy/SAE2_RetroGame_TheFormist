@@ -96,16 +96,12 @@ void Game::Collision()
                     enemyIt = itsEnemies.erase(enemyIt);
                 }
                 else
-                {
                     ++enemyIt;
-                }
 
                 break; // projectile touche un ennemi, on sort
             }
             else
-            {
                 ++enemyIt;
-            }
         }
 
         if (hit)
@@ -114,9 +110,7 @@ void Game::Collision()
             projIt = itsProjectiles.erase(projIt);
         }
         else
-        {
             ++projIt;
-        }
     }
 }
 
