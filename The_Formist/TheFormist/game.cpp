@@ -160,10 +160,26 @@ void Game::GameLoop()
 
     for (Enemy* enemy : itsEnemies)
     {
+        std::pair<float, float> oldPos = enemy->getItsPosition();
+
+        // Déplacement vers l'avatar
         enemy->act(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
-        if(enemy->getIsShooting())
+
+        // l'empêche de traverser l'avatar
+        if (enemy->getItsRectF().intersects(*avatarRect))
         {
-            Projectile* p = new Projectile(std::pair<float,float>(avatarRect->center().x(), avatarRect->center().y()), enemy->getItsPosition(), {5,5}, 10, enemy->getItsStrength());
+            enemy->setItsPosition(oldPos);
+        }
+
+        // Tir de l'ennemi
+        if (enemy->getIsShooting())
+        {
+            Projectile* p = new Projectile(
+                std::pair<float,float>(avatarRect->center().x(), avatarRect->center().y()),
+                enemy->getItsPosition(),
+                {5,5}, 10,
+                enemy->getItsStrength()
+                );
             itsEnemyProjectiles.push_back(p);
             enemy->setIsShooting(false);
         }
@@ -175,20 +191,6 @@ void Game::GameLoop()
 
     for (Projectile * eProj : itsEnemyProjectiles)
         eProj->move();
-
-    for (Enemy* enemy : itsEnemies)
-    {
-        std::pair<float, float> oldPos = enemy->getItsPosition();
-
-        // Tentative de déplacement vers l'avatar
-        enemy->act(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
-
-        // Empêche de traverser l'avatar
-        if (enemy->getItsRectF().intersects(*itsAvatar->getItsQRect()))
-        {
-            enemy->setItsPosition(oldPos);
-        }
-    }
 
 
     itsAvatar->move(itsBorder);
@@ -249,7 +251,7 @@ void Game::upgrade()
                 break;
 
             case MORE_DAMAGE:
-                rw->AddBaseDamage(itsWeapon->getItsBaseDamage());
+                rw->AddBaseDamage(2);
                 return;
 
             case MORE_HP:
