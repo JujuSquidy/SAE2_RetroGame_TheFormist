@@ -41,7 +41,7 @@ private :
     /**
  * @brief Stores the player's current score.
  */
-    long int itsScore;
+    long int itsScore = 0;
 
     /**
  * @brief List of active player projectiles in the game.
@@ -147,6 +147,10 @@ public:
  * @return Vector of pointers to Projectile objects.
  */
     std::vector<Projectile *> getItsEnemyProjectiles() const;
+
+    long getItsScore() const;
+
+    void AddScore(long aScore);
 
 public slots:
     /**

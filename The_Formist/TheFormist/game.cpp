@@ -29,6 +29,16 @@ std::vector<Projectile *> Game::getItsEnemyProjectiles() const
     return itsEnemyProjectiles;
 }
 
+long Game::getItsScore() const
+{
+    return itsScore;
+}
+
+void Game::AddScore(long aScore)
+{
+    itsScore += aScore;
+}
+
 Game::Game(QObject *parent)
     : QObject{parent}
 {
@@ -113,6 +123,24 @@ void Game::Collision()
                     if (e->isDead())
                     {
                         itsAvatar->addXP(e->getItsGivenXP());
+                        switch (e->getType())
+                        {
+                            case TRIANGLE:
+                                AddScore(1);
+                                break;
+
+                            case CIRCLE:
+                                AddScore(1);
+                                break;
+
+                            case SQUARE:
+                                AddScore(2);
+                                break;
+
+                            case BOSS:
+                                AddScore(50);
+                                break;
+                        }
                         delete e;
                         enemyIt = itsEnemies.erase(enemyIt);
                     }

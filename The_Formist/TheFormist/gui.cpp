@@ -62,6 +62,7 @@ void GUI::paintEvent(QPaintEvent *event)
     drawProjectiles(&painter);
     drawEnemies(&painter);
     drawPlayerLifeBar(&painter, offsetX, offsetY, screenH);
+    drawScore(&painter, offsetX, offsetY, screenW);
 }
 
 void GUI::keyPressEvent(QKeyEvent *event)
@@ -217,9 +218,25 @@ void GUI::drawPlayerLifeBar(QPainter *aPainter, float offsetX, float offsetY, in
     aPainter->drawRect(QRectF(barX, barY, filledWidth, barHeight));
 }
 
+void GUI::drawScore(QPainter *aPainter, float offsetX, float offsetY, int screenW)
+{
+    int currentScore = itsGame->getItsScore();
+    QFont font("Arial", 16, QFont::Bold);
+    aPainter->setFont(font);
+    aPainter->setPen(Qt::white);  // Couleur du texte
+
+    QString scoreText = QString("Score: %1").arg(currentScore);
+    int textHeight = 30;
+    QRectF textRect(offsetX, offsetY, screenW, textHeight);
+
+    // Affiche le texte centré horizontalement et aligné en haut
+    aPainter->drawText(textRect, Qt::AlignHCenter | Qt::AlignTop, scoreText);
+
+}
+
 void GUI::onGameOver()
 {
-    QMessageBox::information(this, "Game Over", "Vous avez perdu !");
+    QMessageBox::information(this, "Game Over","Vous avez perdu !\nScore: " + QString::number(itsGame->getItsScore()));
     QMessageBox::StandardButton ret = QMessageBox::question(this, "Rejouer ?", "Voulez-vous recommencer ?", QMessageBox::Yes | QMessageBox::No);
 
     if (ret == QMessageBox::Yes)
@@ -235,7 +252,4 @@ void GUI::restartGame()
     delete itsGame;
     itsGame = new Game();
     connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
-
-
-
 }
