@@ -142,7 +142,9 @@ void Avatar::addLevel()
 
 void Avatar::takeDamage(int amount)
 {
-    itsHP -= amount;
-    if (itsHP < 0)
-        itsHP = 0;
+    if (!lastDamageTime.isValid() || lastDamageTime.elapsed() >= 500) {
+        itsHP -= amount;
+        if (itsHP < 0) itsHP = 0;
+        lastDamageTime.restart();
+    }
 }
