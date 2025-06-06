@@ -35,6 +35,8 @@ private :
 
     QElapsedTimer *itsInGameTimer;
 
+    int NoBoss = 1;
+
     /**
  * @brief Defines the game area boundaries (width, height).
  */
