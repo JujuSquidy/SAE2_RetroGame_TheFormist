@@ -342,8 +342,20 @@ void Game::spawnEnemy()
     }
     }
 
-    Enemy* e = new Enemy({x, y});
+    Enemy* e;
+    if(itsInGameTimer->elapsed() > (120000 * NoBoss))
+    {
+        e = new Enemy({x, y}, BOSS);
+        NoBoss++;
+    }
+    else
+    {
+        std::uniform_int_distribution<int> distrib(0, 2);
+        int tEnemy = distrib(*QRandomGenerator::global());
+        e = new Enemy({x, y}, EType(tEnemy));
+    }
     itsEnemies.push_back(e);
+
 }
 
 

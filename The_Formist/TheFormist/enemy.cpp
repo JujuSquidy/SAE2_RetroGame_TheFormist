@@ -32,20 +32,11 @@ void Enemy::setItsPosition(const std::pair<float, float> &newItsPosition)
     itsPosition = newItsPosition;
 }
 
-Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite)
+Enemy::Enemy(std::pair<float,float> aPosition, EType aType, QImage* aSprite)
 {
     itsPosition = aPosition;
-
-        std::uniform_int_distribution<int> dist(1, 3);
-        int typeValue = dist(*QRandomGenerator::global());
-
-        switch (typeValue) {
-            case 1: itsType = TRIANGLE; break;
-            case 2: itsType = SQUARE; break;
-            case 3: itsType = CIRCLE; break;
-        }
-
-    switch (itsType)
+    itsType = aType;
+    switch (aType)
     {
     case BOSS:
         itsMaxHP=50;
@@ -87,7 +78,6 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite)
         itsRectF = QRectF(itsPosition.first, itsPosition.second, 30.0, 30.0);
 
         break;
-
     }
 
 }

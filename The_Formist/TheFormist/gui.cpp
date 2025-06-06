@@ -61,6 +61,7 @@ void GUI::paintEvent(QPaintEvent *event)
     drawAvatar(&painter);
     drawProjectiles(&painter);
     drawEnemies(&painter);
+
     drawPlayerLifeBar(&painter, offsetX, offsetY, screenH);
     drawPlayerXPBar(&painter, offsetX, offsetY, screenH, screenW);
     drawScore(&painter, offsetX, offsetY, screenW);
