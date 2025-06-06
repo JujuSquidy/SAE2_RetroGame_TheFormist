@@ -39,6 +39,11 @@ void Game::AddScore(long aScore)
     itsScore += aScore;
 }
 
+QElapsedTimer Game::getItsInGameTimer() const
+{
+    return *itsInGameTimer;
+}
+
 Game::Game(QObject *parent)
     : QObject{parent}
 {
@@ -47,12 +52,15 @@ Game::Game(QObject *parent)
     itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
     itsWeapon = new Gun(10, 1);
     itsTimer = new QTimer(this);
+
+    itsInGameTimer = new QElapsedTimer;
     itsEnemyTimer = new QTimer(this);
 
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     connect(itsEnemyTimer, SIGNAL(timeout()), this, SLOT(spawnEnemy()));
     itsTimer->start(10);
     itsEnemyTimer->start(1000);
+    itsInGameTimer->start();
 }
 
 Game::~Game()
@@ -88,6 +96,9 @@ Game::~Game()
     itsEnemyTimer->stop();
     delete itsEnemyTimer;
     itsEnemyTimer = nullptr;
+
+    delete itsInGameTimer;
+    itsInGameTimer = nullptr;
 }
 void Game::updateMouseTarget(int x, int y)
 {

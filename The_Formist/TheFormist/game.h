@@ -29,9 +29,11 @@ private :
     QTimer *itsEnemyTimer;
 
     /**
- * @brief Timer used to show time elapsed in the game and manage enemies apparition.
+ * @brief Timer used to show time elapsed in the game.
  */
     QTimer *itsTimer;
+
+    QElapsedTimer *itsInGameTimer;
 
     /**
  * @brief Defines the game area boundaries (width, height).
@@ -152,6 +154,8 @@ public:
     long getItsScore() const;
 
     void AddScore(long aScore);
+
+    QElapsedTimer getItsInGameTimer() const;
 
 public slots:
     /**

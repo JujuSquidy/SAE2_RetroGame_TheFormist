@@ -64,6 +64,7 @@ void GUI::paintEvent(QPaintEvent *event)
     drawPlayerLifeBar(&painter, offsetX, offsetY, screenH);
     drawPlayerXPBar(&painter, offsetX, offsetY, screenH, screenW);
     drawScore(&painter, offsetX, offsetY, screenW);
+    drawTimer(&painter, offsetX, offsetY, screenW);
 }
 
 void GUI::keyPressEvent(QKeyEvent *event)
@@ -235,6 +236,33 @@ void GUI::drawScore(QPainter *aPainter, float offsetX, float offsetY, int screen
 
 }
 
+void GUI::drawTimer(QPainter *aPainter, float offsetX, float offsetY, int screenW)
+{
+    QString timeText;
+    if (gameIsOver) {
+        timeText = itsFinalTimer;  // Affiche le temps figé
+    } else {
+        int currentTime = itsGame->getItsInGameTimer().elapsed();
+        int seconds = (currentTime / 1000) % 60;
+        int minutes = (currentTime / 60000);
+
+        timeText = QString("Time: %1:%2")
+                       .arg(minutes)
+                       .arg(seconds, 2, 10, QChar('0'));
+    }
+
+    QFont font("Arial", 16, QFont::Bold);
+    aPainter->setFont(font);
+    aPainter->setPen(Qt::white);
+
+    int lineHeight = 30;
+
+    QRectF textRect(offsetX, offsetY + lineHeight, screenW, lineHeight); // Juste sous le score
+    aPainter->drawText(textRect, Qt::AlignHCenter | Qt::AlignTop, timeText);
+
+
+}
+
 void GUI::drawPlayerXPBar(QPainter *aPainter, float offsetX, float offsetY, int screenH, int screenW)
 {
     int currentXP = itsGame->getItsAvatar()->getItsXP();
@@ -263,7 +291,19 @@ void GUI::drawPlayerXPBar(QPainter *aPainter, float offsetX, float offsetY, int 
 
 void GUI::onGameOver()
 {
-    QMessageBox::information(this, "Game Over","Vous avez perdu !\nScore: " + QString::number(itsGame->getItsScore()));
+    gameIsOver = true;
+    int elapsedMs = itsGame->getItsInGameTimer().elapsed();  // Temps en millisecondes
+    int seconds = (elapsedMs / 1000) % 60;
+    int minutes = elapsedMs / 60000;
+
+    itsFinalTimer = QString("%1:%2")
+                        .arg(minutes)
+                        .arg(seconds, 2, 10, QChar('0'));
+
+    QMessageBox::information(this, "Game Over",
+                             "Vous avez perdu !\nScore: " + QString::number(itsGame->getItsScore()) +
+                                 "\nTime survived: " + itsFinalTimer);
+
     QMessageBox::StandardButton ret = QMessageBox::question(this, "Rejouer ?", "Voulez-vous recommencer ?", QMessageBox::Yes | QMessageBox::No);
 
     if (ret == QMessageBox::Yes)
@@ -279,4 +319,6 @@ void GUI::restartGame()
     delete itsGame;
     itsGame = new Game();
     connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
+    gameIsOver = false;  // Reset
+
 }

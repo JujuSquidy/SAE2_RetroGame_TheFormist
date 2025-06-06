@@ -29,6 +29,11 @@ private:
      */
     QTimer* itsTimer;
 
+    QString itsFinalTimer;
+
+    bool gameIsOver = false;
+
+
 public:
     /**
      * @brief Constructs the GUI and links it to a Game instance.
@@ -117,6 +122,8 @@ private:
     void drawScore(QPainter *aPainter, float offsetX, float offsetY, int screenW);
 
     void drawPlayerXPBar(QPainter *aPainter, float offsetX, float offsetY, int screenH, int screenW);
+
+    void drawTimer(QPainter *aPainter, float offsetX, float offsetY, int screenW);
 
 };
 #endif // GUI_H
