@@ -2,6 +2,7 @@
 #define AVATAR_H
 
 #include <QImage>
+#include <QElapsedTimer>
 #include <utility>
 
 /**
@@ -83,6 +84,9 @@ float itsSpeedMult;
  * @brief Experience points required to reach the next level.
  */
     int itsMaxXP;
+
+    QElapsedTimer lastDamageTime;
+
 
 public:
     /**
