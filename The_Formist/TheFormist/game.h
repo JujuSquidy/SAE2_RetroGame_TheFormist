@@ -112,16 +112,40 @@ public:
  */
     void updateMouseTarget(int x, int y);
 
+    /**
+ * @brief Gets the player's avatar.
+ * @return Pointer to the Avatar object.
+ */
     Avatar *getItsAvatar() const;
 
+    /**
+ * @brief Gets the current weapon used by the avatar.
+ * @return Pointer to the Weapon object.
+ */
     Weapon *getItsWeapon() const;
 
+    /**
+ * @brief Gets the list of enemies currently in the game.
+ * @return Vector of pointers to Enemy objects.
+ */
     std::vector<Enemy *> getItsEnemies() const;
 
+    /**
+ * @brief Gets the projectiles fired by the avatar.
+ * @return Vector of pointers to Projectile objects.
+ */
     std::vector<Projectile *> getItsAvatarProjectiles() const;
 
+    /**
+ * @brief Gets the game world border dimensions.
+ * @return Pair of integers representing width and height.
+ */
     std::pair<int,int> getItsBorder() const;
 
+    /**
+ * @brief Gets the projectiles fired by enemies.
+ * @return Vector of pointers to Projectile objects.
+ */
     std::vector<Projectile *> getItsEnemyProjectiles() const;
 
 public slots:
@@ -129,11 +153,23 @@ public slots:
  * @brief Core game loop executed on a timer tick; updates all game logic.
  */
     void GameLoop();
+
+    /**
+ * @brief Spawns a new enemy in the game world.
+ */
     void spawnEnemy();
+
+    /**
+ * @brief Applies upgrades to the avatar or weapon when appropriate.
+ */
     void upgrade();
 
 signals:
+    /**
+ * @brief Signal emitted when the game is over.
+ */
     void gameOver();
+
 };
 
 #endif // GAME_H

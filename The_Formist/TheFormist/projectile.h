@@ -71,8 +71,20 @@ public:
  */
     std::pair<float, float> getItsPosition() const;
 
+    /**
+ * @brief Gets the rectangular area representing the projectile's position and size.
+ *
+ * @return QRectF representing the projectile's bounding box.
+ */
     QRectF getItsRectF() const;
+
+    /**
+ * @brief Gets the amount of damage this projectile inflicts.
+ *
+ * @return int The damage value.
+ */
     int getItsDamage() const;
+
 };
 
 #endif // PROJECTILE_H
