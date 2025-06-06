@@ -6,7 +6,7 @@
 #include "enemy.h"
 #include "powerup.h"
 #include "projectile.h"
-#include <QElapsedtimer>
+#include <QElapsedTimer>
 #include "weapon.h"
 
 /**
