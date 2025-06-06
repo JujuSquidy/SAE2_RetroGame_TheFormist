@@ -14,6 +14,7 @@ GUI::GUI(Game * aGame, QWidget *parent)
     itsTimer = new QTimer(this);
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(update()));
     itsTimer->start(33);
+    connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
 }
 
 GUI::~GUI()
@@ -209,8 +210,27 @@ void GUI::drawPlayerLifeBar(QPainter *aPainter, float offsetX, float offsetY, in
     aPainter->setPen(Qt::NoPen);
     aPainter->setBrush(Qt::green);
     aPainter->drawRect(QRectF(barX, barY, filledWidth, barHeight));
+}
+
+void GUI::onGameOver()
+{
+    QMessageBox::information(this, "Game Over", "Vous avez perdu !");
+    QMessageBox::StandardButton ret = QMessageBox::question(this, "Rejouer ?", "Voulez-vous recommencer ?", QMessageBox::Yes | QMessageBox::No);
+
+    if (ret == QMessageBox::Yes)
+    {
+        restartGame();
+    }else{
+        close();
+    }
+}
+
+void GUI::restartGame()
+{
+    delete itsGame;
+    itsGame = new Game();
+    connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
+
 
 
 }
-
-

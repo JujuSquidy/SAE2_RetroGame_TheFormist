@@ -165,7 +165,9 @@ void Game::Collision()
 
 void Game::GameOver()
 {
-    return;
+    itsTimer->stop();
+    itsEnemyTimer->stop();
+    emit gameOver();
 }
 
 
@@ -225,6 +227,11 @@ void Game::GameLoop()
 
     Collision();
 
+    if (itsAvatar->getItsHP() == 0)
+    {
+        GameOver();
+        return;
+    }
     //prise de niveau et améliorations
     if (itsAvatar->getItsXP() >= itsAvatar->getItsMaxXP())
     {

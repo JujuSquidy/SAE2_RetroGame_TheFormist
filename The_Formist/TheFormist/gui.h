@@ -4,6 +4,7 @@
 #include "game.h"
 #include <QMouseEvent>
 #include <QWidget>
+#include <QMessageBox>
 
 /**
  * @class GUI
@@ -66,6 +67,11 @@ protected:
  * @param event Mouse move event containing the cursor position.
  */
     void mouseMoveEvent(QMouseEvent* event) override;
+
+    void onGameOver();
+
+    void restartGame();
+
 
 private:
     /**
