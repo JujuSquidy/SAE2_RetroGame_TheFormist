@@ -62,7 +62,7 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite)
         itsHP=itsMaxHP;
         itsGivenXP=1;
         itsStrength = 10;
-        itsSpeed = 1;
+        itsSpeed = 0.85;
         itsShootCD.start();
         itsRectF = QRectF(itsPosition.first, itsPosition.second, 30.0, 30.0);
 
@@ -73,7 +73,7 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite)
         itsHP=itsMaxHP;
         itsGivenXP=2;
         itsStrength = 15;
-        itsSpeed = 0.5;
+        itsSpeed = 0.6;
         itsRectF = QRectF(itsPosition.first, itsPosition.second, 30.0, 30.0);
 
         break;
@@ -83,7 +83,7 @@ Enemy::Enemy(std::pair<float,float> aPosition, QImage* aSprite)
         itsHP=itsMaxHP;
         itsGivenXP=1;
         itsStrength = 5;
-        itsSpeed = 1.5;
+        itsSpeed = 1.2;
         itsRectF = QRectF(itsPosition.first, itsPosition.second, 30.0, 30.0);
 
         break;
@@ -111,7 +111,7 @@ void Enemy::act(std::pair<float, float> aTarget)
 
     if(itsType == TRIANGLE and distance <= 250)
     {
-        if(itsShootCD.elapsed() > 1000)
+        if(itsShootCD.elapsed() > 1500)
         {
             itsShootCD.start();
             shoot();
