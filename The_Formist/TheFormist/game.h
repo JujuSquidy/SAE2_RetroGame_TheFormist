@@ -148,6 +148,10 @@ public:
  */
     std::vector<Projectile *> getItsEnemyProjectiles() const;
 
+    long getItsScore() const;
+
+    void AddScore(long aScore);
+
 public slots:
     /**
  * @brief Core game loop executed on a timer tick; updates all game logic.
