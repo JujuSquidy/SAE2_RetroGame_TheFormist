@@ -55,6 +55,7 @@ void GUI::paintEvent(QPaintEvent *event)
     drawAvatar(&painter);
     drawProjectiles(&painter);
     drawEnemies(&painter);
+    drawPlayerLifeBar(&painter, offsetX, offsetY, screenH);
 }
 
 void GUI::keyPressEvent(QKeyEvent *event)
@@ -183,3 +184,35 @@ void GUI::drawPowerUP(QPainter *aPainter)
 {
 
 }
+
+void GUI::drawPlayerLifeBar(QPainter *aPainter, float offsetX, float offsetY, int screenH)
+{
+    Avatar* avatar = itsGame->getItsAvatar();
+
+    int currentHP = avatar->getItsHP();
+    int maxHP = avatar->getItsMaxHP();
+
+    int barWidth = 100;
+    int barHeight = 10;
+
+
+    int positionInScreenX = 10;
+    int positionInScreenY = screenH - barHeight - 10;
+
+    float barX = offsetX + positionInScreenX;
+    float barY = offsetY + positionInScreenY;
+
+    float filledWidth = barWidth * currentHP / maxHP;
+
+    aPainter->setPen(Qt::black);
+    aPainter->setBrush(Qt::NoBrush);
+    aPainter->drawRect(QRectF(barX, barY, barWidth, barHeight));
+
+    aPainter->setPen(Qt::NoPen);
+    aPainter->setBrush(Qt::green);
+    aPainter->drawRect(QRectF(barX, barY, filledWidth, barHeight));
+
+
+}
+
+
