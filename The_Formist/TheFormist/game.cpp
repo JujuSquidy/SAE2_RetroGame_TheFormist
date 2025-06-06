@@ -294,37 +294,58 @@ std::vector<Enemy *> Game::getItsEnemies() const
 
 void Game::spawnEnemy()
 {
-    if (itsAvatar)
+    if (!itsAvatar) return;
+
+    int centerX = itsAvatar->getItsQRect()->center().x();
+    int centerY = itsAvatar->getItsQRect()->center().y();
+    int viewWidth = gameWindowSize.first;
+    int viewHeight = gameWindowSize.second;
+    int margin = 60;
+
+    std::uniform_int_distribution<int> sideDist(0, 3); // 0 = left, 1 = right, 2 = top, 3 = bottom
+    int side = sideDist(*QRandomGenerator::global());
+
+    int x, y;
+    switch (side)
     {
-        int aCenterX = itsAvatar->getItsQRect()->center().x();
-        int aCenterY = itsAvatar->getItsQRect()->center().y();
-        std::uniform_int_distribution<int> dist(aCenterX - gameWindowSize.first/2 - 60, aCenterX + gameWindowSize.first/2 + 60);
-        int aX = dist(*QRandomGenerator::global());
-        int aY;
-        if(aX < aCenterX - gameWindowSize.first/2 - 50 || aX > aCenterX + gameWindowSize.first/2 + 50)
-        {
-            std::uniform_int_distribution<int> dist(aCenterY - gameWindowSize.second/2 - 60,aCenterY + gameWindowSize.second/2 + 60);
-            aY = dist(*QRandomGenerator::global());
-        }
-        else
-        {
-            std::uniform_int_distribution<int> dist(0,1);
-            int coin = dist(*QRandomGenerator::global());
-            if(coin)
-            {
-                std::uniform_int_distribution<int> dist(aCenterY - gameWindowSize.second/2 - 60,aCenterY - gameWindowSize.second/2 + 50);
-                aY = dist(*QRandomGenerator::global());
-            }
-            else
-            {
-                std::uniform_int_distribution<int> dist(aCenterY - gameWindowSize.second/2 - 60,aCenterY + gameWindowSize.second/2 - 50);
-                aY = dist(*QRandomGenerator::global());
-            }
-        }
-        Enemy* e = new Enemy ({aX,aY});
-        itsEnemies.push_back(e);
+    case 0: // LEFT
+    {
+        std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin - 100, centerX - viewWidth/2 - margin);
+        std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin, centerY + viewHeight/2 + margin);
+        x = xDist(*QRandomGenerator::global());
+        y = yDist(*QRandomGenerator::global());
+        break;
     }
+    case 1: // RIGHT
+    {
+        std::uniform_int_distribution<int> xDist(centerX + viewWidth/2 + margin, centerX + viewWidth/2 + margin + 100);
+        std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin, centerY + viewHeight/2 + margin);
+        x = xDist(*QRandomGenerator::global());
+        y = yDist(*QRandomGenerator::global());
+        break;
+    }
+    case 2: // TOP
+    {
+        std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin, centerX + viewWidth/2 + margin);
+        std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin - 100, centerY - viewHeight/2 - margin);
+        x = xDist(*QRandomGenerator::global());
+        y = yDist(*QRandomGenerator::global());
+        break;
+    }
+    case 3: // BOTTOM
+    {
+        std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin, centerX + viewWidth/2 + margin);
+        std::uniform_int_distribution<int> yDist(centerY + viewHeight/2 + margin, centerY + viewHeight/2 + margin + 100);
+        x = xDist(*QRandomGenerator::global());
+        y = yDist(*QRandomGenerator::global());
+        break;
+    }
+    }
+
+    Enemy* e = new Enemy({x, y});
+    itsEnemies.push_back(e);
 }
+
 
 void Game::upgrade()
 {
