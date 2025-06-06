@@ -11,7 +11,7 @@ QRect *Avatar::getItsQRect() const
     return itsQRect;
 }
 
-Avatar::Avatar(QImage* aSprite, std::pair<int,int> aStartPos) : itsSprite(aSprite)
+Avatar::Avatar(std::pair<int,int> aStartPos, QImage* aSprite) : itsSprite(aSprite)
 {
     itsLevel = 1;
     itsHP = 100;

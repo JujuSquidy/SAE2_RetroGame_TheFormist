@@ -64,7 +64,7 @@ public:
  * @param aAttackSpeed The base interval between attacks.
  * @param aSprite The graphical sprite representing the weapon.
  */
-    Weapon(int aBaseDamage, float anAttackSpeed, QImage *aSprite);
+    Weapon(int aBaseDamage, float anAttackSpeed, QImage *aSprite = nullptr);
 
     /**
  * @brief Destruct a weapon.

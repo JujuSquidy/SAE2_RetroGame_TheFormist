@@ -78,6 +78,7 @@ private :
  */
     std::pair<int,int> mouseTarget;
 
+    std::pair<int,int> gameWindowSize;
 
 public:
     /**

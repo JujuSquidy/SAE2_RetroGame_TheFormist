@@ -33,7 +33,7 @@ public:
  * @param aAttackSpeed Rate of fire for the weapon.
  * @param aSprite Visual representation of the weapon.
  */
-    RangedWeapon(int aBaseDamage, float aAttackSpeed, QImage *aSprite);
+    RangedWeapon(int aBaseDamage, float aAttackSpeed, QImage *aSprite = nullptr);
 
     /**
  * @brief Gets the number of projectiles fired simultaneously.

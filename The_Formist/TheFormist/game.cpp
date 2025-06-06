@@ -42,12 +42,13 @@ void Game::AddScore(long aScore)
 Game::Game(QObject *parent)
     : QObject{parent}
 {
-    QImage* img = new QImage("Patate.txt");
     itsBorder = std::pair(4000,2000);
-    itsAvatar = new Avatar(img, std::pair(itsBorder.first/2,itsBorder.second/2));
-    itsWeapon = new Gun(10, 1, img);
+    gameWindowSize = {960, 540};
+    itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
+    itsWeapon = new Gun(10, 1);
     itsTimer = new QTimer(this);
     itsEnemyTimer = new QTimer(this);
+
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     connect(itsEnemyTimer, SIGNAL(timeout()), this, SLOT(spawnEnemy()));
     itsTimer->start(10);
@@ -282,13 +283,36 @@ std::vector<Enemy *> Game::getItsEnemies() const
 
 void Game::spawnEnemy()
 {
-    QImage* img = new QImage("enemy.txt");
     if (itsAvatar)
     {
-        Enemy* e = new Enemy ({60,60},img);
+        int aCenterX = itsAvatar->getItsQRect()->center().x();
+        int aCenterY = itsAvatar->getItsQRect()->center().y();
+        std::uniform_int_distribution<int> dist(aCenterX - gameWindowSize.first/2 - 60, aCenterX + gameWindowSize.first/2 + 60);
+        int aX = dist(*QRandomGenerator::global());
+        int aY;
+        if(aX < aCenterX - gameWindowSize.first/2 - 50 || aX > aCenterX + gameWindowSize.first/2 + 50)
+        {
+            std::uniform_int_distribution<int> dist(aCenterY - gameWindowSize.second/2 - 60,aCenterY + gameWindowSize.second/2 + 60);
+            aY = dist(*QRandomGenerator::global());
+        }
+        else
+        {
+            std::uniform_int_distribution<int> dist(0,1);
+            int coin = dist(*QRandomGenerator::global());
+            if(coin)
+            {
+                std::uniform_int_distribution<int> dist(aCenterY - gameWindowSize.second/2 - 60,aCenterY - gameWindowSize.second/2 + 50);
+                aY = dist(*QRandomGenerator::global());
+            }
+            else
+            {
+                std::uniform_int_distribution<int> dist(aCenterY - gameWindowSize.second/2 - 60,aCenterY + gameWindowSize.second/2 - 50);
+                aY = dist(*QRandomGenerator::global());
+            }
+        }
+        Enemy* e = new Enemy ({aX,aY});
         itsEnemies.push_back(e);
     }
-    delete img;
 }
 
 void Game::upgrade()

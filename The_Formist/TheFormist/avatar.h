@@ -92,7 +92,7 @@ public:
     /**
  * @brief Default constructor initializing the avatar.
  */
-    Avatar(QImage* aSprite, std::pair<int, int> aStartPos);
+    Avatar(std::pair<int, int> aStartPos, QImage* aSprite = nullptr);
 
     /**
  * @brief Moves the avatar according to input or game logic.
