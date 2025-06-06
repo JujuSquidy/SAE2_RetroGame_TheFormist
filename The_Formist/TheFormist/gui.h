@@ -115,5 +115,8 @@ private:
     void drawPlayerLifeBar(QPainter * aPainter,float offsetX,float offsetY,int screenH);
 
     void drawScore(QPainter *aPainter, float offsetX, float offsetY, int screenW);
+
+    void drawPlayerXPBar(QPainter *aPainter, float offsetX, float offsetY, int screenH, int screenW);
+
 };
 #endif // GUI_H

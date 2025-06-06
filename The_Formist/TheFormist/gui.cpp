@@ -62,6 +62,7 @@ void GUI::paintEvent(QPaintEvent *event)
     drawProjectiles(&painter);
     drawEnemies(&painter);
     drawPlayerLifeBar(&painter, offsetX, offsetY, screenH);
+    drawPlayerXPBar(&painter, offsetX, offsetY, screenH, screenW);
     drawScore(&painter, offsetX, offsetY, screenW);
 }
 
@@ -232,6 +233,32 @@ void GUI::drawScore(QPainter *aPainter, float offsetX, float offsetY, int screen
     // Affiche le texte centré horizontalement et aligné en haut
     aPainter->drawText(textRect, Qt::AlignHCenter | Qt::AlignTop, scoreText);
 
+}
+
+void GUI::drawPlayerXPBar(QPainter *aPainter, float offsetX, float offsetY, int screenH, int screenW)
+{
+    int currentXP = itsGame->getItsAvatar()->getItsXP();
+    int maxXP = itsGame->getItsAvatar()->getItsMaxXP();
+
+    int barWidth = 100;
+    int barHeight = 10;
+
+
+    int positionInScreenX = screenW - barWidth - 10;
+    int positionInScreenY = screenH - barHeight - 10;
+
+    float barX = offsetX + positionInScreenX;
+    float barY = offsetY + positionInScreenY;
+
+    float filledWidth = barWidth * currentXP / maxXP;
+
+    aPainter->setPen(Qt::black);
+    aPainter->setBrush(Qt::black);
+    aPainter->drawRect(QRectF(barX, barY, barWidth, barHeight));
+
+    aPainter->setPen(Qt::NoPen);
+    aPainter->setBrush(Qt::blue);
+    aPainter->drawRect(QRectF(barX, barY, filledWidth, barHeight));
 }
 
 void GUI::onGameOver()
