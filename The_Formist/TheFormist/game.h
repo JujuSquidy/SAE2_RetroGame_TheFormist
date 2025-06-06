@@ -24,10 +24,10 @@ class Game : public QObject
 private :
 
     /**
-     * @brief Timer used to manage boss apparition
-     */
-
+ * @brief Timer used to manage enemies apparition
+ */
     QTimer *itsEnemyTimer;
+
     /**
  * @brief Timer used to show time elapsed in the game and manage enemies apparition.
  */
