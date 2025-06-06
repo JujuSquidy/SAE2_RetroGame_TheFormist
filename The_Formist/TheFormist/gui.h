@@ -91,5 +91,11 @@ private:
  * @param aPainter Painter used for rendering.
  */
     void drawPowerUP(QPainter * aPainter);
+
+    /**
+ * @brief Draws the player life bar.
+ * @param aPainter ainter used for rendering.
+ */
+    void drawPlayerLifeBar(QPainter * aPainter,float offsetX,float offsetY,int screenH);
 };
 #endif // GUI_H
