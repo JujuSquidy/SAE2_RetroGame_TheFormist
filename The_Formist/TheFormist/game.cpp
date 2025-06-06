@@ -138,7 +138,7 @@ void Game::Collision()
                                 break;
 
                             case BOSS:
-                                AddScore(2);
+                                AddScore(50);
                                 break;
                         }
                         delete e;

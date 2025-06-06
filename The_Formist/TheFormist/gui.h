@@ -113,5 +113,7 @@ private:
  * @param aPainter ainter used for rendering.
  */
     void drawPlayerLifeBar(QPainter * aPainter,float offsetX,float offsetY,int screenH);
+
+    void drawScore(QPainter *aPainter, float offsetX, float offsetY, int screenW);
 };
 #endif // GUI_H
