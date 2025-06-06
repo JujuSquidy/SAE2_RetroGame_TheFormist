@@ -131,6 +131,9 @@ public slots:
     void GameLoop();
     void spawnEnemy();
     void upgrade();
+
+signals:
+    void gameOver();
 };
 
 #endif // GAME_H

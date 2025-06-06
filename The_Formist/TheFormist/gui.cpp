@@ -14,6 +14,7 @@ GUI::GUI(Game * aGame, QWidget *parent)
     itsTimer = new QTimer(this);
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(update()));
     itsTimer->start(33);
+    connect(gameInstance, Game::gameOver(), this, )
 }
 
 GUI::~GUI()
