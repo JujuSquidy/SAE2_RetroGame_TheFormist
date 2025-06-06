@@ -2,7 +2,6 @@
 #include "gun.h"
 #include "rangedweapon.h"
 #include <QRandomGenerator>
-#include <iostream>
 
 
 Avatar *Game::getItsAvatar() const
@@ -172,7 +171,6 @@ void Game::GameOver()
 
 void Game::GameLoop()
 {
-    std::cout << itsAvatar->getItsHP()<<std::endl;
     QRect* avatarRect = itsAvatar->getItsQRect();
 
     // Tir de l'arme
