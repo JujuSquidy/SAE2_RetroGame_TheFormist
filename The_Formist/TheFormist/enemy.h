@@ -88,7 +88,7 @@ public:
  * @param aPosition Initial position of the enemy (x, y).
  * @param aSprite Pointer to the sprite image for the enemy.
  */
-    Enemy(std::pair<float,float> aPosition, QImage* aSprite);
+    Enemy(std::pair<float,float> aPosition, QImage* aSprite = nullptr);
 
     /**
  * @brief Makes the enemy shoot a projectile.
