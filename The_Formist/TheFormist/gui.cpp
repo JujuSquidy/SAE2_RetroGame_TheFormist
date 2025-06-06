@@ -187,10 +187,8 @@ void GUI::drawPowerUP(QPainter *aPainter)
 
 void GUI::drawPlayerLifeBar(QPainter *aPainter, float offsetX, float offsetY, int screenH)
 {
-    Avatar* avatar = itsGame->getItsAvatar();
-
-    int currentHP = avatar->getItsHP();
-    int maxHP = avatar->getItsMaxHP();
+    int currentHP = itsGame->getItsAvatar()->getItsHP();
+    int maxHP = itsGame->getItsAvatar()->getItsMaxHP();
 
     int barWidth = 100;
     int barHeight = 10;
@@ -205,7 +203,7 @@ void GUI::drawPlayerLifeBar(QPainter *aPainter, float offsetX, float offsetY, in
     float filledWidth = barWidth * currentHP / maxHP;
 
     aPainter->setPen(Qt::black);
-    aPainter->setBrush(Qt::NoBrush);
+    aPainter->setBrush(Qt::red);
     aPainter->drawRect(QRectF(barX, barY, barWidth, barHeight));
 
     aPainter->setPen(Qt::NoPen);
