@@ -144,27 +144,71 @@ public:
  */
     QRect* getItsQRect() const;
 
+    /**
+ * @brief Gets the current XP (experience points) of the avatar.
+ * @return The current XP value.
+ */
     int getItsXP() const;
 
+    /**
+ * @brief Sets the XP (experience points) of the avatar.
+ * @param aXP The new XP value to set.
+ */
     void setItsXP(int aXP);
 
+    /**
+ * @brief Gets the maximum XP required to level up.
+ * @return The maximum XP value.
+ */
     int getItsMaxXP() const;
 
+    /**
+ * @brief Increases the maximum XP required to level up.
+ * @param aMaxXP The amount to add to the maximum XP.
+ */
     void addMaxXP(int aMaxXP);
 
+    /**
+ * @brief Gets the maximum HP (health points) of the avatar.
+ * @return The maximum HP value.
+ */
     int getItsMaxHP() const;
 
+    /**
+ * @brief Increases the avatar's maximum HP.
+ * @param aMaxHP The amount to add to the maximum HP.
+ */
     void addMaxHP(int aMaxHP);
 
+    /**
+ * @brief Gets the current HP (health points) of the avatar.
+ * @return The current HP value.
+ */
     int getItsHP() const;
 
+    /**
+ * @brief Increases the avatar's current HP.
+ * @param aHP The amount to add to the current HP.
+ */
     void addHP(int aHP);
 
+    /**
+ * @brief Gets the current level of the avatar.
+ * @return The avatar's level.
+ */
     int getItsLevel() const;
 
+    /**
+ * @brief Reduces the avatar's HP based on the damage taken.
+ * @param amount The amount of damage to apply.
+ */
     void takeDamage(int amount);
-    
+
+    /**
+ * @brief Increases the avatar's level by one.
+ */
     void addLevel();
+
 };
 
 #endif // AVATAR_H

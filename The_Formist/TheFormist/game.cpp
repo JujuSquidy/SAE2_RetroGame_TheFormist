@@ -70,8 +70,13 @@ Game::~Game()
     delete itsWeapon;
     itsWeapon = nullptr;
 
+    itsTimer->stop();
     delete itsTimer;
+    itsTimer = nullptr;
 
+    itsEnemyTimer->stop();
+    delete itsEnemyTimer;
+    itsEnemyTimer = nullptr;
 }
 void Game::updateMouseTarget(int x, int y)
 {

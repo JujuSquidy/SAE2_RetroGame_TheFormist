@@ -35,13 +35,30 @@ public:
  */
     RangedWeapon(int aBaseDamage, float aAttackSpeed, QImage *aSprite);
 
+    /**
+ * @brief Gets the number of projectiles fired simultaneously.
+ *
+ * @return int The current number of projectiles.
+ */
     int getItsNbProjectiles() const;
 
+    /**
+ * @brief Increases the number of projectiles fired by one.
+ */
     void AddNbProjectile();
 
+    /**
+ * @brief Gets the number of reverse projectiles (projectiles fired in the opposite direction).
+ *
+ * @return int The current number of reverse projectiles.
+ */
     int getItsNbReverseProjectile() const;
 
+    /**
+ * @brief Increases the number of reverse projectiles by one.
+ */
     void AddNbReverseProjectile();
+
 
 };
 

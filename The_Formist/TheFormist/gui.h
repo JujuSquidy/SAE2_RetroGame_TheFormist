@@ -68,8 +68,18 @@ protected:
  */
     void mouseMoveEvent(QMouseEvent* event) override;
 
+    /**
+ * @brief Slot triggered when the game is over.
+ *
+ * Handles any cleanup or UI changes needed when the game ends.
+ */
     void onGameOver();
 
+    /**
+ * @brief Restarts the game.
+ *
+ * Resets the game state, reinitializes objects, and starts the game loop again.
+ */
     void restartGame();
 
 

@@ -19,8 +19,13 @@ GUI::GUI(Game * aGame, QWidget *parent)
 
 GUI::~GUI()
 {
-    delete itsGame;
+    itsTimer->stop();
     delete itsTimer;
+    itsTimer = nullptr;
+
+    delete itsGame;
+    itsGame = nullptr;
+
 }
 
 void GUI::paintEvent(QPaintEvent *event)

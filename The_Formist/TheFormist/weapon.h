@@ -88,6 +88,12 @@ public:
      * @param newIsShooting Boolean flag to set shooting state.
      */
     void setIsShooting(bool newIsShooting);
+
+    /**
+ * @brief Gets the current damage value of the weapon.
+ *
+ * @return int The amount of damage dealt by a single projectile.
+ */
     int getItsDamage() const;
 
     /**
