@@ -2,6 +2,8 @@
 #define RANGEDWEAPON_H
 
 #include "weapon.h"
+#include <QElapsedTimer>
+
 /**
  * @class RangedWeapon
  * @brief Represents a weapon that fires projectiles from a distance.
@@ -25,6 +27,13 @@ private:
  * @brief Number of reverse projectiles fired by attack
  */
     int   itsNbReverseProjectile = 0;
+
+    QElapsedTimer itsMultipleProjectileDelay;
+
+    int nbProjectilesShooted = 0;
+
+    int nbReverseProjectilesShooted = 0;
+
 
 public:
     /**
@@ -60,6 +69,12 @@ public:
     void AddNbReverseProjectile();
 
 
+    QElapsedTimer getItsMultipleProjectileDelay() const;
+    int getNbProjectilesShooted() const;
+    void addNbProjectilesShooted();
+    void addNbReverseProjectilesShooted();
+    int getNbReverseProjectilesShooted() const;
+    void attack();
 };
 
 #endif // RANGEDWEAPON_H
