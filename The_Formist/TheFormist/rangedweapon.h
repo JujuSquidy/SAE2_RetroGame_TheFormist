@@ -21,12 +21,12 @@ private:
     /**
  * @brief Number of projectiles fired per attack.
  */
-    int itsNbProjectile = 1;
+    int itsNbProjectile = 2;
 
     /**
  * @brief Number of reverse projectiles fired by attack
  */
-    int   itsNbReverseProjectile = 0;
+    int   itsNbReverseProjectile = 1;
 
     QElapsedTimer itsMultipleProjectileDelay;
 
