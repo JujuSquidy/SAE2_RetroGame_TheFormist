@@ -309,6 +309,10 @@ void Game::GameLoop()
         itsAvatar->levelUp();
         itsAvatar->addMaxXP(2);
         itsAvatar->setItsXP(0);
+        if (itsAvatar->getItsLevel() % 5 == 0)
+        {
+            upgrade();
+        }
     }
 }
 
@@ -388,40 +392,38 @@ void Game::spawnEnemy()
 void Game::upgrade()
 {
     RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon);
-    if (itsAvatar->getItsLevel() % 5 == 0)
+    std::vector<int> availableUpgrades = {MORE_PROJECTILE, REVERSE_PROJECTILE, MORE_DAMAGE, MORE_HP};
+    std::shuffle(availableUpgrades.begin(), availableUpgrades.end(), *QRandomGenerator::global());
+
+    for (int upgrade : availableUpgrades)
     {
-        std::vector<int> availableUpgrades = {MORE_PROJECTILE, REVERSE_PROJECTILE, MORE_DAMAGE, MORE_HP};
-        std::shuffle(availableUpgrades.begin(), availableUpgrades.end(), *QRandomGenerator::global());
-
-        for (int upgrade : availableUpgrades)
+        switch (upgrade)
         {
-            switch (upgrade)
+        case MORE_PROJECTILE:
+            if (rw->getItsNbProjectiles() < 3)
             {
-            case MORE_PROJECTILE:
-                if (rw->getItsNbProjectiles() < 3)
-                {
-                    rw->AddNbProjectile();
-                    return;
-                }
-                break;
-
-            case REVERSE_PROJECTILE:
-                if (rw->getItsNbReverseProjectile() < 2)
-                {
-                    rw->AddNbReverseProjectile();
-                    return;
-                }
-                break;
-
-            case MORE_DAMAGE:
-                rw->AddBaseDamage(2);
-                return;
-
-            case MORE_HP:
-                itsAvatar->addHP(5);
-                itsAvatar->addMaxHP(5);
+                rw->AddNbProjectile();
                 return;
             }
+            break;
+
+        case REVERSE_PROJECTILE:
+            if (rw->getItsNbReverseProjectile() < 2)
+            {
+                rw->AddNbReverseProjectile();
+                return;
+            }
+            break;
+
+        case MORE_DAMAGE:
+            rw->AddBaseDamage(2);
+            return;
+
+        case MORE_HP:
+            itsAvatar->addHP(5);
+            itsAvatar->addMaxHP(5);
+            return;
         }
     }
 }
+
