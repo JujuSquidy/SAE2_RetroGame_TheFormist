@@ -44,6 +44,11 @@ QElapsedTimer Game::getItsInGameTimer() const
     return *itsInGameTimer;
 }
 
+std::vector<PowerUp *> Game::getItsPowerUp() const
+{
+    return itsPowerUp;
+}
+
 Game::Game(QObject *parent)
     : QObject{parent}
 {
@@ -61,6 +66,10 @@ Game::Game(QObject *parent)
     itsTimer->start(10);
     itsEnemyTimer->start(1000);
     itsInGameTimer->start();
+
+    itsPowerUpTimer = new QTimer(this);
+    connect(itsPowerUpTimer, SIGNAL(timeout()), this, SLOT(spawnPowerUP()));
+    itsPowerUpTimer->start(10'000);
 }
 
 Game::~Game()
@@ -82,6 +91,10 @@ Game::~Game()
     }
     itsEnemies.clear();
 
+    for (PowerUp* p : itsPowerUp)
+        delete p;
+    itsPowerUp.clear();
+
     // Supprimer l'avatar
     delete itsAvatar;
     itsAvatar = nullptr;
@@ -99,15 +112,46 @@ Game::~Game()
 
     delete itsInGameTimer;
     itsInGameTimer = nullptr;
+
+    delete itsPowerUpTimer;
+    itsPowerUpTimer = nullptr;
 }
+
 void Game::updateMouseTarget(int x, int y)
 {
     mouseTarget = {x, y};
 }
 
-void Game::PowerUp()
+void Game::spawnPowerUP()
 {
-    return;
+
+        int centerX = itsAvatar->getItsQRect()->center().x();
+        int centerY = itsAvatar->getItsQRect()->center().y();
+        int viewW  = gameWindowSize.first;
+        int viewH  = gameWindowSize.second;
+        int margin = 20;
+
+        int left   = centerX - viewW/2  + margin;
+        int right  = centerX + viewW/2  - margin;
+        int top    = centerY - viewH/2  + margin;
+        int bottom = centerY + viewH/2  - margin;
+
+        left   = qMax(0, left);
+        right  = qMin(itsBorder.first, right);
+        top    = qMax(0, top);
+        bottom = qMin(itsBorder.second, bottom);
+
+        // Pick a random position in that rect
+        int x = QRandomGenerator::global()->bounded(left,  right+1);
+        int y = QRandomGenerator::global()->bounded(top,   bottom+1);
+
+        // Pick a random power-up type
+        std::uniform_int_distribution<int> typeDist(0, 4);
+        PType ptype = static_cast<PType>(typeDist(*QRandomGenerator::global()));
+
+        // Create and register
+        PowerUp* pu = new PowerUp({x,y}, ptype);
+        itsPowerUp.push_back(pu);
 }
 
 void Game::Collision()
@@ -205,6 +249,22 @@ void Game::Collision()
             itsAvatar->takeDamage(e->getItsStrength());
         }
     }
+
+    for (auto PUIt = itsPowerUp.begin(); PUIt != itsPowerUp.end(); )
+    {
+        PowerUp* e = *PUIt;
+
+        if (e->getItsRectF().intersects(*itsAvatar->getItsQRect()))
+        {
+            delete e;
+            PUIt = itsPowerUp.erase(PUIt);
+        }
+        else
+        {
+            ++PUIt;
+        }
+    }
+
 }
 
 

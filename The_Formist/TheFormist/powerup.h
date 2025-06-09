@@ -47,11 +47,18 @@ private:
  * @brief Type of the power-up, determining the effect it applies.
  */
     PType itsType;
+
+    /**
+ * @brief The rectangular shape representing the enemy’s hitbox for collision detection.
+ */
+    QRectF itsRectF;
 public:
     /**
  * @brief Constructs a PowerUp object with default properties.
  */
-    PowerUp();
+    PowerUp(std::pair<int,int> aPosition, PType itsType, QImage *aSprite = nullptr);
+    QRectF getItsRectF() const;
+    PType getItsType() const;
 };
 
 #endif // POWERUP_H

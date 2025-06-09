@@ -61,6 +61,7 @@ void GUI::paintEvent(QPaintEvent *event)
     drawAvatar(&painter);
     drawProjectiles(&painter);
     drawEnemies(&painter);
+    drawPowerUP(&painter);
 
     drawPlayerLifeBar(&painter, offsetX, offsetY, screenH);
     drawPlayerXPBar(&painter, offsetX, offsetY, screenH, screenW);
@@ -190,9 +191,41 @@ void GUI::drawProjectiles(QPainter *aPainter)
         aPainter->drawRect(proj->getItsRectF());
     }
 }
+
 void GUI::drawPowerUP(QPainter *aPainter)
 {
+    aPainter->setBrush(Qt::SolidPattern);
+    const std::vector<PowerUp*>& PowerUP = itsGame->getItsPowerUp();
+    for (const PowerUp* PU : PowerUP)
+    {
+        switch (PU->getItsType())
+        {
+        case SHIELD:
+            aPainter->setPen(Qt::blue);
+            aPainter->drawRect(PU->getItsRectF());
+            break;
 
+        case SYRINGE :
+            aPainter->setPen(Qt::red);
+            aPainter->drawRect(PU->getItsRectF());
+            break;
+
+        case BLOOD :
+            aPainter->setPen(Qt::green);
+            aPainter->drawRect(PU->getItsRectF());
+            break;
+
+        case PEPPER :
+            aPainter->setPen(Qt::yellow);
+            aPainter->drawRect(PU->getItsRectF());
+            break;
+
+        case BOOTS :
+            aPainter->setPen(Qt::yellow);
+            aPainter->drawRect(PU->getItsRectF());
+            break;
+        }
+    }
 }
 
 void GUI::drawPlayerLifeBar(QPainter *aPainter, float offsetX, float offsetY, int screenH)
