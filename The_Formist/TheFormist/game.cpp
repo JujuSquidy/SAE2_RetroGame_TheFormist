@@ -220,16 +220,42 @@ void Game::GameLoop()
 {
     QRect* avatarRect = itsAvatar->getItsQRect();
 
-    // Tir de l'arme
+    RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon);
     if (itsWeapon->getIsShooting())
     {
-        std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
-        if(mouseTarget != avatarPos)
+        if (rw->getItsMultipleProjectileDelay().elapsed() > 30)
         {
-            QPoint center = itsAvatar->getItsQRect()->center();
-            Projectile* p = new Projectile(mouseTarget, std::pair<int,int>(center.x(), center.y()), {5,5}, 10, 5);
-            itsAvatarProjectiles.push_back(p);
-            itsWeapon->setIsShooting(false);
+            std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
+
+            if (mouseTarget != avatarPos)
+            {
+                QPoint center = avatarRect->center();
+
+                if (rw->getNbProjectilesShooted() < rw->getItsNbProjectiles())
+                {
+                    std::pair<int,int> target = mouseTarget;
+                    Projectile* p = new Projectile(target, {center.x(), center.y()}, {5,5}, 10, 5);
+                    itsAvatarProjectiles.push_back(p);
+                    rw->addNbProjectilesShooted();
+                }
+                else if (rw->getNbReverseProjectilesShooted() < rw->getItsNbReverseProjectile())
+                {
+                    int dx = mouseTarget.first - avatarPos.first;
+                    int dy = mouseTarget.second - avatarPos.second;
+                    std::pair<int,int> reversedTarget = {avatarPos.first - dx, avatarPos.second - dy};
+                    Projectile* p = new Projectile(reversedTarget, {center.x(), center.y()}, {5,5}, 10, 5);
+                    itsAvatarProjectiles.push_back(p);
+                    rw->addNbReverseProjectilesShooted();
+                }
+
+                rw->getItsMultipleProjectileDelay().start();
+            }
+
+            if (rw->getNbProjectilesShooted() >= rw->getItsNbProjectiles() &&
+                rw->getNbReverseProjectilesShooted() >= rw->getItsNbReverseProjectile())
+            {
+                itsWeapon->setIsShooting(false);
+            }
         }
     }
 
