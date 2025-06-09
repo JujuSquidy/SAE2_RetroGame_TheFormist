@@ -219,6 +219,14 @@ void GUI::drawPlayerLifeBar(QPainter *aPainter, float offsetX, float offsetY, in
     aPainter->setPen(Qt::NoPen);
     aPainter->setBrush(Qt::green);
     aPainter->drawRect(QRectF(barX, barY, filledWidth, barHeight));
+
+    QFont font("Arial", 10, QFont::Bold);
+    aPainter->setFont(font);
+    aPainter->setPen(Qt::white);
+
+    QString hpText = QString("HP: %1 / %2").arg(currentHP).arg(maxHP);
+    aPainter->drawText(QPointF(barX, barY - 5), hpText);
+
 }
 
 void GUI::drawScore(QPainter *aPainter, float offsetX, float offsetY, int screenW)
@@ -268,6 +276,7 @@ void GUI::drawPlayerXPBar(QPainter *aPainter, float offsetX, float offsetY, int 
 {
     int currentXP = itsGame->getItsAvatar()->getItsXP();
     int maxXP = itsGame->getItsAvatar()->getItsMaxXP();
+    int currentLevel = itsGame->getItsAvatar()->getItsLevel();
 
     int barWidth = 100;
     int barHeight = 10;
@@ -288,6 +297,20 @@ void GUI::drawPlayerXPBar(QPainter *aPainter, float offsetX, float offsetY, int 
     aPainter->setPen(Qt::NoPen);
     aPainter->setBrush(Qt::blue);
     aPainter->drawRect(QRectF(barX, barY, filledWidth, barHeight));
+
+
+    QFont font("Arial", 10, QFont::Bold);
+    aPainter->setFont(font);
+    aPainter->setPen(Qt::white);
+
+    QString xpText = QString("XP: %1 / %2").arg(currentXP).arg(maxXP);
+    QString levelText = QString("Level: %1").arg(currentLevel);
+
+    aPainter->drawText(QPointF(barX, barY - 5), xpText);
+    aPainter->drawText(QPointF(barX, barY - 20), levelText);  // Un peu plus haut
+
+
+
 }
 
 void GUI::onGameOver()
