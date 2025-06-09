@@ -11,6 +11,11 @@ QRect *Avatar::getItsQRect() const
     return itsQRect;
 }
 
+bool Avatar::getHasShield() const
+{
+    return hasShield;
+}
+
 Avatar::Avatar(std::pair<int,int> aStartPos, QImage* aSprite) : itsSprite(aSprite)
 {
     itsLevel = 1;
@@ -138,6 +143,16 @@ int Avatar::getItsLevel() const
 void Avatar::addLevel()
 {
     itsLevel++;
+}
+
+void Avatar::activateShield()
+{
+    hasShield = true;
+}
+
+void Avatar::desactivateShield()
+{
+    hasShield = false;
 }
 
 void Avatar::takeDamage(int amount)

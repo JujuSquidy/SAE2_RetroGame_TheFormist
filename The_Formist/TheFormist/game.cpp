@@ -230,7 +230,15 @@ void Game::Collision()
         {
             if(proj->getItsRectF().intersects(itsAvatar->getItsQRect()->toRectF()))
             {
-                itsAvatar->takeDamage(proj->getItsDamage());
+                if (itsAvatar->getHasShield() == true)
+                {
+                    itsAvatar->desactivateShield();  // Bouclier actif => pare le coup
+                }
+                else
+                {
+                    itsAvatar->takeDamage(proj->getItsDamage());  // Pas de bouclier => prend les dégâts
+                }
+
                 delete proj;
                 enProjIt = itsEnemyProjectiles.erase(enProjIt);
             }
@@ -250,12 +258,33 @@ void Game::Collision()
         }
     }
 
-    for (auto PUIt = itsPowerUp.begin(); PUIt != itsPowerUp.end(); )
+    for (std::vector<PowerUp*>::iterator PUIt = itsPowerUp.begin(); PUIt != itsPowerUp.end(); )
     {
         PowerUp* e = *PUIt;
 
         if (e->getItsRectF().intersects(*itsAvatar->getItsQRect()))
         {
+            if(e->getItsType() == SHIELD)
+            {
+                itsAvatar->activateShield();
+            }
+            else if(e->getItsType() == SYRINGE)
+            {
+
+            }
+            else if(e->getItsType() == BLOOD)
+            {
+                itsAvatar->addHP(10);
+            }
+            else if(e->getItsType() == PEPPER)
+            {
+
+            }
+            else if(e->getItsType() == BOOTS)
+            {
+
+            }
+
             delete e;
             PUIt = itsPowerUp.erase(PUIt);
         }

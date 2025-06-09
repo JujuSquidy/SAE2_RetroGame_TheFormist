@@ -87,6 +87,7 @@ float itsSpeedMult;
 
     QElapsedTimer lastDamageTime;
 
+    bool hasShield = false;
 
 public:
     /**
@@ -209,6 +210,9 @@ public:
  */
     void addLevel();
 
+    void activateShield();
+    void desactivateShield();
+    bool getHasShield() const;
 };
 
 #endif // AVATAR_H
