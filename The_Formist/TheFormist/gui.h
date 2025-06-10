@@ -95,6 +95,9 @@ private:
  */
     void drawAvatar(QPainter * aPainter);
 
+    void drawKatana(QPainter * aPainter);
+
+
     /**
  * @brief Draws all enemies on the screen.
  * @param aPainter Painter used for rendering.

@@ -159,6 +159,8 @@ public:
 
     QElapsedTimer getItsInGameTimer() const;
 
+    std::pair<int, int> getMouseTarget() const;
+
 public slots:
     /**
  * @brief Core game loop executed on a timer tick; updates all game logic.

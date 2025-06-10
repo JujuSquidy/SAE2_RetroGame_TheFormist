@@ -14,6 +14,7 @@ SOURCES += \
     enemy.cpp \
     game.cpp \
     gun.cpp \
+    katana.cpp \
     main.cpp \
     gui.cpp \
     powerup.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     game.h \
     gui.h \
     gun.h \
+    katana.h \
     powerup.h \
     projectile.h \
     rangedweapon.h \
