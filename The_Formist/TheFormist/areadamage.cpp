@@ -21,8 +21,14 @@ bool AreaDamage::getIsBurning() const
     return isBurning;
 }
 
-AreaDamage::AreaDamage(std::pair<int, int> anArea, std::pair<int, int> aPosition, int aNbOfTicks, int aDamage)
-    : Projectile(std::pair(0,0), aPosition, anArea, 0, aDamage), itsFinalTick(aNbOfTicks)
+bool AreaDamage::expired()
 {
-    connect(itsTimer,SIGNAL(timeout()), this, SLOT(burn()));
+    return itsNbOfTicks == itsFinalTick;
+}
+
+AreaDamage::AreaDamage(std::pair<int, int> anArea, std::pair<int, int> aPosition, int aNbOfTicks, int aDamage)
+    : Projectile(aPosition, aPosition, anArea, 0, aDamage), itsFinalTick(aNbOfTicks)
+{
+    itsTimer = new QTimer(this);
+    connect(itsTimer, SIGNAL(timeout()), this, SLOT(burn()));
 }

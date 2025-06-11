@@ -168,6 +168,8 @@ public:
 
     void updateTemporaryBoosts();
 
+    std::vector<AreaDamage *> getItsAreaDamages() const;
+
 public slots:
     /**
  * @brief Core game loop executed on a timer tick; updates all game logic.

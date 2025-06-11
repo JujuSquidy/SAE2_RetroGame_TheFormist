@@ -1,6 +1,5 @@
 #include "game.h"
 #include "gun.h"
-#include "rangedweapon.h"
 #include "rocketlauncher.h"
 #include <QRandomGenerator>
 
@@ -50,6 +49,11 @@ std::vector<PowerUp *> Game::getItsPowerUp() const
     return itsPowerUp;
 }
 
+std::vector<AreaDamage *> Game::getItsAreaDamages() const
+{
+    return itsAreaDamages;
+}
+
 Game::Game(QObject *parent)
     : QObject{parent}
 {
@@ -57,7 +61,7 @@ Game::Game(QObject *parent)
     gameWindowSize = {960, 540};
     itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
 //    itsWeapon = new Gun(10, 1);
-    itsWeapon = new RocketLauncher(10,1,{50,50},nullptr);
+    itsWeapon = new RocketLauncher(10,1,{100,100},nullptr);
     itsTimer = new QTimer(this);
 
     itsInGameTimer = new QElapsedTimer;
@@ -211,9 +215,18 @@ void Game::Collision()
             }
             if (hit)
             {
-                if(typeid(itsWeapon) == typeid(RocketLauncher))
+                if(typeid(*itsWeapon) == typeid(RocketLauncher))
                 {
-                    AreaDamage * AD = new AreaDamage({50,50},{proj->getItsRectF().center().x()-25,proj->getItsRectF().center().y()-25},1,10);
+                    RocketLauncher * RL = dynamic_cast<RocketLauncher*>(itsWeapon);
+                    //---------------------------------Création de la zone de dégats-------------------------------------------//
+                        AreaDamage * AD = new AreaDamage(
+                                                    RL->getItsAreaSize(),                                               // taille de la zone d'effet
+                                                    {proj->getItsRectF().center().x()-(RL->getItsAreaSize().first/2),   // Position x du QRect de l'explosion
+                                                     proj->getItsRectF().center().y()-(RL->getItsAreaSize().second/2)}, // Position y du QRect de l'explosion
+                                                    1,                                                                  // Nombre de dégats infligés avant disparition de la zone
+                                                    RL->getItsDamage()                                                  // Dégats infligés par l'explosion
+                                                    );
+                    //--------------------------------------------------------------------------------------------------------//
                     itsAreaDamages.push_back(AD);
                 }
                 delete proj;
@@ -227,44 +240,61 @@ void Game::Collision()
     for(std::vector<AreaDamage*>::iterator ADit = itsAreaDamages.begin(); ADit != itsAreaDamages.end(); )
     {
         AreaDamage* AD = *ADit;
-        for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
+        if(AD->getIsBurning())
         {
-            Enemy* e = *enemyIt;
-
-            if (AD->getItsRectF().intersects(e->getItsRectF()))
+            if(AD->expired())
             {
-                e->takeDamage(itsWeapon->getItsDamage());
-                if (e->isDead())
-                {
-                    itsAvatar->addXP(e->getItsGivenXP());
-                    switch (e->getType())
-                    {
-                    case TRIANGLE:
-                        AddScore(1);
-                        break;
-
-                    case CIRCLE:
-                        AddScore(1);
-                        break;
-
-                    case SQUARE:
-                        AddScore(2);
-                        break;
-
-                    case BOSS:
-                        AddScore(50);
-                        break;
-                    }
-                    delete e;
-                    enemyIt = itsEnemies.erase(enemyIt);
-                }
-                else
-                    ++enemyIt;
+                delete AD;
+                ADit = itsAreaDamages.erase(ADit);
             }
             else
-                ++enemyIt;
-        }
+            {
+                for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
+                {
+                    Enemy* e = *enemyIt;
 
+                    if (AD->getItsRectF().intersects(e->getItsRectF()))
+                    {
+                        e->takeDamage(AD->getItsDamage());
+                        if (e->isDead())
+                        {
+                            itsAvatar->addXP(e->getItsGivenXP());
+                            switch (e->getType())
+                            {
+                            case TRIANGLE:
+                                AddScore(1);
+                                break;
+
+                            case CIRCLE:
+                                AddScore(1);
+                                break;
+
+                            case SQUARE:
+                                AddScore(2);
+                                break;
+
+                            case BOSS:
+                                AddScore(50);
+                                break;
+                            }
+                            delete e;
+                            enemyIt = itsEnemies.erase(enemyIt);
+                        }
+                        else
+                            ++enemyIt;
+                    }
+                    else
+                        ++enemyIt;
+                }
+            AD->addTick();
+            AD->resetBurn();
+            ++ADit;
+            }
+        }
+        else
+        {
+            ++ADit;
+        }
     }
 
     for (std::vector<Projectile*>::iterator enProjIt = itsEnemyProjectiles.begin(); enProjIt != itsEnemyProjectiles.end(); )

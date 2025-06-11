@@ -41,8 +41,8 @@ public:
     void addTick();
     void resetBurn();
     bool getIsBurning() const;
-
-private slots:
+    bool expired();
+public slots:
     void burn();
 };
 
