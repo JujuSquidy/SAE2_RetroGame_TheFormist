@@ -135,7 +135,7 @@ void GUI::mouseMoveEvent(QMouseEvent* event)
 
 void GUI::drawAvatar(QPainter *aPainter)
 {
-    aPainter->setPen(Qt::blue);
+    aPainter->setPen(QPen(QColor(0, 255, 127)));
     aPainter->setBrush(Qt::SolidPattern);
 
     aPainter->drawRect(*itsGame->getItsAvatar()->getItsQRect());
@@ -150,7 +150,7 @@ void GUI::drawEnemies(QPainter *aPainter)
         switch (enemy->getType())
         {
             case TRIANGLE :
-                aPainter->setPen(Qt::blue);
+                aPainter->setPen(QPen(QColor(191, 0, 255)));
                 aPainter->drawRect(enemy->getItsRectF());
                 break;
 
@@ -160,7 +160,7 @@ void GUI::drawEnemies(QPainter *aPainter)
                 break;
 
             case CIRCLE :
-                aPainter->setPen(Qt::green);
+                aPainter->setPen(QPen(QColor(107, 142, 35)));
                 aPainter->drawRect(enemy->getItsRectF());
                 break;
 
@@ -198,32 +198,35 @@ void GUI::drawPowerUP(QPainter *aPainter)
     const std::vector<PowerUp*>& PowerUP = itsGame->getItsPowerUp();
     for (const PowerUp* PU : PowerUP)
     {
-        switch (PU->getItsType())
+        if (PU->getIsPicked()==false)
         {
-        case SHIELD:
-            aPainter->setPen(Qt::blue);
-            aPainter->drawRect(PU->getItsRectF());
-            break;
+            switch (PU->getItsType())
+            {
+            case SHIELD:
+                aPainter->setPen(Qt::blue);
+                aPainter->drawRect(PU->getItsRectF());
+                break;
 
-        case SYRINGE :
-            aPainter->setPen(Qt::red);
-            aPainter->drawRect(PU->getItsRectF());
-            break;
+            case SYRINGE :
+                aPainter->setPen(Qt::red);
+                aPainter->drawRect(PU->getItsRectF());
+                break;
 
-        case BLOOD :
-            aPainter->setPen(Qt::green);
-            aPainter->drawRect(PU->getItsRectF());
-            break;
+            case BLOOD :
+                aPainter->setPen(Qt::green);
+                aPainter->drawRect(PU->getItsRectF());
+                break;
 
-        case PEPPER :
-            aPainter->setPen(Qt::yellow);
-            aPainter->drawRect(PU->getItsRectF());
-            break;
+            case PEPPER :
+                aPainter->setPen(Qt::yellow);
+                aPainter->drawRect(PU->getItsRectF());
+                break;
 
-        case BOOTS :
-            aPainter->setPen(Qt::yellow);
-            aPainter->drawRect(PU->getItsRectF());
-            break;
+            case BOOTS :
+                aPainter->setPen(QPen(QColor(255, 105, 180)));
+                aPainter->drawRect(PU->getItsRectF());
+                break;
+            }
         }
     }
 }

@@ -258,39 +258,55 @@ void Game::Collision()
         }
     }
 
-    for (std::vector<PowerUp*>::iterator PUIt = itsPowerUp.begin(); PUIt != itsPowerUp.end(); )
+    for (std::vector<PowerUp*>::iterator it = itsPowerUp.begin(); it != itsPowerUp.end();  )
     {
-        PowerUp* e = *PUIt;
+        PowerUp* p = *it;
 
-        if (e->getItsRectF().intersects(*itsAvatar->getItsQRect()))
+        if (p->getItsRectF().intersects(*itsAvatar->getItsQRect()))
         {
-            if(e->getItsType() == SHIELD)
+            if(p->getItsType() == SHIELD)
             {
                 itsAvatar->activateShield();
-            }
-            else if(e->getItsType() == SYRINGE)
-            {
+                delete p;
+                it = itsPowerUp.erase(it);
+                break;
 
             }
-            else if(e->getItsType() == BLOOD)
+            else if(p->getItsType() == SYRINGE)
+            {
+                p->ActivateSyringe();
+                p->setIsPicked(true);
+                it++;
+                break;
+
+            }
+            else if(p->getItsType() == BLOOD)
             {
                 itsAvatar->addHP(10);
+                delete p;
+                it = itsPowerUp.erase(it);
+                break;
+
             }
-            else if(e->getItsType() == PEPPER)
+            else if(p->getItsType() == PEPPER)
             {
+                p->ActivatePepper();
+                p->setIsPicked(true);
+                it++;
+                break;
 
             }
-            else if(e->getItsType() == BOOTS)
+            else if(p->getItsType() == BOOTS)
             {
-
+                p->ActivateBoots();
+                p->setIsPicked(true);
+                it++;
+                break;
             }
-
-            delete e;
-            PUIt = itsPowerUp.erase(PUIt);
         }
         else
         {
-            ++PUIt;
+            ++it;
         }
     }
 
@@ -309,6 +325,7 @@ void Game::GameLoop()
 {
     QRect* avatarRect = itsAvatar->getItsQRect();
 
+    updateTemporaryBoosts();
     RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon);
     if (itsWeapon->getIsShooting())
     {
@@ -474,9 +491,7 @@ void Game::spawnEnemy()
         e = new Enemy({x, y}, EType(tEnemy));
     }
     itsEnemies.push_back(e);
-
 }
-
 
 void Game::upgrade()
 {
@@ -516,3 +531,49 @@ void Game::upgrade()
     }
 }
 
+void Game::updateTemporaryBoosts()
+{
+    for (std::vector<PowerUp*>::iterator it = itsPowerUp.begin(); it != itsPowerUp.end();)
+    {
+        PowerUp* p = *it;
+        if (p->getIsFinished() == false && p->getIsPicked() == true) // Check if the boost is active
+        {
+            if(p->getItsType() == SYRINGE)
+            {
+                itsWeapon->setItsPUDamageMult(10);
+            }
+            else if(p->getItsType() == PEPPER)
+            {
+                itsWeapon->setItsPUAttackSpeedMult(10);
+            }
+            else if(p->getItsType() == BOOTS)
+            {
+                itsAvatar->setItsPUSpeedMult(3);
+            }
+            it++; // on avance proprement l'itérateur
+        }
+        else if (p->getIsFinished() == true)
+        {
+            if(p->getItsType() == SYRINGE)
+            {
+                itsWeapon->setItsPUDamageMult(1);
+            }
+            else if(p->getItsType() == PEPPER)
+            {
+                itsWeapon->setItsPUAttackSpeedMult(1);
+            }
+            else if(p->getItsType() == BOOTS)
+            {
+                itsAvatar->setItsPUSpeedMult(1);
+            }
+
+            delete p;
+            it = itsPowerUp.erase(it); // ne pas faire it++ ici
+        }
+        else
+        {
+            // Aucun cas géré => avancer l'itérateur quand même
+            it++;
+        }
+    }
+}

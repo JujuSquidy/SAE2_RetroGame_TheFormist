@@ -1,6 +1,7 @@
 #ifndef POWERUP_H
 #define POWERUP_H
 
+#include <QTimer>
 #include <QImage>
 #include <utility>
 /**
@@ -30,8 +31,10 @@ enum PType
  * Power-ups appear in the game world and grant bonuses based on their type when collected.
  */
 
-class PowerUp
+class PowerUp : public QObject
 {
+    Q_OBJECT
+
 private:
     /**
  * @brief Position of the power-up on the game map (x, y).
@@ -52,6 +55,19 @@ private:
  * @brief The rectangular shape representing the enemy’s hitbox for collision detection.
  */
     QRectF itsRectF;
+
+    QTimer boostTimer;
+
+    bool bootsActive;
+
+    bool syringeActive;
+
+    bool pepperActive;
+
+    bool isFinished = 0;
+
+    bool isPicked = 0;
+
 public:
     /**
  * @brief Constructs a PowerUp object with default properties.
@@ -59,6 +75,19 @@ public:
     PowerUp(std::pair<int,int> aPosition, PType itsType, QImage *aSprite = nullptr);
     QRectF getItsRectF() const;
     PType getItsType() const;
+
+    void ActivateBoots();
+    void ActivateSyringe();
+    void ActivatePepper();
+
+    bool getIsFinished() const;
+    void setIsFinished(bool newIsFinished);
+
+    bool getIsPicked() const;
+    void setIsPicked(bool newIsPicked);
+
+public slots :
+    void DesactivatePU();
 };
 
 #endif // POWERUP_H

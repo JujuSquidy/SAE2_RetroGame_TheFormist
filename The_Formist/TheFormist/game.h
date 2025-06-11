@@ -86,6 +86,10 @@ private :
 
     std::pair<int,int> gameWindowSize;
 
+    QElapsedTimer bootsTimer;
+
+    bool bootsActive;
+
 public:
     /**
  * @brief Constructs the Game object and initializes components.
@@ -160,6 +164,8 @@ public:
 
 
     std::vector<PowerUp *> getItsPowerUp() const;
+
+    void updateTemporaryBoosts();
 
 public slots:
     /**

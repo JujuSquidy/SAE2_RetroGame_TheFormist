@@ -49,6 +49,12 @@ private:
  */
     bool isShooting = false;
 
+    float itsPUAttackSpeedMult = 1;
+
+    float itsPUDamageMult = 1;
+
+
+
 public slots:
     /**
  * @brief Executes the weapon's attack behavior.
@@ -107,6 +113,23 @@ public:
      * @param aDamageMult float to set the new value
      */
     void AddBaseDamage(float aBaseDamage);
+
+    /**
+ * @brief Sets the damage multiplier.
+ * @param m The multiplier value to set.
+ */
+    void setDamageMult(float m);
+
+    /**
+ * @brief Sets the attack speed multiplier.
+ * @param m The multiplier value to set.
+ */
+    void setAttackSpeedMult(float m);
+
+    float getItsPUAttackSpeedMult() const;
+    void setItsPUAttackSpeedMult(float newItsPUAttackSpeedMult);
+    float getItsPUDamageMult() const;
+    void setItsPUDamageMult(float newItsPUDamageMult);
 };
 
 #endif // WEAPON_H
