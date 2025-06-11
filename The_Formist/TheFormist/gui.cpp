@@ -25,7 +25,6 @@ GUI::~GUI()
 
     delete itsGame;
     itsGame = nullptr;
-
 }
 
 void GUI::paintEvent(QPaintEvent *event)
@@ -66,6 +65,8 @@ void GUI::paintEvent(QPaintEvent *event)
     drawPlayerXPBar(&painter, offsetX, offsetY, screenH, screenW);
     drawScore(&painter, offsetX, offsetY, screenW);
     drawTimer(&painter, offsetX, offsetY, screenW);
+
+    updateMousePos();
 }
 
 void GUI::keyPressEvent(QKeyEvent *event)
@@ -98,38 +99,6 @@ void GUI::keyReleaseEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_Down)
         itsGame->getItsAvatar()->moveDown(false);
-}
-
-void GUI::mouseMoveEvent(QMouseEvent* event)
-{
-    QPoint mousePos = event->pos();  // Position dans le widget (0-960, 0-540)
-
-    // Obtenir la position de l'avatar
-    std::pair<float, float> avatarPos = itsGame->getItsAvatar()->getItsPosition();
-
-    // Taille du widget (écran)
-    int screenW = width();
-    int screenH = height();
-
-    // Taille de la carte
-    int mapW = itsGame->getItsBorder().first;
-    int mapH = itsGame->getItsBorder().second;
-
-    // Calcul de l'offset (identique à paintEvent)
-    float offsetX = avatarPos.first + avatarWidth / 2 - screenW / 2;
-    float offsetY = avatarPos.second + avatarHeight / 2 - screenH / 2;
-
-    if (offsetX < 0) offsetX = 0;
-    if (offsetY < 0) offsetY = 0;
-    if (offsetX > mapW - screenW) offsetX = mapW - screenW;
-    if (offsetY > mapH - screenH) offsetY = mapH - screenH;
-
-    // Corriger la position de la souris pour qu'elle soit dans la zone de jeu
-    int worldMouseX = mousePos.x() + offsetX;
-    int worldMouseY = mousePos.y() + offsetY;
-
-    // Envoyer les coordonnées à ton système
-    itsGame->updateMouseTarget(worldMouseX, worldMouseY);
 }
 
 void GUI::drawAvatar(QPainter *aPainter)
@@ -190,6 +159,7 @@ void GUI::drawProjectiles(QPainter *aPainter)
         aPainter->drawRect(proj->getItsRectF());
     }
 }
+
 void GUI::drawPowerUP(QPainter *aPainter)
 {
 
@@ -226,7 +196,6 @@ void GUI::drawPlayerLifeBar(QPainter *aPainter, float offsetX, float offsetY, in
 
     QString hpText = QString("HP: %1 / %2").arg(currentHP).arg(maxHP);
     aPainter->drawText(QPointF(barX, barY - 5), hpText);
-
 }
 
 void GUI::drawScore(QPainter *aPainter, float offsetX, float offsetY, int screenW)
@@ -242,7 +211,6 @@ void GUI::drawScore(QPainter *aPainter, float offsetX, float offsetY, int screen
 
     // Affiche le texte centré horizontalement et aligné en haut
     aPainter->drawText(textRect, Qt::AlignHCenter | Qt::AlignTop, scoreText);
-
 }
 
 void GUI::drawTimer(QPainter *aPainter, float offsetX, float offsetY, int screenW)
@@ -268,8 +236,6 @@ void GUI::drawTimer(QPainter *aPainter, float offsetX, float offsetY, int screen
 
     QRectF textRect(offsetX, offsetY + lineHeight, screenW, lineHeight); // Juste sous le score
     aPainter->drawText(textRect, Qt::AlignHCenter | Qt::AlignTop, timeText);
-
-
 }
 
 void GUI::drawPlayerXPBar(QPainter *aPainter, float offsetX, float offsetY, int screenH, int screenW)
@@ -308,9 +274,24 @@ void GUI::drawPlayerXPBar(QPainter *aPainter, float offsetX, float offsetY, int 
 
     aPainter->drawText(QPointF(barX, barY - 5), xpText);
     aPainter->drawText(QPointF(barX, barY - 20), levelText);  // Un peu plus haut
+}
 
+void GUI::updateMousePos()
+{
+    int halfWidth = width() / 2;
+    int halfHeight = height() / 2;
 
+    float newCameraX = itsGame->getItsAvatar()->getItsQRect()->center().x() - halfWidth;
+    float newCameraY = itsGame->getItsAvatar()->getItsQRect()->center().y() - halfHeight;
 
+    // Limiter aux bords du monde
+    newCameraX = std::clamp(newCameraX, 0.0f, float(itsGame->getItsBorder().first - width()));
+    newCameraY = std::clamp(newCameraY, 0.0f, float(itsGame->getItsBorder().second - height()));
+
+    cameraPosition = QPointF(newCameraX, newCameraY);
+    QPoint mouseInWindow = mapFromGlobal(QCursor::pos());
+    QPointF mouseWorldPos = cameraPosition + mouseInWindow;
+    itsGame->updateMouseTarget(mouseWorldPos.x(), mouseWorldPos.y());
 }
 
 void GUI::onGameOver()
@@ -344,5 +325,4 @@ void GUI::restartGame()
     itsGame = new Game();
     connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
     gameIsOver = false;  // Reset
-
 }
