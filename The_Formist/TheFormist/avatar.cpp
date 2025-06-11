@@ -143,6 +143,10 @@ int Avatar::getItsHP() const
 void Avatar::addHP(int aHP)
 {
     itsHP+=aHP;
+    if(itsHP > itsMaxHP)
+    {
+        itsHP = itsMaxHP;
+    }
 }
 
 int Avatar::getItsLevel() const

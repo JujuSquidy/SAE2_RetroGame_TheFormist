@@ -215,8 +215,6 @@ public:
     void desactivateShield();
     bool getHasShield() const;
 
-
-
     float getItsPUSpeedMult() const;
     void setItsPUSpeedMult(float newItsPUSpeedMult);
 };

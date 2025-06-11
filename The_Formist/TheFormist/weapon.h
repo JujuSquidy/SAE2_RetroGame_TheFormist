@@ -126,9 +126,7 @@ public:
  */
     void setAttackSpeedMult(float m);
 
-    float getItsPUAttackSpeedMult() const;
     void setItsPUAttackSpeedMult(float newItsPUAttackSpeedMult);
-    float getItsPUDamageMult() const;
     void setItsPUDamageMult(float newItsPUDamageMult);
 };
 

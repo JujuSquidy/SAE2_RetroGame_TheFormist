@@ -34,11 +34,6 @@ int Weapon::getItsDamage() const
     return static_cast<int>(itsBaseDamage * itsDamageMult * itsPUDamageMult);
 }
 
-float Weapon::getItsPUAttackSpeedMult() const
-{
-    return itsPUAttackSpeedMult;
-}
-
 void Weapon::setItsPUAttackSpeedMult(float newItsPUAttackSpeedMult)
 {
     itsPUAttackSpeedMult = newItsPUAttackSpeedMult;

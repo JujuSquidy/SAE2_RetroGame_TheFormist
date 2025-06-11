@@ -81,7 +81,6 @@ public:
     void ActivatePepper();
 
     bool getIsFinished() const;
-    void setIsFinished(bool newIsFinished);
 
     bool getIsPicked() const;
     void setIsPicked(bool newIsPicked);

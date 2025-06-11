@@ -55,11 +55,6 @@ bool PowerUp::getIsFinished() const
     return isFinished;
 }
 
-void PowerUp::setIsFinished(bool newIsFinished)
-{
-    isFinished = newIsFinished;
-}
-
 bool PowerUp::getIsPicked() const
 {
     return isPicked;
