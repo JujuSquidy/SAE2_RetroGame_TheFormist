@@ -1,6 +1,4 @@
 #include "enemy.h"
-#include <QRandomGenerator>
-#include <random>
 
 QRectF Enemy::getItsRectF() const
 {
