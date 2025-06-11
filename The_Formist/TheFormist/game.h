@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <QTimer>
+#include "areadamage.h"
 #include "avatar.h"
 #include "enemy.h"
 #include "powerup.h"
@@ -79,6 +80,8 @@ private :
  */
     std::vector<PowerUp*> itsPowerUp;
 
+    std::vector<AreaDamage*> itsAreaDamages;
+
     /**
  * @brief The latest target position from the mouse (used for aiming).
  */
@@ -100,8 +103,6 @@ public:
  * @brief Destructor that cleans up dynamically allocated resources.
  */
     ~Game();
-
-
 
     /**
  * @brief Detects and handles collisions and damages between entities.

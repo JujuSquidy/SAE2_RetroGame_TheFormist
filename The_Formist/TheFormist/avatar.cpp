@@ -152,8 +152,6 @@ int Avatar::getItsLevel() const
     return itsLevel;
 }
 
-<<<<<<< HEAD
-=======
 void Avatar::addLevel()
 {
     itsLevel++;
@@ -169,7 +167,6 @@ void Avatar::desactivateShield()
     hasShield = false;
 }
 
->>>>>>> main
 void Avatar::takeDamage(int amount)
 {
     if (!lastDamageTime.isValid() || lastDamageTime.elapsed() >= 500) {

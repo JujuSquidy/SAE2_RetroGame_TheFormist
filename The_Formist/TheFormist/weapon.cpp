@@ -39,7 +39,6 @@ void Weapon::setItsPUAttackSpeedMult(float newItsPUAttackSpeedMult)
     itsPUAttackSpeedMult = newItsPUAttackSpeedMult;
 }
 
-
 void Weapon::setItsPUDamageMult(float newItsPUDamageMult)
 {
     itsPUDamageMult = newItsPUDamageMult;
@@ -49,7 +48,6 @@ void Weapon::attack()
 {
     isShooting = true;
 }
-
 
 float Weapon::getItsBaseDamage() const
 {

@@ -7,7 +7,7 @@ class RocketLauncher : public RangedWeapon
 {
 private:
     std::pair<int,int> itsBaseAreaSize;
-    float itsAreaSizeMult;
+    float itsAreaSizeMult = 1;
 public:
     RocketLauncher(int aBaseDamage, float aAttackSpeed, std::pair<int,int> aBaseArea, QImage *aSprite = nullptr);
     std::pair<float, float> getItsAreaSize() const;
