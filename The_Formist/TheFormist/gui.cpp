@@ -60,6 +60,7 @@ void GUI::paintEvent(QPaintEvent *event)
     drawAvatar(&painter);
     drawProjectiles(&painter);
     drawEnemies(&painter);
+    drawPowerUP(&painter);
 
     drawPlayerLifeBar(&painter, offsetX, offsetY, screenH);
     drawPlayerXPBar(&painter, offsetX, offsetY, screenH, screenW);
@@ -103,7 +104,7 @@ void GUI::keyReleaseEvent(QKeyEvent *event)
 
 void GUI::drawAvatar(QPainter *aPainter)
 {
-    aPainter->setPen(Qt::blue);
+    aPainter->setPen(QPen(QColor(0, 255, 127)));
     aPainter->setBrush(Qt::SolidPattern);
 
     aPainter->drawRect(*itsGame->getItsAvatar()->getItsQRect());
@@ -118,7 +119,7 @@ void GUI::drawEnemies(QPainter *aPainter)
         switch (enemy->getType())
         {
             case TRIANGLE :
-                aPainter->setPen(Qt::blue);
+                aPainter->setPen(QPen(QColor(191, 0, 255)));
                 aPainter->drawRect(enemy->getItsRectF());
                 break;
 
@@ -128,7 +129,7 @@ void GUI::drawEnemies(QPainter *aPainter)
                 break;
 
             case CIRCLE :
-                aPainter->setPen(Qt::green);
+                aPainter->setPen(QPen(QColor(107, 142, 35)));
                 aPainter->drawRect(enemy->getItsRectF());
                 break;
 
@@ -162,7 +163,41 @@ void GUI::drawProjectiles(QPainter *aPainter)
 
 void GUI::drawPowerUP(QPainter *aPainter)
 {
+    aPainter->setBrush(Qt::SolidPattern);
+    const std::vector<PowerUp*>& PowerUP = itsGame->getItsPowerUp();
+    for (const PowerUp* PU : PowerUP)
+    {
+        if (PU->getIsPicked()==false)
+        {
+            switch (PU->getItsType())
+            {
+            case SHIELD:
+                aPainter->setPen(Qt::blue);
+                aPainter->drawRect(PU->getItsRectF());
+                break;
 
+            case SYRINGE :
+                aPainter->setPen(Qt::red);
+                aPainter->drawRect(PU->getItsRectF());
+                break;
+
+            case BLOOD :
+                aPainter->setPen(Qt::green);
+                aPainter->drawRect(PU->getItsRectF());
+                break;
+
+            case PEPPER :
+                aPainter->setPen(Qt::yellow);
+                aPainter->drawRect(PU->getItsRectF());
+                break;
+
+            case BOOTS :
+                aPainter->setPen(QPen(QColor(255, 105, 180)));
+                aPainter->drawRect(PU->getItsRectF());
+                break;
+            }
+        }
+    }
 }
 
 void GUI::drawPlayerLifeBar(QPainter *aPainter, float offsetX, float offsetY, int screenH)

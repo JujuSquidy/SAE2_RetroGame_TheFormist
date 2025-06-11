@@ -28,6 +28,8 @@ private :
  */
     QTimer *itsEnemyTimer;
 
+    QTimer *itsPowerUpTimer;
+
     /**
  * @brief Timer used to show time elapsed in the game.
  */
@@ -73,9 +75,9 @@ private :
     std::vector<Enemy*> itsEnemies;
 
     /**
- * @brief The current power-up present in the game.
+ * @brief List of active PowerUP in the game.
  */
-    PowerUp *itsPowerUp = nullptr;
+    std::vector<PowerUp*> itsPowerUp;
 
     /**
  * @brief The latest target position from the mouse (used for aiming).
@@ -83,6 +85,10 @@ private :
     std::pair<int,int> mouseTarget;
 
     std::pair<int,int> gameWindowSize;
+
+    QElapsedTimer bootsTimer;
+
+    bool bootsActive;
 
 public:
     /**
@@ -95,10 +101,7 @@ public:
  */
     ~Game();
 
-    /**
- * @brief Handles logic for applying or spawning power-ups.
- */
-    void PowerUp();
+
 
     /**
  * @brief Detects and handles collisions and damages between entities.
@@ -159,6 +162,11 @@ public:
 
     QElapsedTimer getItsInGameTimer() const;
 
+
+    std::vector<PowerUp *> getItsPowerUp() const;
+
+    void updateTemporaryBoosts();
+
 public slots:
     /**
  * @brief Core game loop executed on a timer tick; updates all game logic.
@@ -169,6 +177,11 @@ public slots:
  * @brief Spawns a new enemy in the game world.
  */
     void spawnEnemy();
+
+    /**
+ * @brief Handles logic for applying or spawning power-ups.
+ */
+    void spawnPowerUP();
 
     /**
  * @brief Applies upgrades to the avatar or weapon when appropriate.
