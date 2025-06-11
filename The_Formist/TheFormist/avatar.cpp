@@ -11,6 +11,21 @@ QRect *Avatar::getItsQRect() const
     return itsQRect;
 }
 
+bool Avatar::getHasShield() const
+{
+    return hasShield;
+}
+
+float Avatar::getItsPUSpeedMult() const
+{
+    return itsPUSpeedMult;
+}
+
+void Avatar::setItsPUSpeedMult(float newItsPUSpeedMult)
+{
+    itsPUSpeedMult = newItsPUSpeedMult;
+}
+
 Avatar::Avatar(std::pair<int,int> aStartPos, QImage* aSprite) : itsSprite(aSprite)
 {
     itsLevel = 1;
@@ -47,7 +62,7 @@ void Avatar::move(std::pair<int,int> aBorder)
         dy /= length;
     }
 
-    float speed = itsBaseSpeed * itsSpeedMult;
+    float speed = itsBaseSpeed * itsSpeedMult * itsPUSpeedMult;
     float futurePosX = itsPosition.first  + dx * speed;
     float futurePosY = itsPosition.second + dy * speed;
     if(futurePosX >= 0 and futurePosX+itsQRect->width() <= aBorder.first)
@@ -126,6 +141,10 @@ int Avatar::getItsHP() const
 void Avatar::addHP(int aHP)
 {
     itsHP+=aHP;
+    if(itsHP > itsMaxHP)
+    {
+        itsHP = itsMaxHP;
+    }
 }
 
 int Avatar::getItsLevel() const
@@ -133,6 +152,24 @@ int Avatar::getItsLevel() const
     return itsLevel;
 }
 
+<<<<<<< HEAD
+=======
+void Avatar::addLevel()
+{
+    itsLevel++;
+}
+
+void Avatar::activateShield()
+{
+    hasShield = true;
+}
+
+void Avatar::desactivateShield()
+{
+    hasShield = false;
+}
+
+>>>>>>> main
 void Avatar::takeDamage(int amount)
 {
     if (!lastDamageTime.isValid() || lastDamageTime.elapsed() >= 500) {
@@ -141,3 +178,5 @@ void Avatar::takeDamage(int amount)
         lastDamageTime.restart();
     }
 }
+
+

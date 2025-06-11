@@ -10,7 +10,7 @@ Weapon::Weapon(int aBaseDamage, float anAttackSpeed, QImage *aSprite) :
 {
     itsTimer = new QTimer;
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(attack()));
-    itsTimer->start(500);
+    itsTimer->start(500 / (itsAttackSpeedMult * itsPUAttackSpeedMult * itsBaseAttackSpeed));
 }
 
 Weapon::~Weapon()
@@ -31,7 +31,18 @@ void Weapon::setIsShooting(bool newIsShooting)
 
 int Weapon::getItsDamage() const
 {
-    return itsBaseDamage * itsDamageMult;
+    return static_cast<int>(itsBaseDamage * itsDamageMult * itsPUDamageMult);
+}
+
+void Weapon::setItsPUAttackSpeedMult(float newItsPUAttackSpeedMult)
+{
+    itsPUAttackSpeedMult = newItsPUAttackSpeedMult;
+}
+
+
+void Weapon::setItsPUDamageMult(float newItsPUDamageMult)
+{
+    itsPUDamageMult = newItsPUDamageMult;
 }
 
 void Weapon::attack()
@@ -49,3 +60,14 @@ void Weapon::AddBaseDamage(float aBaseDamage)
 {
     itsBaseDamage+=aBaseDamage;
 }
+
+void Weapon::setDamageMult(float m)
+{
+    itsDamageMult = m;
+}
+
+void Weapon::setAttackSpeedMult(float m)
+{
+    itsAttackSpeedMult = m;
+}
+

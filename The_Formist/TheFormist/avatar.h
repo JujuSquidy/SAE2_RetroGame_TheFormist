@@ -64,7 +64,7 @@ private :
 /**
  * @brief Speed multiplier for the avatar's movement.
  */
-float itsSpeedMult;
+    float itsSpeedMult;
     /**
  * @brief Current health points of the avatar.
  */
@@ -87,7 +87,9 @@ float itsSpeedMult;
 
     QElapsedTimer lastDamageTime;
 
+    bool hasShield = false;
 
+    float itsPUSpeedMult = 1;
 public:
     /**
  * @brief Default constructor initializing the avatar.
@@ -203,6 +205,18 @@ public:
  * @param amount The amount of damage to apply.
  */
     void takeDamage(int amount);
+
+    /**
+ * @brief Increases the avatar's level by one.
+ */
+    void addLevel();
+
+    void activateShield();
+    void desactivateShield();
+    bool getHasShield() const;
+
+    float getItsPUSpeedMult() const;
+    void setItsPUSpeedMult(float newItsPUSpeedMult);
 };
 
 #endif // AVATAR_H
