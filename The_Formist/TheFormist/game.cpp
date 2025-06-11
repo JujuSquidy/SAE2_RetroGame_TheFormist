@@ -64,12 +64,12 @@ Game::Game(QObject *parent)
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     connect(itsEnemyTimer, SIGNAL(timeout()), this, SLOT(spawnEnemy()));
     itsTimer->start(10);
-    itsEnemyTimer->start(1000);
+    itsEnemyTimer->start(2000);
     itsInGameTimer->start();
 
     itsPowerUpTimer = new QTimer(this);
     connect(itsPowerUpTimer, SIGNAL(timeout()), this, SLOT(spawnPowerUP()));
-    itsPowerUpTimer->start(10'000);
+    itsPowerUpTimer->start(30000);
 }
 
 Game::~Game()
@@ -317,6 +317,7 @@ void Game::GameOver()
 {
     itsTimer->stop();
     itsEnemyTimer->stop();
+    itsPowerUpTimer->stop();
     emit gameOver();
 }
 
@@ -540,7 +541,7 @@ void Game::updateTemporaryBoosts()
         {
             if(p->getItsType() == SYRINGE)
             {
-                itsWeapon->setItsPUDamageMult(10);
+                itsWeapon->setItsPUDamageMult(2);
             }
             else if(p->getItsType() == PEPPER)
             {
@@ -548,7 +549,7 @@ void Game::updateTemporaryBoosts()
             }
             else if(p->getItsType() == BOOTS)
             {
-                itsAvatar->setItsPUSpeedMult(3);
+                itsAvatar->setItsPUSpeedMult(2);
             }
             it++; // on avance proprement l'itérateur
         }
