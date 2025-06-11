@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/Pictures">
+        <file>boots.png</file>
+        <file>shield.png</file>
+        <file>syringe.png</file>
+        <file>blood.png</file>
+        <file>pepper.png</file>
+        <file>avatar.png</file>
+        <file>boss.png</file>
+        <file>circle.png</file>
+        <file>square.png</file>
+        <file>triangle.png</file>
+        <file>background.png</file>
+        <file>icon.png</file>
+        <file>proj.png</file>
+    </qresource>
+    <qresource prefix="/Music">
+        <file>musique_gen.mp3</file>
+    </qresource>
+</RCC>

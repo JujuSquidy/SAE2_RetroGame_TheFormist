@@ -35,6 +35,19 @@ private:
 
     QPointF cameraPosition; // en haut à gauche du viewport dans le monde
 
+    QImage boots;
+    QImage shield;
+    QImage syringe;
+    QImage blood;
+    QImage pepper;
+    QImage boss;
+    QImage circle;
+    QImage triangle;
+    QImage square;
+    QImage avatar;
+    QImage background;
+    QImage proje;
+
 public:
     /**
      * @brief Constructs the GUI and links it to a Game instance.
@@ -123,6 +136,6 @@ private:
 
     void drawTimer(QPainter *aPainter, float offsetX, float offsetY, int screenW);
 
-    void updateMousePos();
+    void updateMousePos();    
 };
 #endif // GUI_H
