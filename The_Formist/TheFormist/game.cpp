@@ -100,6 +100,7 @@ Game::~Game()
     delete itsInGameTimer;
     itsInGameTimer = nullptr;
 }
+
 void Game::updateMouseTarget(int x, int y)
 {
     mouseTarget = {x, y};
@@ -335,41 +336,41 @@ void Game::spawnEnemy()
     std::uniform_int_distribution<int> sideDist(0, 3); // 0 = left, 1 = right, 2 = top, 3 = bottom
     int side = sideDist(*QRandomGenerator::global());
 
-    int x, y;
+    int x = 0, y = 0;
     switch (side)
     {
-    case 0: // LEFT
-    {
-        std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin - 100, centerX - viewWidth/2 - margin);
-        std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin, centerY + viewHeight/2 + margin);
-        x = xDist(*QRandomGenerator::global());
-        y = yDist(*QRandomGenerator::global());
-        break;
-    }
-    case 1: // RIGHT
-    {
-        std::uniform_int_distribution<int> xDist(centerX + viewWidth/2 + margin, centerX + viewWidth/2 + margin + 100);
-        std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin, centerY + viewHeight/2 + margin);
-        x = xDist(*QRandomGenerator::global());
-        y = yDist(*QRandomGenerator::global());
-        break;
-    }
-    case 2: // TOP
-    {
-        std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin, centerX + viewWidth/2 + margin);
-        std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin - 100, centerY - viewHeight/2 - margin);
-        x = xDist(*QRandomGenerator::global());
-        y = yDist(*QRandomGenerator::global());
-        break;
-    }
-    case 3: // BOTTOM
-    {
-        std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin, centerX + viewWidth/2 + margin);
-        std::uniform_int_distribution<int> yDist(centerY + viewHeight/2 + margin, centerY + viewHeight/2 + margin + 100);
-        x = xDist(*QRandomGenerator::global());
-        y = yDist(*QRandomGenerator::global());
-        break;
-    }
+        case 0: // LEFT
+        {
+            std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin - 100, centerX - viewWidth/2 - margin);
+            std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin, centerY + viewHeight/2 + margin);
+            x = xDist(*QRandomGenerator::global());
+            y = yDist(*QRandomGenerator::global());
+            break;
+        }
+        case 1: // RIGHT
+        {
+            std::uniform_int_distribution<int> xDist(centerX + viewWidth/2 + margin, centerX + viewWidth/2 + margin + 100);
+            std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin, centerY + viewHeight/2 + margin);
+            x = xDist(*QRandomGenerator::global());
+            y = yDist(*QRandomGenerator::global());
+            break;
+        }
+        case 2: // TOP
+        {
+            std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin, centerX + viewWidth/2 + margin);
+            std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin - 100, centerY - viewHeight/2 - margin);
+            x = xDist(*QRandomGenerator::global());
+            y = yDist(*QRandomGenerator::global());
+            break;
+        }
+        case 3: // BOTTOM
+        {
+            std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin, centerX + viewWidth/2 + margin);
+            std::uniform_int_distribution<int> yDist(centerY + viewHeight/2 + margin, centerY + viewHeight/2 + margin + 100);
+            x = xDist(*QRandomGenerator::global());
+            y = yDist(*QRandomGenerator::global());
+            break;
+        }
     }
 
     Enemy* e;
@@ -385,7 +386,6 @@ void Game::spawnEnemy()
         e = new Enemy({x, y}, EType(tEnemy));
     }
     itsEnemies.push_back(e);
-
 }
 
 
@@ -399,30 +399,30 @@ void Game::upgrade()
     {
         switch (upgrade)
         {
-        case MORE_PROJECTILE:
-            if (rw->getItsNbProjectiles() < 3)
-            {
-                rw->AddNbProjectile();
+            case MORE_PROJECTILE:
+                if (rw->getItsNbProjectiles() < 3)
+                {
+                    rw->AddNbProjectile();
+                    return;
+                }
+                break;
+
+            case REVERSE_PROJECTILE:
+                if (rw->getItsNbReverseProjectile() < 2)
+                {
+                    rw->AddNbReverseProjectile();
+                    return;
+                }
+                break;
+
+            case MORE_DAMAGE:
+                rw->AddBaseDamage(2);
                 return;
-            }
-            break;
 
-        case REVERSE_PROJECTILE:
-            if (rw->getItsNbReverseProjectile() < 2)
-            {
-                rw->AddNbReverseProjectile();
+            case MORE_HP:
+                itsAvatar->addHP(5);
+                itsAvatar->addMaxHP(5);
                 return;
-            }
-            break;
-
-        case MORE_DAMAGE:
-            rw->AddBaseDamage(2);
-            return;
-
-        case MORE_HP:
-            itsAvatar->addHP(5);
-            itsAvatar->addMaxHP(5);
-            return;
         }
     }
 }
