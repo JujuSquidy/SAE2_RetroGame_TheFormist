@@ -228,38 +228,37 @@ void Game::Collision()
     Katana* katana = dynamic_cast<Katana*>(itsWeapon);
     if (katana && katana->getIsShooting())
     {
-        float avatarX = itsAvatar->getItsPosition().first;
-        float avatarY = itsAvatar->getItsPosition().second;
+        std::vector<float> cone = katana->katanaAreaDamage(itsAvatar, mouseTarget);
 
-        float dxMouse = mouseTarget.first - avatarX;
-        float dyMouse = mouseTarget.second - avatarY;
-        float normMouse = std::sqrt(dxMouse*dxMouse + dyMouse*dyMouse);
-        if(normMouse == 0) normMouse = 1; // éviter la division par zéro
-        float dirX = dxMouse / normMouse;
-        float dirY = dyMouse / normMouse;
-
-        float range = katana->getItsRange();
-        float coneAngle = M_PI / 4.0f; // 45 degrés
+        float centerX = cone[0];
+        float centerY = cone[1];
+        float dirX = cone[2];
+        float dirY = cone[3];
+        float range = cone[4];
+        float cosHalfAngle = cone[5];
 
         for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
         {
             Enemy* e = *enemyIt;
+            float ex = e->getItsPosition().first;
+            float ey = e->getItsPosition().second;
 
-            float dx = e->getItsPosition().first - avatarX;
-            float dy = e->getItsPosition().second - avatarY;
-            float dist = std::sqrt(dx * dx + dy * dy);
+            float dx = ex - centerX;
+            float dy = ey - centerY;
+            float dist = std::sqrt(dx*dx + dy*dy);
 
-            if (dist <= range)
-            {
-                float toEnemyX = dx / dist;
-                float toEnemyY = dy / dist;
+            if (dist <= range) {
+                float norm = (dist != 0) ? dist : 1;
+                float enemyDirX = dx / norm;
+                float enemyDirY = dy / norm;
 
-                float dot = dirX * toEnemyX + dirY * toEnemyY;
-                float angle = std::acos(dot);
+                float dot = dirX * enemyDirX + dirY * enemyDirY;
 
-                if (angle <= coneAngle)
-                {
-                    e->takeDamage(katana->getItsDamage());
+                if (dot >= cosHalfAngle) {
+                    e->takeDamage(itsWeapon->getItsDamage());
+                }
+            }
+        }
                     std::cout<<"j'ai touché cet ennemi"<<std::endl;
 
 

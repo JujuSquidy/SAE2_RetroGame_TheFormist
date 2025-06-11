@@ -1,4 +1,6 @@
 #include "katana.h"
+#include <cmath>
+#include <vector>
 
 
 float Katana::getItsRange() const
@@ -45,4 +47,23 @@ Katana::Katana(std::pair<float, float> aTarget, std::pair<float, float> aPositio
 
 Katana::~Katana()
 {
+}
+
+std::vector<float> Katana::katanaAreaDamage(Avatar* aAvatar, pair<int,int> aMouseTarget)
+{
+    float avatarX = aAvatar->getItsPosition().first;
+    float avatarY = aAvatar->getItsPosition().second;
+
+    float dx = aMouseTarget.first - avatarX;
+    float dy = aMouseTarget.second - avatarY;
+    float norm = std::sqrt(dx*dx + dy*dy);
+    if (norm == 0) norm = 1;
+    float dirX = dx / norm;
+    float dirY = dy / norm;
+
+    float range = this->getItsRange();
+    float angle = M_PI / 4; // 45 degrés, sans .0f
+    float cosHalfAngle = std::cos(angle / 2);
+
+    return {avatarX, avatarY, dirX, dirY, range, cosHalfAngle};
 }

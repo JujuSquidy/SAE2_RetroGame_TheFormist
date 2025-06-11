@@ -25,6 +25,7 @@ public:
     float getItsRange() const;
     float getDirX() const;
     float getDirY() const;
+    std::vector<float> katanaAreaDamage(itsAvatar* aAvatar, pair <int,int> aMouseTarget);
 };
 
 
