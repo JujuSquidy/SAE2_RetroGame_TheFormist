@@ -25,35 +25,33 @@ private:
     float itsDamageMult = 1;
 
     /**
- * @brief Base attack speed (e.g., shots per second or time between attacks).
- */
-    float itsBaseAttackSpeed;
-
-    /**
- * @brief Multiplier applied to the base attack speed.
- */
-    float itsAttackSpeedMult = 1;
-
-    /**
  * @brief Sprite used to visually represent the weapon.
  */
     QImage *itsSprite;
-
-/**
- * @brief Internal timer for managing attack intervals.
- */
-    QTimer * itsTimer;
 
 /**
  * @brief Indicates whether the weapon is currently firing.
  */
     bool isShooting = false;
 
-    float itsPUAttackSpeedMult = 1;
-
     float itsPUDamageMult = 1;
 
+protected :
+    /**
+ * @brief Internal timer for managing attack intervals.
+ */
+    QTimer * itsTimer;
+    float itsPUAttackSpeedMult = 1;
 
+    /**
+ * @brief Base attack speed (e.g., shots per second or time between attacks).
+ */
+    float itsBaseAttackSpeed = 1;
+
+    /**
+ * @brief Multiplier applied to the base attack speed.
+ */
+    float itsAttackSpeedMult = 1;
 
 public slots:
     /**
@@ -128,6 +126,8 @@ public:
 
     void setItsPUAttackSpeedMult(float newItsPUAttackSpeedMult);
     void setItsPUDamageMult(float newItsPUDamageMult);
+
+
 };
 
 #endif // WEAPON_H

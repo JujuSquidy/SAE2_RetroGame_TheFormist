@@ -15,6 +15,21 @@ GUI::GUI(Game * aGame, QWidget *parent)
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(update()));
     itsTimer->start(33);
     connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
+
+    boots.load(":/Pictures/boots.png");
+    shield.load(":/Pictures/shield.png");
+    syringe.load(":/Pictures/syringe.png");
+    blood.load(":/Pictures/blood.png");
+    pepper.load(":/Pictures/pepper.png");
+
+    boss.load(":/Pictures/boss.png");
+    circle.load(":/Pictures/circle.png");
+    square.load(":/Pictures/square.png");
+    triangle.load(":/Pictures/triangle.png");
+    avatar.load(":/Pictures/avatar.png");
+    background.load(":/Pictures/background.png");
+    proje.load(":/Pictures/proj.png");
+
 }
 
 GUI::~GUI()
@@ -55,6 +70,8 @@ void GUI::paintEvent(QPaintEvent *event)
 
     // Appliquer la translation inversée
     painter.translate(-offsetX, -offsetY);
+
+    painter.drawImage(QRectF(0, 0, mapW, mapH), background);
 
     // Dessin relatif à la carte
     drawAreaDamage(&painter); // debug
@@ -105,10 +122,7 @@ void GUI::keyReleaseEvent(QKeyEvent *event)
 
 void GUI::drawAvatar(QPainter *aPainter)
 {
-    aPainter->setPen(QPen(QColor(0, 255, 127)));
-    aPainter->setBrush(Qt::SolidPattern);
-
-    aPainter->drawRect(*itsGame->getItsAvatar()->getItsQRect());
+    aPainter->drawImage(*itsGame->getItsAvatar()->getItsQRect(), avatar);
 }
 
 void GUI::drawEnemies(QPainter *aPainter)
@@ -120,23 +134,23 @@ void GUI::drawEnemies(QPainter *aPainter)
         switch (enemy->getType())
         {
             case TRIANGLE :
-                aPainter->setPen(QPen(QColor(191, 0, 255)));
-                aPainter->drawRect(enemy->getItsRectF());
+            aPainter->drawImage(enemy->getItsRectF(), triangle);
+
                 break;
 
             case SQUARE :
-                aPainter->setPen(Qt::red);
-                aPainter->drawRect(enemy->getItsRectF());
+                aPainter->drawImage(enemy->getItsRectF(), square);
+
                 break;
 
             case CIRCLE :
-                aPainter->setPen(QPen(QColor(107, 142, 35)));
-                aPainter->drawRect(enemy->getItsRectF());
+                aPainter->drawImage(enemy->getItsRectF(), circle);
+
                 break;
 
             case BOSS :
-                aPainter->setPen(Qt::yellow);
-                aPainter->drawRect(enemy->getItsRectF());
+                aPainter->drawImage(enemy->getItsRectF(), boss);
+
                 break;
         }
     }
@@ -144,21 +158,18 @@ void GUI::drawEnemies(QPainter *aPainter)
 
 void GUI::drawProjectiles(QPainter *aPainter)
 {
-    aPainter->setPen(Qt::red);
-    aPainter->setBrush(Qt::SolidPattern);
-
     const std::vector<Projectile*>& aProjectiles = itsGame->getItsAvatarProjectiles();
 
     for (const Projectile* proj : aProjectiles)
     {
-        aPainter->drawRect(proj->getItsRectF());
+        aPainter->drawImage(proj->getItsRectF(), proje);
     }
 
     const std::vector<Projectile*>& eProjectiles = itsGame->getItsEnemyProjectiles();
 
     for (const Projectile* proj : eProjectiles)
     {
-        aPainter->drawRect(proj->getItsRectF());
+        aPainter->drawImage(proj->getItsRectF(), proje);
     }
 }
 
@@ -173,30 +184,22 @@ void GUI::drawPowerUP(QPainter *aPainter)
             switch (PU->getItsType())
             {
             case SHIELD:
-                aPainter->setPen(Qt::blue);
-                aPainter->drawRect(PU->getItsRectF());
+                aPainter->drawImage(PU->getItsRectF(), shield);
                 break;
-
-            case SYRINGE :
-                aPainter->setPen(Qt::red);
-                aPainter->drawRect(PU->getItsRectF());
+            case SYRINGE:
+                aPainter->drawImage(PU->getItsRectF(), syringe);
                 break;
-
-            case BLOOD :
-                aPainter->setPen(Qt::green);
-                aPainter->drawRect(PU->getItsRectF());
+            case BLOOD:
+                aPainter->drawImage(PU->getItsRectF(), blood);
                 break;
-
-            case PEPPER :
-                aPainter->setPen(Qt::yellow);
-                aPainter->drawRect(PU->getItsRectF());
+            case PEPPER:
+                aPainter->drawImage(PU->getItsRectF(), pepper);
                 break;
-
-            case BOOTS :
-                aPainter->setPen(QPen(QColor(255, 105, 180)));
-                aPainter->drawRect(PU->getItsRectF());
+            case BOOTS:
+                aPainter->drawImage(PU->getItsRectF(), boots);
                 break;
             }
+
         }
     }
 }

@@ -61,4 +61,5 @@ void RangedWeapon::attack()
     nbProjectilesShooted = 0;
     nbReverseProjectilesShooted = 0;
     itsMultipleProjectileDelay.start();
+    itsTimer->start(500 / (itsAttackSpeedMult * itsPUAttackSpeedMult * itsBaseAttackSpeed));
 }

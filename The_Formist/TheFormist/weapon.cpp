@@ -2,11 +2,11 @@
 
 float Weapon::getItsAttackSpeed() const
 {
-    return itsBaseAttackSpeed * itsAttackSpeedMult;
+    return itsBaseAttackSpeed * itsAttackSpeedMult * itsPUAttackSpeedMult;
 }
 
 Weapon::Weapon(int aBaseDamage, float anAttackSpeed, QImage *aSprite) :
-    itsBaseDamage(aBaseDamage), itsBaseAttackSpeed(anAttackSpeed), itsSprite(aSprite)
+    itsBaseDamage(aBaseDamage), itsSprite(aSprite), itsBaseAttackSpeed(anAttackSpeed)
 {
     itsTimer = new QTimer;
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(attack()));

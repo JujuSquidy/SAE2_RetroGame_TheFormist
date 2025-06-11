@@ -70,7 +70,7 @@ Game::Game(QObject *parent)
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     connect(itsEnemyTimer, SIGNAL(timeout()), this, SLOT(spawnEnemy()));
     itsTimer->start(10);
-    itsEnemyTimer->start(2000);
+    itsEnemyTimer->start(1500);
     itsInGameTimer->start();
 
     itsPowerUpTimer = new QTimer(this);
