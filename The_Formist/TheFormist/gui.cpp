@@ -61,7 +61,7 @@ void GUI::paintEvent(QPaintEvent *event)
     drawAvatar(&painter);
     drawProjectiles(&painter);
     drawEnemies(&painter);
-    drawKatana(&painter);
+//    drawKatana(&painter); //à voir pour mettre un for car se dessine tout le temps là sinon
 
     drawPlayerLifeBar(&painter, offsetX, offsetY, screenH);
     drawPlayerXPBar(&painter, offsetX, offsetY, screenH, screenW);

@@ -6,9 +6,15 @@ float Katana::getItsRange() const
     return itsRange;
 }
 
-QElapsedTimer Katana::getItsKatanaCooldownTimer() const
+
+float Katana::getDirX() const
 {
-    return itsKatanaCooldownTimer;
+    return dirX;
+}
+
+float Katana::getDirY() const
+{
+    return dirY;
 }
 
 Katana::Katana(std::pair<float, float> aTarget, std::pair<float, float> aPosition, std::pair<int, int> aSize, int baseDamage, float baseAttackSpeed, QImage* sprite)
@@ -32,15 +38,10 @@ Katana::Katana(std::pair<float, float> aTarget, std::pair<float, float> aPositio
 
     itsRectF = QRectF(aPosition.first, aPosition.second, aSize.first, aSize.second);
 
-    itsRange = 50;
+    itsRange = 200;
 }
 
 
-void Katana::attack()
-{
-    setIsShooting(true);
-    itsKatanaCooldownTimer.start();
-}
 
 Katana::~Katana()
 {

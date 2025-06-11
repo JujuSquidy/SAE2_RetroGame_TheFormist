@@ -3,6 +3,7 @@
 #include "katana.h"
 #include "rangedweapon.h"
 #include <QRandomGenerator>
+#include <iostream> //à retirer
 
 
 Avatar *Game::getItsAvatar() const
@@ -56,7 +57,8 @@ Game::Game(QObject *parent)
     itsBorder = std::pair(4000,2000);
     gameWindowSize = {960, 540};
     itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
-    itsWeapon = new Katana({0, 0}, {itsBorder.first / 2, itsBorder.second / 2}, {50, 50}, 20, 1, nullptr);
+    itsWeapon = new Katana({0, 0}, {itsBorder.first / 2, itsBorder.second / 2}, {50, 50}, 20, 1, nullptr); //initialisation d'un katana
+    //itsWeapon = new Gun(10, 1);   //initialisation d'un gun
     itsTimer = new QTimer(this);
 
     itsInGameTimer = new QElapsedTimer;
@@ -179,6 +181,77 @@ void Game::Collision()
                 ++avProjIt;
         }
     }
+    Katana* katana = dynamic_cast<Katana*>(itsWeapon);
+    if (katana && katana->getIsShooting())
+    {
+        float avatarX = itsAvatar->getItsPosition().first;
+        float avatarY = itsAvatar->getItsPosition().second;
+
+        float dxMouse = mouseTarget.first - avatarX;
+        float dyMouse = mouseTarget.second - avatarY;
+        float normMouse = std::sqrt(dxMouse*dxMouse + dyMouse*dyMouse);
+        if(normMouse == 0) normMouse = 1; // éviter la division par zéro
+        float dirX = dxMouse / normMouse;
+        float dirY = dyMouse / normMouse;
+
+        float range = katana->getItsRange();
+        float coneAngle = M_PI / 4.0f; // 45 degrés
+
+        for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
+        {
+            Enemy* e = *enemyIt;
+
+            float dx = e->getItsPosition().first - avatarX;
+            float dy = e->getItsPosition().second - avatarY;
+            float dist = std::sqrt(dx * dx + dy * dy);
+
+            if (dist <= range)
+            {
+                float toEnemyX = dx / dist;
+                float toEnemyY = dy / dist;
+
+                float dot = dirX * toEnemyX + dirY * toEnemyY;
+                float angle = std::acos(dot);
+
+                if (angle <= coneAngle)
+                {
+                    e->takeDamage(katana->getItsDamage());
+                    std::cout<<"j'ai touché cet ennemi"<<std::endl;
+
+
+                    if (e->isDead())
+                    {
+                        itsAvatar->addXP(e->getItsGivenXP());
+                        switch (e->getType())
+                        {
+                        case TRIANGLE:
+                            AddScore(1);
+                            break;
+
+                        case CIRCLE:
+                            AddScore(1);
+                            break;
+
+                        case SQUARE:
+                            AddScore(2);
+                            break;
+
+                        case BOSS:
+                            AddScore(50);
+                            break;
+                        }
+                        delete e;
+                        enemyIt = itsEnemies.erase(enemyIt);
+
+                    }
+                    else
+                        ++enemyIt;
+                }
+            }
+
+            ++enemyIt;
+        }
+    }
 
     for (std::vector<Projectile*>::iterator enProjIt = itsEnemyProjectiles.begin(); enProjIt != itsEnemyProjectiles.end(); )
     {
@@ -199,46 +272,6 @@ void Game::Collision()
             else
                 ++enProjIt;
         }
-
-        Katana* katana = dynamic_cast<Katana*>(itsWeapon);
-        if (katana && katana->getIsShooting())
-        {
-            std::vector<Enemy*> survivors;
-            for (Enemy* e : itsEnemies)
-            {
-                float dx = e->getItsPosition().first - itsAvatar->getItsPosition().first;
-                float dy = e->getItsPosition().second - itsAvatar->getItsPosition().second;
-                float dist = std::sqrt(dx*dx + dy*dy);
-
-                if (dist <= katana->getItsRange())
-                {
-                    e->takeDamage(katana->getItsDamage());
-
-                    if (e->isDead())
-                    {
-                        itsAvatar->addXP(e->getItsGivenXP());
-                        switch (e->getType())
-                        {
-                        case TRIANGLE: AddScore(1); break;
-                        case CIRCLE: AddScore(1); break;
-                        case SQUARE: AddScore(2); break;
-                        case BOSS: AddScore(50); break;
-                        }
-                        delete e;
-                    }
-                    else
-                    {
-                        survivors.push_back(e);
-                    }
-                }
-                else
-                {
-                    survivors.push_back(e);
-                }
-            }
-            itsEnemies = survivors;
-            katana->setIsShooting(false);
-        }
     }
 
     // === COLLISION ENNEMIS / AVATAR ===
@@ -251,8 +284,6 @@ void Game::Collision()
             itsAvatar->takeDamage(e->getItsStrength());
         }
     }
-
-
 }
 
 
@@ -313,10 +344,8 @@ void Game::GameLoop()
     {
         if (Katana* katana = dynamic_cast<Katana*>(itsWeapon))
         {
-            if (katana->getItsKatanaCooldownTimer().elapsed() > 30 && itsWeapon->getIsShooting())
+            if (itsWeapon->getIsShooting())
             {
-                katana->attack();
-                katana->getItsKatanaCooldownTimer().start();
                 itsWeapon->setIsShooting(false);
             }
         }
