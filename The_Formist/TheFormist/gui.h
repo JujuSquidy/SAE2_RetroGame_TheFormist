@@ -33,6 +33,7 @@ private:
 
     bool gameIsOver = false;
 
+    QPointF cameraPosition; // en haut à gauche du viewport dans le monde
 
 public:
     /**
@@ -66,12 +67,6 @@ protected:
  * @param event Key event containing the released key.
  */
     void keyReleaseEvent(QKeyEvent* event) override;
-
-    /**
- * @brief Handles mouse movement events for targeting.
- * @param event Mouse move event containing the cursor position.
- */
-    void mouseMoveEvent(QMouseEvent* event) override;
 
     /**
  * @brief Slot triggered when the game is over.
@@ -128,5 +123,6 @@ private:
 
     void drawTimer(QPainter *aPainter, float offsetX, float offsetY, int screenW);
 
+    void updateMousePos();
 };
 #endif // GUI_H

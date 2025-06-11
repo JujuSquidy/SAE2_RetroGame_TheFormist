@@ -46,9 +46,14 @@ QElapsedTimer Game::getItsInGameTimer() const
     return *itsInGameTimer;
 }
 
+
 std::pair<int, int> Game::getMouseTarget() const
 {
     return mouseTarget;
+}
+std::vector<PowerUp *> Game::getItsPowerUp() const
+{
+    return itsPowerUp;
 }
 
 Game::Game(QObject *parent)
@@ -67,8 +72,12 @@ Game::Game(QObject *parent)
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     connect(itsEnemyTimer, SIGNAL(timeout()), this, SLOT(spawnEnemy()));
     itsTimer->start(10);
-    itsEnemyTimer->start(1000);
+    itsEnemyTimer->start(2000);
     itsInGameTimer->start();
+
+    itsPowerUpTimer = new QTimer(this);
+    connect(itsPowerUpTimer, SIGNAL(timeout()), this, SLOT(spawnPowerUP()));
+    itsPowerUpTimer->start(30000);
 }
 
 Game::~Game()
@@ -90,6 +99,10 @@ Game::~Game()
     }
     itsEnemies.clear();
 
+    for (PowerUp* p : itsPowerUp)
+        delete p;
+    itsPowerUp.clear();
+
     // Supprimer l'avatar
     delete itsAvatar;
     itsAvatar = nullptr;
@@ -107,15 +120,46 @@ Game::~Game()
 
     delete itsInGameTimer;
     itsInGameTimer = nullptr;
+
+    delete itsPowerUpTimer;
+    itsPowerUpTimer = nullptr;
 }
+
 void Game::updateMouseTarget(int x, int y)
 {
     mouseTarget = {x, y};
 }
 
-void Game::PowerUp()
+void Game::spawnPowerUP()
 {
-    return;
+
+        int centerX = itsAvatar->getItsQRect()->center().x();
+        int centerY = itsAvatar->getItsQRect()->center().y();
+        int viewW  = gameWindowSize.first;
+        int viewH  = gameWindowSize.second;
+        int margin = 20;
+
+        int left   = centerX - viewW/2  + margin;
+        int right  = centerX + viewW/2  - margin;
+        int top    = centerY - viewH/2  + margin;
+        int bottom = centerY + viewH/2  - margin;
+
+        left   = qMax(0, left);
+        right  = qMin(itsBorder.first, right);
+        top    = qMax(0, top);
+        bottom = qMin(itsBorder.second, bottom);
+
+        // Pick a random position in that rect
+        int x = QRandomGenerator::global()->bounded(left,  right+1);
+        int y = QRandomGenerator::global()->bounded(top,   bottom+1);
+
+        // Pick a random power-up type
+        std::uniform_int_distribution<int> typeDist(0, 4);
+        PType ptype = static_cast<PType>(typeDist(*QRandomGenerator::global()));
+
+        // Create and register
+        PowerUp* pu = new PowerUp({x,y}, ptype);
+        itsPowerUp.push_back(pu);
 }
 
 void Game::Collision()
@@ -265,7 +309,15 @@ void Game::Collision()
         {
             if(proj->getItsRectF().intersects(itsAvatar->getItsQRect()->toRectF()))
             {
-                itsAvatar->takeDamage(proj->getItsDamage());
+                if (itsAvatar->getHasShield() == true)
+                {
+                    itsAvatar->desactivateShield();  // Bouclier actif => pare le coup
+                }
+                else
+                {
+                    itsAvatar->takeDamage(proj->getItsDamage());  // Pas de bouclier => prend les dégâts
+                }
+
                 delete proj;
                 enProjIt = itsEnemyProjectiles.erase(enProjIt);
             }
@@ -284,6 +336,59 @@ void Game::Collision()
             itsAvatar->takeDamage(e->getItsStrength());
         }
     }
+
+    for (std::vector<PowerUp*>::iterator it = itsPowerUp.begin(); it != itsPowerUp.end();  )
+    {
+        PowerUp* p = *it;
+
+        if (p->getItsRectF().intersects(*itsAvatar->getItsQRect()))
+        {
+            if(p->getItsType() == SHIELD)
+            {
+                itsAvatar->activateShield();
+                delete p;
+                it = itsPowerUp.erase(it);
+                break;
+
+            }
+            else if(p->getItsType() == SYRINGE)
+            {
+                p->ActivateSyringe();
+                p->setIsPicked(true);
+                it++;
+                break;
+
+            }
+            else if(p->getItsType() == BLOOD)
+            {
+                itsAvatar->addHP(10);
+                delete p;
+                it = itsPowerUp.erase(it);
+                break;
+
+            }
+            else if(p->getItsType() == PEPPER)
+            {
+                p->ActivatePepper();
+                p->setIsPicked(true);
+                it++;
+                break;
+
+            }
+            else if(p->getItsType() == BOOTS)
+            {
+                p->ActivateBoots();
+                p->setIsPicked(true);
+                it++;
+                break;
+            }
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
 }
 
 
@@ -291,6 +396,7 @@ void Game::GameOver()
 {
     itsTimer->stop();
     itsEnemyTimer->stop();
+    itsPowerUpTimer->stop();
     emit gameOver();
 }
 
@@ -298,44 +404,46 @@ void Game::GameOver()
 void Game::GameLoop()
 {
     QRect* avatarRect = itsAvatar->getItsQRect();
-
-    // Tester si l'arme est un RangedWeapon
-    if (RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon))
+    updateTemporaryBoosts();
+    if(RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon))
     {
         if (itsWeapon->getIsShooting())
         {
-            if (rw->getItsMultipleProjectileDelay().elapsed() > 30)
+            if (itsWeapon->getIsShooting())
             {
-                std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
-
-                if (mouseTarget != avatarPos)
+                if (rw->getItsMultipleProjectileDelay().elapsed() > 30)
                 {
-                    QPoint center = avatarRect->center();
+                    std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
 
-                    if (rw->getNbProjectilesShooted() < rw->getItsNbProjectiles())
+                    if (mouseTarget != avatarPos)
                     {
-                        std::pair<int,int> target = mouseTarget;
-                        Projectile* p = new Projectile(target, {center.x(), center.y()}, {5,5}, 10, 5);
-                        itsAvatarProjectiles.push_back(p);
-                        rw->addNbProjectilesShooted();
+                        QPoint center = avatarRect->center();
+
+                        if (rw->getNbProjectilesShooted() < rw->getItsNbProjectiles())
+                        {
+                            std::pair<int,int> target = mouseTarget;
+                            Projectile* p = new Projectile(target, {center.x(), center.y()}, {5,5}, 10, 5);
+                            itsAvatarProjectiles.push_back(p);
+                            rw->addNbProjectilesShooted();
+                        }
+                        else if (rw->getNbReverseProjectilesShooted() < rw->getItsNbReverseProjectile())
+                        {
+                            int dx = mouseTarget.first - avatarPos.first;
+                            int dy = mouseTarget.second - avatarPos.second;
+                            std::pair<int,int> reversedTarget = {avatarPos.first - dx, avatarPos.second - dy};
+                            Projectile* p = new Projectile(reversedTarget, {center.x(), center.y()}, {5,5}, 10, 5);
+                            itsAvatarProjectiles.push_back(p);
+                            rw->addNbReverseProjectilesShooted();
+                        }
+
+                        rw->getItsMultipleProjectileDelay().start();
                     }
-                    else if (rw->getNbReverseProjectilesShooted() < rw->getItsNbReverseProjectile())
+
+                    if (rw->getNbProjectilesShooted() >= rw->getItsNbProjectiles() &&
+                        rw->getNbReverseProjectilesShooted() >= rw->getItsNbReverseProjectile())
                     {
-                        int dx = mouseTarget.first - avatarPos.first;
-                        int dy = mouseTarget.second - avatarPos.second;
-                        std::pair<int,int> reversedTarget = {avatarPos.first - dx, avatarPos.second - dy};
-                        Projectile* p = new Projectile(reversedTarget, {center.x(), center.y()}, {5,5}, 10, 5);
-                        itsAvatarProjectiles.push_back(p);
-                        rw->addNbReverseProjectilesShooted();
+                        itsWeapon->setIsShooting(false);
                     }
-
-                    rw->getItsMultipleProjectileDelay().start();
-                }
-
-                if (rw->getNbProjectilesShooted() >= rw->getItsNbProjectiles() &&
-                    rw->getNbReverseProjectilesShooted() >= rw->getItsNbReverseProjectile())
-                {
-                    itsWeapon->setIsShooting(false);
                 }
             }
         }
@@ -429,41 +537,41 @@ void Game::spawnEnemy()
     std::uniform_int_distribution<int> sideDist(0, 3); // 0 = left, 1 = right, 2 = top, 3 = bottom
     int side = sideDist(*QRandomGenerator::global());
 
-    int x, y;
+    int x = 0, y = 0;
     switch (side)
     {
-    case 0: // LEFT
-    {
-        std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin - 100, centerX - viewWidth/2 - margin);
-        std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin, centerY + viewHeight/2 + margin);
-        x = xDist(*QRandomGenerator::global());
-        y = yDist(*QRandomGenerator::global());
-        break;
-    }
-    case 1: // RIGHT
-    {
-        std::uniform_int_distribution<int> xDist(centerX + viewWidth/2 + margin, centerX + viewWidth/2 + margin + 100);
-        std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin, centerY + viewHeight/2 + margin);
-        x = xDist(*QRandomGenerator::global());
-        y = yDist(*QRandomGenerator::global());
-        break;
-    }
-    case 2: // TOP
-    {
-        std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin, centerX + viewWidth/2 + margin);
-        std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin - 100, centerY - viewHeight/2 - margin);
-        x = xDist(*QRandomGenerator::global());
-        y = yDist(*QRandomGenerator::global());
-        break;
-    }
-    case 3: // BOTTOM
-    {
-        std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin, centerX + viewWidth/2 + margin);
-        std::uniform_int_distribution<int> yDist(centerY + viewHeight/2 + margin, centerY + viewHeight/2 + margin + 100);
-        x = xDist(*QRandomGenerator::global());
-        y = yDist(*QRandomGenerator::global());
-        break;
-    }
+        case 0: // LEFT
+        {
+            std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin - 100, centerX - viewWidth/2 - margin);
+            std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin, centerY + viewHeight/2 + margin);
+            x = xDist(*QRandomGenerator::global());
+            y = yDist(*QRandomGenerator::global());
+            break;
+        }
+        case 1: // RIGHT
+        {
+            std::uniform_int_distribution<int> xDist(centerX + viewWidth/2 + margin, centerX + viewWidth/2 + margin + 100);
+            std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin, centerY + viewHeight/2 + margin);
+            x = xDist(*QRandomGenerator::global());
+            y = yDist(*QRandomGenerator::global());
+            break;
+        }
+        case 2: // TOP
+        {
+            std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin, centerX + viewWidth/2 + margin);
+            std::uniform_int_distribution<int> yDist(centerY - viewHeight/2 - margin - 100, centerY - viewHeight/2 - margin);
+            x = xDist(*QRandomGenerator::global());
+            y = yDist(*QRandomGenerator::global());
+            break;
+        }
+        case 3: // BOTTOM
+        {
+            std::uniform_int_distribution<int> xDist(centerX - viewWidth/2 - margin, centerX + viewWidth/2 + margin);
+            std::uniform_int_distribution<int> yDist(centerY + viewHeight/2 + margin, centerY + viewHeight/2 + margin + 100);
+            x = xDist(*QRandomGenerator::global());
+            y = yDist(*QRandomGenerator::global());
+            break;
+        }
     }
 
     Enemy* e;
@@ -479,9 +587,7 @@ void Game::spawnEnemy()
         e = new Enemy({x, y}, EType(tEnemy));
     }
     itsEnemies.push_back(e);
-
 }
-
 
 void Game::upgrade()
 {
@@ -493,31 +599,77 @@ void Game::upgrade()
     {
         switch (upgrade)
         {
-        case MORE_PROJECTILE:
-            if (rw->getItsNbProjectiles() < 3)
-            {
-                rw->AddNbProjectile();
+            case MORE_PROJECTILE:
+                if (rw->getItsNbProjectiles() < 3)
+                {
+                    rw->AddNbProjectile();
+                    return;
+                }
+                break;
+
+            case REVERSE_PROJECTILE:
+                if (rw->getItsNbReverseProjectile() < 2)
+                {
+                    rw->AddNbReverseProjectile();
+                    return;
+                }
+                break;
+
+            case MORE_DAMAGE:
+                rw->AddBaseDamage(2);
                 return;
-            }
-            break;
 
-        case REVERSE_PROJECTILE:
-            if (rw->getItsNbReverseProjectile() < 2)
-            {
-                rw->AddNbReverseProjectile();
+            case MORE_HP:
+                itsAvatar->addHP(5);
+                itsAvatar->addMaxHP(5);
                 return;
-            }
-            break;
-
-        case MORE_DAMAGE:
-            rw->AddBaseDamage(2);
-            return;
-
-        case MORE_HP:
-            itsAvatar->addHP(5);
-            itsAvatar->addMaxHP(5);
-            return;
         }
     }
 }
 
+void Game::updateTemporaryBoosts()
+{
+    for (std::vector<PowerUp*>::iterator it = itsPowerUp.begin(); it != itsPowerUp.end();)
+    {
+        PowerUp* p = *it;
+        if (p->getIsFinished() == false && p->getIsPicked() == true) // Check if the boost is active
+        {
+            if(p->getItsType() == SYRINGE)
+            {
+                itsWeapon->setItsPUDamageMult(2);
+            }
+            else if(p->getItsType() == PEPPER)
+            {
+                itsWeapon->setItsPUAttackSpeedMult(10);
+            }
+            else if(p->getItsType() == BOOTS)
+            {
+                itsAvatar->setItsPUSpeedMult(2);
+            }
+            it++; // on avance proprement l'itérateur
+        }
+        else if (p->getIsFinished() == true)
+        {
+            if(p->getItsType() == SYRINGE)
+            {
+                itsWeapon->setItsPUDamageMult(1);
+            }
+            else if(p->getItsType() == PEPPER)
+            {
+                itsWeapon->setItsPUAttackSpeedMult(1);
+            }
+            else if(p->getItsType() == BOOTS)
+            {
+                itsAvatar->setItsPUSpeedMult(1);
+            }
+
+            delete p;
+            it = itsPowerUp.erase(it); // ne pas faire it++ ici
+        }
+        else
+        {
+            // Aucun cas géré => avancer l'itérateur quand même
+            it++;
+        }
+    }
+}

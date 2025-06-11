@@ -12,7 +12,6 @@ class Katana : public Weapon
 
 private:
     float itsRange=500;
-    QTimer itsKatanaCooldownTimer;
     std::pair<float,float> itsPosition;
     QRectF itsRectF;
     float dirX;
