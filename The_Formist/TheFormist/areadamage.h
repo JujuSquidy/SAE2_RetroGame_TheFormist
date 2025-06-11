@@ -29,7 +29,7 @@ public:
  * @param aDuration How long the area damage persists.
  * @param aDamage Damage applied to entities within the area.
  */
-    AreaDamage(std::pair<int,int> anArea,std::pair<int,int> aPosition, float aDuration, int aDamage);
+    AreaDamage(std::pair<int,int> anArea, std::pair<int,int> aPosition, float aDuration, int aDamage);
 };
 
 #endif // AREADAMAGE_H

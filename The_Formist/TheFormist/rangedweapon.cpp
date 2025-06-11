@@ -25,10 +25,15 @@ int RangedWeapon::getNbReverseProjectilesShooted() const
     return nbReverseProjectilesShooted;
 }
 
-RangedWeapon::RangedWeapon(int aBaseDamage, float aAttackSpeed, QImage *aSprite) : Weapon(aBaseDamage, aAttackSpeed, aSprite)
+float RangedWeapon::getItsProjectileSpeed() const
 {
+    return itsProjectileSpeed;
 }
 
+RangedWeapon::RangedWeapon(int aBaseDamage, float aAttackSpeed, QImage *aSprite) : Weapon(aBaseDamage, aAttackSpeed, aSprite)
+{
+
+}
 
 int RangedWeapon::getItsNbProjectiles() const
 {
@@ -57,5 +62,3 @@ void RangedWeapon::attack()
     nbReverseProjectilesShooted = 0;
     itsMultipleProjectileDelay.start();
 }
-
-

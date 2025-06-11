@@ -203,12 +203,6 @@ public:
  * @param amount The amount of damage to apply.
  */
     void takeDamage(int amount);
-
-    /**
- * @brief Increases the avatar's level by one.
- */
-    void addLevel();
-
 };
 
 #endif // AVATAR_H

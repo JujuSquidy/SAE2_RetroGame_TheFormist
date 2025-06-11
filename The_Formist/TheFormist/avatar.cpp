@@ -63,12 +63,10 @@ void Avatar::addXP(int aNB)
     itsXP += aNB;
 }
 
-
 void Avatar::levelUp()
 {
     itsLevel++;
 }
-
 
 void Avatar::moveLeft(bool enable)
 {
@@ -133,11 +131,6 @@ void Avatar::addHP(int aHP)
 int Avatar::getItsLevel() const
 {
     return itsLevel;
-}
-
-void Avatar::addLevel()
-{
-    itsLevel++;
 }
 
 void Avatar::takeDamage(int amount)
