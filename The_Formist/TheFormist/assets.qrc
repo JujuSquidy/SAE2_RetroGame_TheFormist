@@ -14,4 +14,7 @@
         <file>icon.png</file>
         <file>proj.png</file>
     </qresource>
+    <qresource prefix="/Music">
+        <file>musique_gen.mp3</file>
+    </qresource>
 </RCC>

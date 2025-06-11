@@ -70,6 +70,16 @@ Game::Game(QObject *parent)
     itsPowerUpTimer = new QTimer(this);
     connect(itsPowerUpTimer, SIGNAL(timeout()), this, SLOT(spawnPowerUP()));
     itsPowerUpTimer->start(30000);
+
+    audioOutput = new QAudioOutput(this);
+    backgroundMusicPlayer = new QMediaPlayer(this);
+    backgroundMusicPlayer->setAudioOutput(audioOutput);
+
+    backgroundMusicPlayer->setSource(QUrl("qrc:/Music/musique_gen.mp3"));
+    backgroundMusicPlayer->setLoops(QMediaPlayer::Infinite);  // <--- boucle infinie
+
+    audioOutput->setVolume(1); // volume entre 0.0 et 1.0
+    backgroundMusicPlayer->play();
 }
 
 Game::~Game()

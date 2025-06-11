@@ -9,6 +9,9 @@
 #include <QElapsedTimer>
 #include "weapon.h"
 
+#include <QMediaPlayer>
+#include <QAudioOutput>
+
 /**
  * @class Game
  * @brief Manages the core game logic, entities, and real-time updates.
@@ -89,6 +92,10 @@ private :
     QElapsedTimer bootsTimer;
 
     bool bootsActive;
+
+    QMediaPlayer* backgroundMusicPlayer;
+    QAudioOutput* audioOutput;
+
 
 public:
     /**
