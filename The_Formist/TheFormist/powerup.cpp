@@ -65,33 +65,33 @@ void PowerUp::setIsPicked(bool newIsPicked)
     isPicked = newIsPicked;
 }
 
-PowerUp::PowerUp(std::pair<int,int> aPosition, PType aType, QImage *aSprite) {
+PowerUp::PowerUp(std::pair<int,int> aPosition, PType aType) {
     itsPosition = aPosition;
     itsType = aType;
     switch (aType)
     {
     case SHIELD:
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 15.0, 15.0);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 20, 20);
 
         break;
 
     case SYRINGE:
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 15.0, 15.0);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 20, 20);
 
         break;
 
     case BLOOD:
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 15.0, 15.0);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 20, 20);
 
         break;
 
     case PEPPER:
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 15.0, 15.0);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 20, 20);
 
         break;
 
     case BOOTS:
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 15.0, 15.0);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 20, 20);
 
         break;
     }

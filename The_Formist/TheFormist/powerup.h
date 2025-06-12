@@ -72,7 +72,7 @@ public:
     /**
  * @brief Constructs a PowerUp object with default properties.
  */
-    PowerUp(std::pair<int,int> aPosition, PType itsType, QImage *aSprite = nullptr);
+    PowerUp(std::pair<int,int> aPosition, PType itsType);
     QRectF getItsRectF() const;
     PType getItsType() const;
 

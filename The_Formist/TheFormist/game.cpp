@@ -455,7 +455,7 @@ void Game::Collision()
             }
             else if(p->getItsType() == BLOOD )
             {
-                itsAvatar->addHP(10);
+                itsAvatar->addHP(20);
                 delete p;
                 it = itsPowerUp.erase(it);
                 break;
