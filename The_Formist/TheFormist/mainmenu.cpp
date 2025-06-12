@@ -10,6 +10,15 @@ MainMenu::MainMenu(QObject* parent)
     fireballBtn = QRect(280, 200, 160, 50);
     rocketBtn = QRect(460, 200, 160, 50);
     gunBtn = QRect(640, 200, 160, 50);
+
+    menuMusicPlayer = new QMediaPlayer(this);
+    audioOutput = new QAudioOutput(this);
+    menuMusicPlayer->setAudioOutput(audioOutput);
+
+    // Exemple avec un fichier dans les ressources
+    menuMusicPlayer->setSource(QUrl("qrc:/Music/Menu.mp3"));
+    audioOutput->setVolume(1);  // Volume entre 0.0 et 1.0
+    menuMusicPlayer->play();
 }
 
 bool MainMenu::isVisible() const { return visible; }
@@ -42,10 +51,25 @@ void MainMenu::handleClick(const QPoint& pos)
             emit quitSelected();
         }
     } else {
-        if (katanaBtn.contains(pos)) emit playSelected(KATANA);
-        else if (fireballBtn.contains(pos)) emit playSelected(FIREBALL);
-        else if (rocketBtn.contains(pos)) emit playSelected(ROCKETLAUNCHER);
-        else if (gunBtn.contains(pos)) emit playSelected(GUN);
+        if (katanaBtn.contains(pos)) {
+            menuMusicPlayer->stop();
+            emit playSelected(KATANA);
+        }
+        else if (fireballBtn.contains(pos)) {
+            menuMusicPlayer->stop();
+            emit playSelected(FIREBALL);
+        }
+        else if (rocketBtn.contains(pos)) {
+            menuMusicPlayer->stop();
+            emit playSelected(ROCKETLAUNCHER);
+        }
+        else if (gunBtn.contains(pos)) {
+            menuMusicPlayer->stop();
+            emit playSelected(GUN);
+        }
     }
 }
-
+void MainMenu::playMusic() {
+    if (menuMusicPlayer && menuMusicPlayer->playbackState() != QMediaPlayer::PlayingState)
+        menuMusicPlayer->play();
+}

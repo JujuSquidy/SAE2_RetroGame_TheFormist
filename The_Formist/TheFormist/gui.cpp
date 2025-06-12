@@ -559,6 +559,7 @@ void GUI::restartGame()
     itsGOM = nullptr;
 
     mainMenu->setVisible(true);  // ← Affiche de nouveau le menu principal
+    mainMenu->playMusic();
     gameIsOver = false;
 }
 
