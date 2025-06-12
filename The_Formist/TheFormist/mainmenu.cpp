@@ -25,7 +25,7 @@ bool MainMenu::isVisible() const { return visible; }
 void MainMenu::setVisible(bool v) { visible = v; }
 
 QString MainMenu::getTitle() const {
-    return weaponSelection ? "Choisis ton arme" : "The Formist";
+    return weaponSelection ? "Choose your weapon" : "The Formist";
 }
 
 QRect MainMenu::getPlayButtonRect() const { return playBtn; }
