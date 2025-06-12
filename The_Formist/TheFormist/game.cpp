@@ -64,16 +64,27 @@ QMediaPlayer *Game::getBackgroundMusicPlayer() const
     return backgroundMusicPlayer;
 }
 
-Game::Game(QObject *parent)
+Game::Game(WeaponType type, QObject *parent)
     : QObject{parent}
 {
     itsBorder = std::pair(4000,2000);
     gameWindowSize = {960, 540};
     itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
-    itsWeapon = new RocketLauncher(10,1,{5,5},{100,100});
-    //itsWeapon = new Katana(50, 2); //initialisation d'un katana
-    //itsWeapon = new Gun(10, 2, {5,5});   //initialisation d'un gun
-    //itsWeapon = new FireBall(5,1,{100,100},{5,5});
+    switch (type)
+    {
+    case GUN:
+        itsWeapon = new Gun(10, 2, {5,5});   //initialisation d'un gun
+        break;
+    case KATANA:
+        itsWeapon = new Katana(50, 2); //initialisation d'un katana
+        break;
+    case FIREBALL:
+        itsWeapon = new FireBall(5,1,{100,100},{5,5});
+        break;
+    case ROCKETLAUNCHER:
+        itsWeapon = new RocketLauncher(10,1,{5,5},{100,100});
+        break;
+    }
     itsTimer = new QTimer(this);
     itsInGameTimer = new QElapsedTimer;
     itsEnemyTimer = new QTimer(this);
