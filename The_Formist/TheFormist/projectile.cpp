@@ -25,7 +25,7 @@ Projectile::Projectile(std::pair<float, float> aTarget, std::pair<float, float> 
         dirX = dx / distance;
         dirY = dy / distance;
     } else {
-        dirX = 0;
+        dirX = 1;
         dirY = 0;
     }
 
