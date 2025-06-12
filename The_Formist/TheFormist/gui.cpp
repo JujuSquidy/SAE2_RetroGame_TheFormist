@@ -75,7 +75,7 @@ void GUI::paintEvent(QPaintEvent *event)
     painter.drawImage(QRectF(0, 0, mapW, mapH), background);
 
     // Dessin relatif à la carte
-    drawAreaDamage(&painter); // debug
+    drawAreaDamage(&painter);
     drawAvatar(&painter);
     drawProjectiles(&painter);
     drawEnemies(&painter);
@@ -92,7 +92,6 @@ void GUI::paintEvent(QPaintEvent *event)
 
     if (itsGOM && itsGOM->isVisible)
     {
-        qDebug() << "Drawing Game Over Menu";
         drawGameOverMenu(&painter);  // NE DOIT PAS être affecté par la translation
     }
 
@@ -113,6 +112,28 @@ void GUI::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_Down)
         itsGame->getItsAvatar()->moveDown(true);
+
+    if (gameIsOver && itsGOM) {
+        QString name = itsGOM->getPlayerName();
+
+        if (event->key() == Qt::Key_Backspace) {
+            if (!name.isEmpty()) {
+                name.chop(1);
+                itsGOM->setPlayerName(name);
+                update();
+            }
+        } else {
+            QString text = event->text();
+            if (!text.isEmpty() && name.length() < 6) {
+                QChar c = text.at(0);
+                if (c.isLetterOrNumber()) {
+                    name.append(c.toUpper());
+                    itsGOM->setPlayerName(name);
+                    update();
+                }
+            }
+        }
+    }
 }
 
 void GUI::keyReleaseEvent(QKeyEvent *event)
@@ -356,31 +377,94 @@ void GUI::drawGameOverMenu(QPainter* painter)
 {
     int screenWidth = width();
     int screenHeight = height();
-    int menuWidth = 300;
-    int menuHeight = 200;
+    int menuWidth = 360;
+    int menuHeight = 420;
 
     int x = (screenWidth - menuWidth) / 2;
     int y = (screenHeight - menuHeight) / 2;
 
+    // Fond du menu
     QRect backgroundRect(x, y, menuWidth, menuHeight);
     painter->setOpacity(1.0);
     painter->setBrush(Qt::black);
     painter->setPen(Qt::white);
     painter->drawRect(backgroundRect);
 
-    QFont font("Arial", 14, QFont::Bold);
-    painter->setFont(font);
+    // Titre
+    QFont titleFont("Arial", 14, QFont::Bold);
+    painter->setFont(titleFont);
     painter->drawText(QRect(x, y + 10, menuWidth, 30), Qt::AlignCenter, "GAME OVER");
-    painter->drawText(QRect(x, y + 50, menuWidth, 30), Qt::AlignCenter, "Score: " + QString::number(itsGOM->getScore()));
-    painter->drawText(QRect(x, y + 80, menuWidth, 30), Qt::AlignCenter, "Time: " + itsGOM->getTimeString());
 
-    QRect replayBtn(x + 40, y + 130, 100, 30);
-    QRect quitBtn(x + 160, y + 130, 100, 30);
+    // Score & temps
+    painter->drawText(QRect(x + 20, y + 50, menuWidth, 30), Qt::AlignLeft, "Score : " + QString::number(itsGOM->getScore()));
+    painter->drawText(QRect(x + 20, y + 80, menuWidth, 30), Qt::AlignLeft, "Time  : " + itsGOM->getTimeString());
+
+    // Nom
+    painter->drawText(QRect(x + 20, y + 110, menuWidth, 20), Qt::AlignLeft, "Nom (max 6 caractères) :");
+    QRect nameInputRect(x + 20, y + 135, menuWidth - 40, 30);
+    itsGOM->setNameInputRect(nameInputRect);
+    painter->setBrush(Qt::white);
+    painter->drawRect(nameInputRect);
+    painter->setPen(Qt::black);
+    painter->drawText(nameInputRect.adjusted(5, 0, 0, 0), Qt::AlignVCenter | Qt::AlignLeft, itsGOM->getPlayerName().left(6));
+
+    painter->setPen(Qt::white);
+
+    // Leaderboard
+    QFont fixedFont("Courier New", 10);
+    painter->setFont(fixedFont);
+
+    int lineHeight = 20;
+    // Largeur de chaque colonne
+    int colRangW = 40;
+    int colNomW = 80;
+    int colScoreW = 60;
+    int colTempsW = 60;
+
+    int totalColsW = colRangW + colNomW + colScoreW + colTempsW;
+    int startX = x + (menuWidth - totalColsW) / 2;
+
+    int colRangX = startX;
+    int colNomX = colRangX + colRangW;
+    int colScoreX = colNomX + colNomW;
+    int colTempsX = colScoreX + colScoreW;
+
+    int yOffset = y + 200;
+
+    // Légende
+    painter->drawText(colRangX, yOffset, "Rang");
+    painter->drawText(colNomX, yOffset, "Nom");
+    painter->drawText(colScoreX, yOffset, "Score");
+    painter->drawText(colTempsX, yOffset, "Temps");
+
+    yOffset += lineHeight;
+
+    // Scores
+    const QVector<ScoreEntry>& topScores = itsGOM->getTopScores();
+    for (int i = 0; i < topScores.size(); ++i) {
+        const ScoreEntry& entry = topScores[i];
+        painter->drawText(colRangX, yOffset, QString::number(i + 1) + ".");
+        painter->drawText(colNomX, yOffset, entry.name.left(6));
+        painter->drawText(colScoreX, yOffset, QString::number(entry.score));
+        painter->drawText(colTempsX, yOffset, entry.time);
+        yOffset += lineHeight;
+    }
+
+    // Boutons centrés
+    int buttonWidth = 100;
+    int spacing = 20;
+    int totalButtonWidth = buttonWidth * 2 + spacing;
+    int buttonStartX = x + (menuWidth - totalButtonWidth) / 2;
+    int buttonY = y + menuHeight - 50;
+
+    QRect replayBtn(buttonStartX, buttonY, buttonWidth, 30);
+    QRect quitBtn(buttonStartX + buttonWidth + spacing, buttonY, buttonWidth, 30);
 
     itsGOM->setReplayButtonRect(replayBtn);
     itsGOM->setQuitButtonRect(quitBtn);
 
     painter->setBrush(Qt::gray);
+    painter->setPen(Qt::white);
     painter->drawRect(replayBtn);
     painter->drawRect(quitBtn);
     painter->drawText(replayBtn, Qt::AlignCenter, "Rejouer");
