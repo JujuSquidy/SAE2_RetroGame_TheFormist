@@ -62,8 +62,8 @@ Game::Game(QObject *parent)
     itsBorder = std::pair(4000,2000);
     gameWindowSize = {960, 540};
     itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
-    //itsWeapon = new Katana(50,1); //initialisation d'un katana
-    itsWeapon = new Gun(10, 1);   //initialisation d'un gun
+    itsWeapon = new Katana(50,1); //initialisation d'un katana
+    //itsWeapon = new Gun(10, 1);   //initialisation d'un gun
     itsTimer = new QTimer(this);
 
     itsInGameTimer = new QElapsedTimer;
@@ -576,32 +576,49 @@ void Game::spawnEnemy()
 
 void Game::upgrade()
 {
-    RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon);
+
+    Katana* katana = dynamic_cast<Katana*>(itsWeapon);
     std::vector<int> availableUpgrades = {MORE_PROJECTILE, REVERSE_PROJECTILE, MORE_DAMAGE, MORE_HP};
-    std::shuffle(availableUpgrades.begin(), availableUpgrades.end(), *QRandomGenerator::global());
+    std::shuffle(availableUpgrades.begin(), availableUpgrades.end(), *QRandomGenerator::global());    
 
     for (int upgrade : availableUpgrades)
     {
         switch (upgrade)
         {
             case MORE_PROJECTILE:
+            if (RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon))
+            {
                 if (rw->getItsNbProjectiles() < 3)
                 {
                     rw->AddNbProjectile();
                     return;
                 }
+            }
+            else
+            {
+                katana->addItsRange();
+                return;
+            }
                 break;
 
             case REVERSE_PROJECTILE:
-                if (rw->getItsNbReverseProjectile() < 2)
+                if (RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon))
                 {
-                    rw->AddNbReverseProjectile();
+                    if (rw->getItsNbReverseProjectile() < 2)
+                    {
+                        rw->AddNbReverseProjectile();
+                        return;
+                    }
+                }
+                else
+                {
+                    itsWeapon->addItsAttackSpeed();
                     return;
                 }
                 break;
 
             case MORE_DAMAGE:
-                rw->AddBaseDamage(2);
+                itsWeapon->AddBaseDamage(2);
                 return;
 
             case MORE_HP:

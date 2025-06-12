@@ -17,7 +17,7 @@ float Katana::getItsRange() const
 
 void Katana::addItsRange()
 {
-    itsRange ++;
+    itsRange +=10;
 }
 
 // Calcule la zone d'attaque du katana en fonction de la position de l'avatar et du ciblage souris
