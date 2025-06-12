@@ -561,9 +561,11 @@ void Game::GameLoop()
     //prise de niveau et améliorations
     if (itsAvatar->getItsXP() >= itsAvatar->getItsMaxXP())
     {
+        int temp = itsAvatar->getItsXP() - itsAvatar->getItsMaxXP();
+
         itsAvatar->levelUp();
         itsAvatar->addMaxXP(2);
-        itsAvatar->setItsXP(0);
+        itsAvatar->setItsXP(temp);
         if (itsAvatar->getItsLevel() % 5 == 0)
         {
             upgrade();
