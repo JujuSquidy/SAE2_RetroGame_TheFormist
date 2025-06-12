@@ -577,7 +577,6 @@ void Game::spawnEnemy()
 void Game::upgrade()
 {
 
-    Katana* katana = dynamic_cast<Katana*>(itsWeapon);
     std::vector<int> availableUpgrades = {MORE_PROJECTILE, REVERSE_PROJECTILE, MORE_DAMAGE, MORE_HP};
     std::shuffle(availableUpgrades.begin(), availableUpgrades.end(), *QRandomGenerator::global());    
 
@@ -594,7 +593,8 @@ void Game::upgrade()
                     return;
                 }
             }
-            else
+            else if (Katana* katana = dynamic_cast<Katana*>(itsWeapon);
+)
             {
                 katana->addItsRange();
                 return;
@@ -610,7 +610,8 @@ void Game::upgrade()
                         return;
                     }
                 }
-                else
+                else if (Katana* katana = dynamic_cast<Katana*>(itsWeapon));
+
                 {
                     itsWeapon->addItsAttackSpeed();
                     return;
@@ -627,6 +628,12 @@ void Game::upgrade()
                 return;
         }
     }
+    if (upgradeMenuOpen)
+        return;
+    currentUpgradeChoices = selectRandomUpgrades();
+    pauseGame();
+    showUpgradeChoices();
+    upgradeMenuOpen = true;
 }
 
 void Game::updateTemporaryBoosts()
