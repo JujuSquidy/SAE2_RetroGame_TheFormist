@@ -104,7 +104,7 @@ public:
     /**
  * @brief Constructs the Game object and initializes components.
  */
-    Game(QObject *parent = nullptr);
+    Game(WeaponType type, QObject *parent = nullptr);
 
     /**
  * @brief Destructor that cleans up dynamically allocated resources.

@@ -3,6 +3,7 @@
 
 #include "game.h"
 #include "gameovermenu.h"
+#include "mainmenu.h"
 #include <QMouseEvent>
 #include <QWidget>
 #include <QMessageBox>
@@ -25,6 +26,7 @@ private:
      */
     Game* itsGame;
     GameOverMenu* itsGOM = nullptr;
+    MainMenu* mainMenu;
 
     /**
      * @brief Qt timer that regularly triggers screen updates and game loop refresh.
@@ -36,6 +38,8 @@ private:
     bool gameIsOver = false;
 
     QPointF cameraPosition; // en haut à gauche du viewport dans le monde
+
+    WeaponType currentWeaponType;
 
     QImage boots;
     QImage shield;
@@ -100,6 +104,8 @@ protected:
     void mousePressEvent(QMouseEvent* event) override;
 
 
+
+
 private:
     /**
  * @brief Draws the avatar on the screen.
@@ -143,6 +149,10 @@ private:
     void drawTimer(QPainter *aPainter, float offsetX, float offsetY, int screenW);
 
     void drawGameOverMenu(QPainter* painter);
+
+    void drawMainMenu(QPainter* painter);
+
+    void startGame(WeaponType type);
 
     void updateMousePos();    
 };
