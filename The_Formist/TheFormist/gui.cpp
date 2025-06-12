@@ -103,16 +103,16 @@ void GUI::paintEvent(QPaintEvent *event)
 void GUI::keyPressEvent(QKeyEvent *event)
 {
     // Handle key press events for left and right arrow keys
-    if (event->key() == Qt::Key_Left)
+    if (event->key() == Qt::Key_Q)
         itsGame->getItsAvatar()->moveLeft(true);
 
-    if (event->key() == Qt::Key_Right)
+    if (event->key() == Qt::Key_D)
         itsGame->getItsAvatar()->moveRight(true);
 
-    if (event->key() == Qt::Key_Up)
+    if (event->key() == Qt::Key_Z)
         itsGame->getItsAvatar()->moveUp(true);
 
-    if (event->key() == Qt::Key_Down)
+    if (event->key() == Qt::Key_S)
         itsGame->getItsAvatar()->moveDown(true);
 
     if (gameIsOver && itsGOM) {
@@ -141,16 +141,16 @@ void GUI::keyPressEvent(QKeyEvent *event)
 void GUI::keyReleaseEvent(QKeyEvent *event)
 {
     // Handle key release events for left and right arrow keys
-    if (event->key() == Qt::Key_Left)
+    if (event->key() == Qt::Key_Q)
         itsGame->getItsAvatar()->moveLeft(false);
 
-    if (event->key() == Qt::Key_Right)
+    if (event->key() == Qt::Key_D)
         itsGame->getItsAvatar()->moveRight(false);
 
-    if (event->key() == Qt::Key_Up)
+    if (event->key() == Qt::Key_Z)
         itsGame->getItsAvatar()->moveUp(false);
 
-    if (event->key() == Qt::Key_Down)
+    if (event->key() == Qt::Key_S)
         itsGame->getItsAvatar()->moveDown(false);
 }
 
