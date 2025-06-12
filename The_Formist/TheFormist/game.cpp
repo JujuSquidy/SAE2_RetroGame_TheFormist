@@ -69,7 +69,6 @@ Game::Game(QObject *parent)
     //itsWeapon = new Katana(50,1); //initialisation d'un katana
     //itsWeapon = new Gun(10, 1);   //initialisation d'un gun
     itsTimer = new QTimer(this);
-
     itsInGameTimer = new QElapsedTimer;
     itsEnemyTimer = new QTimer(this);
 
@@ -646,7 +645,6 @@ void Game::spawnEnemy()
 
 void Game::upgrade()
 {
-
     std::vector<int> availableUpgrades = {MORE_PROJECTILE, REVERSE_PROJECTILE, MORE_DAMAGE, MORE_HP};
     std::shuffle(availableUpgrades.begin(), availableUpgrades.end(), *QRandomGenerator::global());    
 

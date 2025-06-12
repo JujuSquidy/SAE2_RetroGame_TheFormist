@@ -1,6 +1,7 @@
 #include "gui.h"
 #include <QKeyEvent>
 #include <QPainter>
+#include "katana.h"
 
 int avatarHeight = 30;
 int avatarWidth = 30;
@@ -79,7 +80,8 @@ void GUI::paintEvent(QPaintEvent *event)
     drawAvatar(&painter);
     drawProjectiles(&painter);
     drawEnemies(&painter);
-    drawKatana(&painter); //à voir pour mettre un for car se dessine tout le temps là sinon
+    if (dynamic_cast<Katana*>(itsGame->getItsWeapon()))
+        drawKatana(&painter);
     drawPowerUP(&painter);
 
     // === Partie HUD et Menu Game Over : coordonnées écran ===
