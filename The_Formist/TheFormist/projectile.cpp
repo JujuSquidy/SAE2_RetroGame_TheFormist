@@ -39,11 +39,6 @@ void Projectile::move()
     itsRectF.moveTo(itsPosition.first,itsPosition.second);
 }
 
-void Projectile::createArea()
-{
-
-}
-
 std::pair<float, float> Projectile::getItsPosition() const
 {
     return itsPosition;

@@ -107,6 +107,9 @@ private:
  */
     void drawAvatar(QPainter * aPainter);
 
+    void drawKatana(QPainter * aPainter);
+
+
     /**
  * @brief Draws all enemies on the screen.
  * @param aPainter Painter used for rendering.
@@ -124,6 +127,8 @@ private:
  * @param aPainter Painter used for rendering.
  */
     void drawPowerUP(QPainter * aPainter);
+
+    void drawAreaDamage(QPainter * aPainter);
 
     /**
  * @brief Draws the player life bar.
