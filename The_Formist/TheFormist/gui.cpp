@@ -77,8 +77,8 @@ void GUI::paintEvent(QPaintEvent *event)
     drawAvatar(&painter);
     drawProjectiles(&painter);
     drawEnemies(&painter);
+    drawKatana(&painter); //à voir pour mettre un for car se dessine tout le temps là sinon
     drawPowerUP(&painter);
-
     drawPlayerLifeBar(&painter, offsetX, offsetY, screenH);
     drawPlayerXPBar(&painter, offsetX, offsetY, screenH, screenW);
     drawScore(&painter, offsetX, offsetY, screenW);
@@ -364,3 +364,43 @@ void GUI::restartGame()
     connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
     gameIsOver = false;  // Reset
 }
+
+void GUI::drawKatana(QPainter *aPainter)
+{
+    Weapon* weapon = itsGame->getItsWeapon();
+    if (!weapon) return;
+
+    auto avatarPos = itsGame->getItsAvatar()->getItsPosition();
+
+    // Récupérer la position cible
+    std::pair<float, float> targetPos = itsGame->getMouseTarget(); // à adapter selon ta fonction
+
+    float dx = targetPos.first - (avatarPos.first + avatarWidth / 2);
+    float dy = targetPos.second - (avatarPos.second + avatarHeight / 2);
+    float angle = std::atan2(dy, dx);  // angle en radians
+
+    // Taille du katana
+    float width = 100;
+    float height = 10;
+
+    // Position du katana : on veut que le katana soit attaché au centre de l'avatar
+    float cx = avatarPos.first + avatarWidth / 2;
+    float cy = avatarPos.second + avatarHeight / 2;
+
+    aPainter->save();
+
+    // Translation vers le centre de l'avatar
+    aPainter->translate(cx, cy);
+    // Rotation pour orienter le katana vers la souris
+    aPainter->rotate(angle * 180 / M_PI);
+
+    // Dessin du katana, décalé pour que le "poignée" soit au centre
+    QRectF rect(0, -height/2, width, height);
+
+    aPainter->setPen(Qt::NoPen);
+    aPainter->setBrush(Qt::yellow);
+    aPainter->drawRect(rect);
+
+    aPainter->restore();
+}
+

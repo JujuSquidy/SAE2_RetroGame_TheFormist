@@ -169,6 +169,7 @@ public:
 
     QElapsedTimer getItsInGameTimer() const;
 
+    std::pair<int, int> getMouseTarget() const;
 
     std::vector<PowerUp *> getItsPowerUp() const;
 

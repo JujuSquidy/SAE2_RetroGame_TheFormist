@@ -1,7 +1,9 @@
 #include "game.h"
 #include "gun.h"
+#include "katana.h"
 #include "rangedweapon.h"
 #include <QRandomGenerator>
+#include <iostream> //à retirer
 
 
 Avatar *Game::getItsAvatar() const
@@ -44,6 +46,11 @@ QElapsedTimer Game::getItsInGameTimer() const
     return *itsInGameTimer;
 }
 
+
+std::pair<int, int> Game::getMouseTarget() const
+{
+    return mouseTarget;
+}
 std::vector<PowerUp *> Game::getItsPowerUp() const
 {
     return itsPowerUp;
@@ -55,7 +62,8 @@ Game::Game(QObject *parent)
     itsBorder = std::pair(4000,2000);
     gameWindowSize = {960, 540};
     itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
-    itsWeapon = new Gun(10, 1);
+    //itsWeapon = new Katana(50,1); //initialisation d'un katana
+    itsWeapon = new Gun(10, 1);   //initialisation d'un gun
     itsTimer = new QTimer(this);
 
     itsInGameTimer = new QElapsedTimer;
@@ -228,6 +236,53 @@ void Game::Collision()
         }
     }
 
+    Katana* katana = dynamic_cast<Katana*>(itsWeapon);
+    if (katana && katana->getIsShooting())
+    {
+        QRectF hitbox = katana->katanaAreaDamage(itsAvatar->getItsPosition(), mouseTarget);
+
+        for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
+        {
+            Enemy* e = *enemyIt;
+            float ex = e->getItsPosition().first;
+            float ey = e->getItsPosition().second;
+
+            if (hitbox.contains(ex, ey))
+            {
+                e->takeDamage(itsWeapon->getItsDamage());
+                std::cout<<"j'ai touché un ennemi !"<<std::endl;
+            }
+
+            if (e->isDead())
+            {
+                std::cout<<"j'ai tué un ennemi !"<<std::endl;
+                std::cout<<std::endl;
+                itsAvatar->addXP(e->getItsGivenXP());
+                switch (e->getType())
+                {
+                case TRIANGLE:
+                    AddScore(1);
+                    break;
+                case CIRCLE:
+                    AddScore(1);
+                    break;
+                case SQUARE:
+                    AddScore(2);
+                    break;
+                case BOSS:
+                    AddScore(50);
+                    break;
+                }
+                delete e;
+                enemyIt = itsEnemies.erase(enemyIt);
+            }
+            else
+            {
+                ++enemyIt;
+            }
+        }
+    }
+
     for (std::vector<Projectile*>::iterator enProjIt = itsEnemyProjectiles.begin(); enProjIt != itsEnemyProjectiles.end(); )
     {
         Projectile * proj = *enProjIt;
@@ -335,46 +390,51 @@ void Game::GameOver()
 void Game::GameLoop()
 {
     QRect* avatarRect = itsAvatar->getItsQRect();
-
     updateTemporaryBoosts();
-    RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon);
-    if (itsWeapon->getIsShooting())
+    if(RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon))
     {
-        if (rw->getItsMultipleProjectileDelay().elapsed() > 30)
+        if (itsWeapon->getIsShooting())
         {
-            std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
-
-            if (mouseTarget != avatarPos)
+            if (itsWeapon->getIsShooting())
             {
-                QPoint center = avatarRect->center();
-
-                if (rw->getNbProjectilesShooted() < rw->getItsNbProjectiles())
+                if (rw->getItsMultipleProjectileDelay().elapsed() > 30)
                 {
-                    std::pair<int,int> target = mouseTarget;
-                    Projectile* p = new Projectile(target, {center.x(), center.y()}, {5,5}, 10, 5);
-                    itsAvatarProjectiles.push_back(p);
-                    rw->addNbProjectilesShooted();
-                }
-                else if (rw->getNbReverseProjectilesShooted() < rw->getItsNbReverseProjectile())
-                {
-                    int dx = mouseTarget.first - avatarPos.first;
-                    int dy = mouseTarget.second - avatarPos.second;
-                    std::pair<int,int> reversedTarget = {avatarPos.first - dx, avatarPos.second - dy};
-                    Projectile* p = new Projectile(reversedTarget, {center.x(), center.y()}, {5,5}, 10, 5);
-                    itsAvatarProjectiles.push_back(p);
-                    rw->addNbReverseProjectilesShooted();
-                }
+                    std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
 
-                rw->getItsMultipleProjectileDelay().start();
-            }
+                    if (mouseTarget != avatarPos)
+                    {
+                        QPoint center = avatarRect->center();
 
-            if (rw->getNbProjectilesShooted() >= rw->getItsNbProjectiles() &&
-                rw->getNbReverseProjectilesShooted() >= rw->getItsNbReverseProjectile())
-            {
-                itsWeapon->setIsShooting(false);
+                        if (rw->getNbProjectilesShooted() < rw->getItsNbProjectiles())
+                        {
+                            std::pair<int,int> target = mouseTarget;
+                            Projectile* p = new Projectile(target, {center.x(), center.y()}, {5,5}, 10, 5);
+                            itsAvatarProjectiles.push_back(p);
+                            rw->addNbProjectilesShooted();
+                        }
+                        else if (rw->getNbReverseProjectilesShooted() < rw->getItsNbReverseProjectile())
+                        {
+                            int dx = mouseTarget.first - avatarPos.first;
+                            int dy = mouseTarget.second - avatarPos.second;
+                            std::pair<int,int> reversedTarget = {avatarPos.first - dx, avatarPos.second - dy};
+                            Projectile* p = new Projectile(reversedTarget, {center.x(), center.y()}, {5,5}, 10, 5);
+                            itsAvatarProjectiles.push_back(p);
+                            rw->addNbReverseProjectilesShooted();
+                        }
+
+                        rw->getItsMultipleProjectileDelay().start();
+                    }
+
+                    if (rw->getNbProjectilesShooted() >= rw->getItsNbProjectiles() &&
+                        rw->getNbReverseProjectilesShooted() >= rw->getItsNbReverseProjectile())
+                    {
+                        itsWeapon->setIsShooting(false);
+                    }
+                }
             }
         }
     }
+
 
     for (Enemy* enemy : itsEnemies)
     {
@@ -415,6 +475,15 @@ void Game::GameLoop()
 
     Collision();
 
+    //Pas appelé avant car sinon ne gère pas la collision (l'autre solution serait de mettre isShooting à false dans la collision)
+    if (Katana* katana = dynamic_cast<Katana*>(itsWeapon))
+    {
+        if (itsWeapon->getIsShooting())
+        {
+            itsWeapon->setIsShooting(false);
+        }
+    }
+
     if (itsAvatar->getItsHP() == 0)
     {
         GameOver();
@@ -432,6 +501,7 @@ void Game::GameLoop()
         }
     }
 }
+
 
 
 std::vector<Enemy *> Game::getItsEnemies() const
