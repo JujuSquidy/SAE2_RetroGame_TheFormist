@@ -12,6 +12,7 @@ SOURCES += \
     areadamage.cpp \
     avatar.cpp \
     enemy.cpp \
+    fireball.cpp \
     game.cpp \
     gameovermenu.cpp \
     gun.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     areadamage.h \
     avatar.h \
     enemy.h \
+    fireball.h \
     game.h \
     gameovermenu.h \
     gui.h \
