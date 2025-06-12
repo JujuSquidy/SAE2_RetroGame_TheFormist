@@ -33,11 +33,6 @@ private :
  */
     bool isInvincible;
 
-    /**
- * @brief Visual representation (sprite) of the avatar.
- */
-    QImage* itsSprite;
-
 /**
  * @brief Graphical rectangle used for drawing and collision detection.
  */

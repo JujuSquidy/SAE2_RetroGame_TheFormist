@@ -202,5 +202,3 @@ void Avatar::takeDamage(int amount)
         lastDamageTime.restart();
     }
 }
-
-

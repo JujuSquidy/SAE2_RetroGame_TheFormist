@@ -11,7 +11,7 @@
  * Represents the type of effect the power-up provides:
  * - SHIELD: Grants protection against 1 attack.
  * - SYRINGE: Increases damage.
- * - BLOOD: Grant 10 HP.
+ * - BLOOD: Grant 20 HP.
  * - PEPPER: Increases attack speed.
  * - BOOTS: Increases player movement speed.
  */

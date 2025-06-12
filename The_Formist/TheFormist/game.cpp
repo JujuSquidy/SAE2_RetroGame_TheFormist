@@ -79,7 +79,7 @@ Game::Game(WeaponType type, QObject *parent)
         itsWeapon = new Katana(50, 2); //initialisation d'un katana
         break;
     case FIREBALL:
-        itsWeapon = new FireBall(5,1,{100,100},{5,5});
+        itsWeapon = new FireBall(5,1,{5,5},{100,100});
         break;
     case ROCKETLAUNCHER:
         itsWeapon = new RocketLauncher(10,1,{5,5},{100,100});

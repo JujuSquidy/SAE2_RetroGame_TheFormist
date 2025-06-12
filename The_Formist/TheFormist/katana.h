@@ -12,7 +12,6 @@ private:
     float itsRange=100;
     QRectF itsKatanaImpactArea;
 
-
 public:
     Katana(int baseDamage, float baseAttackSpeed);
     ~Katana();
