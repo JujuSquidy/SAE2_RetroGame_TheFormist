@@ -3,6 +3,14 @@
 
 #include <QTimer>
 #include <QImage>
+
+enum WeaponType {
+    GUN,
+    KATANA,
+    FIREBALL,
+    ROCKETLAUNCHER
+};
+
 /**
  * @class Weapon
  * @brief Base class for all weapons in the game.

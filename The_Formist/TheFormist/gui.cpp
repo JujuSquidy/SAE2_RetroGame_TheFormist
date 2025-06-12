@@ -17,6 +17,10 @@ GUI::GUI(Game * aGame, QWidget *parent)
     itsTimer->start(17);
     connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
 
+    mainMenu = new MainMenu(this);
+    connect(mainMenu, &MainMenu::playSelected, this, &GUI::startGame);
+    connect(mainMenu, &MainMenu::quitSelected, this, &GUI::close);
+
     boots.load(":/Pictures/boots.png");
     shield.load(":/Pictures/shield.png");
     syringe.load(":/Pictures/syringe.png");
@@ -47,6 +51,11 @@ void GUI::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QPainter painter(this);
+
+    if (mainMenu->isVisible()) {
+        drawMainMenu(&painter);
+        return;
+    }
 
     // Position de l'avatar
     std::pair<float, float> avatarPos = itsGame->getItsAvatar()->getItsPosition();
@@ -495,17 +504,23 @@ void GUI::onGameOver()
 void GUI::restartGame()
 {
     delete itsGame;
-    itsGame = new Game();
-    itsGOM->getGameOverMusicPlayer()->stop();
-    connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
-    itsGOM->isVisible = false;
-    gameIsOver = false;  // Reset
-    itsGame->getBackgroundMusicPlayer()->play();
+    itsGame = nullptr;
 
+    itsGOM->isVisible = false;
+    delete itsGOM;
+    itsGOM = nullptr;
+
+    mainMenu->setVisible(true);  // ← Affiche de nouveau le menu principal
+    gameIsOver = false;
 }
 
 void GUI::mousePressEvent(QMouseEvent* event)
 {
+    if (mainMenu->isVisible()) {
+        mainMenu->handleClick(event->pos());
+        return;
+    }
+
     if (itsGOM && itsGOM->isVisible)
     {
         itsGOM->handleClick(event->pos());
@@ -550,4 +565,53 @@ void GUI::drawKatana(QPainter *aPainter)
     aPainter->drawRect(rect);
 
     aPainter->restore();
+}
+
+void GUI::drawMainMenu(QPainter* painter)
+{
+    painter->setPen(Qt::white);
+    painter->setBrush(Qt::black);
+    painter->drawRect(rect());
+
+    QFont titleFont("Arial", 28, QFont::Bold);
+    painter->setFont(titleFont);
+    painter->drawText(rect(), Qt::AlignTop | Qt::AlignHCenter, mainMenu->getTitle());
+
+    QFont buttonFont("Arial", 14);
+    painter->setFont(buttonFont);
+
+    if (!mainMenu->getTitle().contains("arme")) {
+        painter->setBrush(Qt::darkGray);
+        painter->drawRect(mainMenu->getPlayButtonRect());
+        painter->drawRect(mainMenu->getQuitButtonRect());
+
+        painter->drawText(mainMenu->getPlayButtonRect(), Qt::AlignCenter, "Jouer");
+        painter->drawText(mainMenu->getQuitButtonRect(), Qt::AlignCenter, "Quitter");
+    } else {
+        for (int i = 0; i < 4; ++i) {
+            WeaponType wt = static_cast<WeaponType>(i);
+            QRect btn = mainMenu->getWeaponButtonRect(wt);
+            painter->setBrush(Qt::gray);
+            painter->drawRect(btn);
+
+            QString label;
+            switch (wt) {
+            case KATANA: label = "Katana"; break;
+            case FIREBALL: label = "Boule de feu"; break;
+            case ROCKETLAUNCHER: label = "Lance-roquette"; break;
+            case GUN: label = "Pistolet"; break;
+            }
+
+            painter->drawText(btn, Qt::AlignCenter, label);
+        }
+    }
+}
+
+void GUI::startGame(WeaponType type)
+{
+    currentWeaponType = type;
+    itsGame = new Game(type);
+    connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
+    mainMenu->setVisible(false);
+    gameIsOver = false;
 }
