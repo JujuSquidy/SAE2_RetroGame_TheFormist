@@ -16,7 +16,6 @@
     </qresource>
     <qresource prefix="/Music">
         <file>Game.mp3</file>
-        <file>GO.mp3</file>
         <file>Menu.mp3</file>
         <file>GO.wav</file>
     </qresource>
