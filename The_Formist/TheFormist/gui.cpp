@@ -491,10 +491,10 @@ void GUI::drawGameOverMenu(QPainter* painter)
     int yOffset = y + 200;
 
     // Légende
-    painter->drawText(colRangX, yOffset, "Rang");
-    painter->drawText(colNomX, yOffset, "Nom");
+    painter->drawText(colRangX, yOffset, "Rank");
+    painter->drawText(colNomX, yOffset, "Name");
     painter->drawText(colScoreX, yOffset, "Score");
-    painter->drawText(colTempsX, yOffset, "Temps");
+    painter->drawText(colTempsX, yOffset, "Time");
 
     yOffset += lineHeight;
 
@@ -526,8 +526,8 @@ void GUI::drawGameOverMenu(QPainter* painter)
     painter->setPen(Qt::white);
     painter->drawRect(replayBtn);
     painter->drawRect(quitBtn);
-    painter->drawText(replayBtn, Qt::AlignCenter, "Rejouer");
-    painter->drawText(quitBtn, Qt::AlignCenter, "Quitter");
+    painter->drawText(replayBtn, Qt::AlignCenter, "Replay");
+    painter->drawText(quitBtn, Qt::AlignCenter, "Quit");
 }
 
 void GUI::onGameOver()
@@ -544,8 +544,6 @@ void GUI::onGameOver()
     itsGame->getBackgroundMusicPlayer()->stop();
     itsGOM->getGameOverMusicPlayer()->setPosition(0);  // Remet au début
     itsGOM->getGameOverMusicPlayer()->play();
-    qDebug() << "GO player state:" << itsGOM->getGameOverMusicPlayer()->playbackState();
-    qDebug() << "GO player error:" << itsGOM->getGameOverMusicPlayer()->errorString();
     update();
 }
 
@@ -629,13 +627,13 @@ void GUI::drawMainMenu(QPainter* painter)
     QFont buttonFont("Arial", 14);
     painter->setFont(buttonFont);
 
-    if (!mainMenu->getTitle().contains("arme")) {
+    if (!mainMenu->getTitle().contains("weapon")) {
         painter->setBrush(Qt::darkGray);
         painter->drawRect(mainMenu->getPlayButtonRect());
         painter->drawRect(mainMenu->getQuitButtonRect());
 
-        painter->drawText(mainMenu->getPlayButtonRect(), Qt::AlignCenter, "Jouer");
-        painter->drawText(mainMenu->getQuitButtonRect(), Qt::AlignCenter, "Quitter");
+        painter->drawText(mainMenu->getPlayButtonRect(), Qt::AlignCenter, "Play");
+        painter->drawText(mainMenu->getQuitButtonRect(), Qt::AlignCenter, "Quit");
     } else {
         for (int i = 0; i < 4; ++i) {
             WeaponType wt = static_cast<WeaponType>(i);
@@ -646,9 +644,9 @@ void GUI::drawMainMenu(QPainter* painter)
             QString label;
             switch (wt) {
             case KATANA: label = "Katana"; break;
-            case FIREBALL: label = "Boule de feu"; break;
-            case ROCKETLAUNCHER: label = "Lance-roquette"; break;
-            case GUN: label = "Pistolet"; break;
+            case FIREBALL: label = "Fireball"; break;
+            case ROCKETLAUNCHER: label = "Rocket Launcher"; break;
+            case GUN: label = "Gun"; break;
             }
 
             painter->drawText(btn, Qt::AlignCenter, label);
