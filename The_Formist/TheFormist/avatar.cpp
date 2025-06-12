@@ -78,12 +78,10 @@ void Avatar::addXP(int aNB)
     itsXP += aNB;
 }
 
-
 void Avatar::levelUp()
 {
     itsLevel++;
 }
-
 
 void Avatar::moveLeft(bool enable)
 {

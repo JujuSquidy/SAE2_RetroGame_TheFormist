@@ -124,6 +124,8 @@ private:
  */
     void drawPowerUP(QPainter * aPainter);
 
+    void drawAreaDamage(QPainter * aPainter);
+
     /**
  * @brief Draws the player life bar.
  * @param aPainter ainter used for rendering.

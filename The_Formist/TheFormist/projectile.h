@@ -1,7 +1,7 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 #include <QImage>
-#include <utility>
+
 /**
  * @class Projectile
  * @brief Represents a moving projectile in the game, typically fired by a player or enemy.
@@ -61,11 +61,6 @@ public:
     void move();
 
     /**
- * @brief Defines an area affected by the projectile (placeholder for AoE or collision detection).
- */
-    void createArea();
-
-    /**
  * @brief Returns the current position of the projectile.
  * @return A pair representing the (x, y) coordinates.
  */
@@ -84,7 +79,6 @@ public:
  * @return int The damage value.
  */
     int getItsDamage() const;
-
 };
 
 #endif // PROJECTILE_H

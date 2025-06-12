@@ -74,6 +74,7 @@ void GUI::paintEvent(QPaintEvent *event)
     painter.drawImage(QRectF(0, 0, mapW, mapH), background);
 
     // Dessin relatif à la carte
+    drawAreaDamage(&painter); // debug
     drawAvatar(&painter);
     drawProjectiles(&painter);
     drawEnemies(&painter);
@@ -201,6 +202,14 @@ void GUI::drawPowerUP(QPainter *aPainter)
 
         }
     }
+}
+
+void GUI::drawAreaDamage(QPainter *aPainter)
+{
+    aPainter->setPen(QPen(QColor(255,165,0)));
+    aPainter->setBrush(Qt::SolidPattern);
+    for(AreaDamage * AD : itsGame->getItsAreaDamages())
+        aPainter->drawRect(AD->getItsRectF());
 }
 
 void GUI::drawPlayerLifeBar(QPainter *aPainter, float offsetX, float offsetY, int screenH)

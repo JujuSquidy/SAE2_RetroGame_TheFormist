@@ -16,7 +16,7 @@ private:
     /**
  * @brief Speed of the projectiles fired by the weapon.
  */
-    float itsAvatarProjectilespeed;
+    float itsProjectileSpeed;
 
     /**
  * @brief Number of projectiles fired per attack.
@@ -26,7 +26,7 @@ private:
     /**
  * @brief Number of reverse projectiles fired by attack
  */
-    int   itsNbReverseProjectile = 0;
+    int itsNbReverseProjectile = 0;
 
     QElapsedTimer itsMultipleProjectileDelay;
 
@@ -75,6 +75,7 @@ public:
     void addNbReverseProjectilesShooted();
     int getNbReverseProjectilesShooted() const;
     void attack();
+    float getItsProjectileSpeed() const;
 };
 
 #endif // RANGEDWEAPON_H
