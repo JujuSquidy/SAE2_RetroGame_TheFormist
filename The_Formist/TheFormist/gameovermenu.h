@@ -1,9 +1,17 @@
 #ifndef GAMEOVERMENU_H
 #define GAMEOVERMENU_H
 
-#include <QObject>
+
 #include <QString>
 #include <QRect>
+#include <QVector>
+#include <QObject>
+
+struct ScoreEntry {
+    QString name;
+    int score;
+    QString time;
+};
 
 class GameOverMenu : public QObject
 {
@@ -14,11 +22,18 @@ public:
 
     int getScore() const;
     QString getTimeString() const;
+    QString getPlayerName() const { return itsPlayerName; }
+    void setNameInputRect(const QRect& rect) { nameInputRect = rect; }
+    QRect getNameInputRect() const { return nameInputRect; }
 
+    void setPlayerName(const QString& name) { itsPlayerName = name.left(6); }
     void setReplayButtonRect(const QRect& rect);
     void setQuitButtonRect(const QRect& rect);
     QRect getReplayButtonRect() const;
     QRect getQuitButtonRect() const;
+    void handleClick(const QPoint& pos);
+
+    QVector<ScoreEntry> getTopScores() const;
 
     bool isVisible = true;
 
@@ -26,18 +41,19 @@ signals:
     void replayRequested();
     void quitRequested();
 
-    /**
-     * @brief Call when a click happens to determine what to do.
-     */
-public:
-    void handleClick(const QPoint& pos);
-
 private:
     int itsScore;
     QString itsTimeStr;
+    QString itsPlayerName;
+    QRect nameInputRect;
 
     QRect replayButtonRect;
     QRect quitButtonRect;
+
+    QVector<ScoreEntry> topScores;
+
+    void loadScores();
+    void saveScores();
 };
 
 #endif // GAMEOVERMENU_H
