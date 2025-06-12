@@ -42,6 +42,8 @@ private :
  */
     int itsDamage;
 
+    float itsDistanceTraveled = 0;
+
     QRectF itsRectF;
 
 public:
@@ -79,6 +81,7 @@ public:
  * @return int The damage value.
  */
     int getItsDamage() const;
+    float getItsDistanceTraveled() const;
 };
 
 #endif // PROJECTILE_H

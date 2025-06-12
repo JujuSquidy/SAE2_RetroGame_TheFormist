@@ -8,7 +8,7 @@ void AreaDamage::addTick()
 void AreaDamage::resetBurn()
 {
     isBurning = false;
-    itsTimer->start(200);
+    itsTimer->start(400);
 }
 
 void AreaDamage::burn()
