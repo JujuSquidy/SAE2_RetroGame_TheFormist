@@ -62,7 +62,7 @@ Game::Game(QObject *parent)
     itsBorder = std::pair(4000,2000);
     gameWindowSize = {960, 540};
     itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
-    itsWeapon = new Katana({0, 0}, {itsBorder.first / 2, itsBorder.second / 2}, {50, 50}, 20, 1, nullptr); //initialisation d'un katana
+    itsWeapon = new Katana(50,1); //initialisation d'un katana
     //itsWeapon = new Gun(10, 1);   //initialisation d'un gun
     itsTimer = new QTimer(this);
 
@@ -235,17 +235,11 @@ void Game::Collision()
                 ++avProjIt;
         }
     }
+
     Katana* katana = dynamic_cast<Katana*>(itsWeapon);
     if (katana && katana->getIsShooting())
     {
-        std::vector<float> cone = katana->katanaAreaDamage(itsAvatar, mouseTarget);
-
-        float centerX = cone[0];
-        float centerY = cone[1];
-        float dirX = cone[2];
-        float dirY = cone[3];
-        float range = cone[4];
-        float cosHalfAngle = cone[5];
+        QRectF hitbox = katana->katanaAreaDamage(itsAvatar->getItsPosition(), mouseTarget);
 
         for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
         {
@@ -253,56 +247,39 @@ void Game::Collision()
             float ex = e->getItsPosition().first;
             float ey = e->getItsPosition().second;
 
-            float dx = ex - centerX;
-            float dy = ey - centerY;
-            float dist = std::sqrt(dx*dx + dy*dy);
-
-            if (dist <= range) {
-                float norm = (dist != 0) ? dist : 1;
-                float enemyDirX = dx / norm;
-                float enemyDirY = dy / norm;
-
-                float dot = dirX * enemyDirX + dirY * enemyDirY;
-
-                if (dot >= cosHalfAngle) {
-                    e->takeDamage(itsWeapon->getItsDamage());
-                }
-            }
-        }
-                    std::cout<<"j'ai touché cet ennemi"<<std::endl;
-
-
-                    if (e->isDead())
-                    {
-                        itsAvatar->addXP(e->getItsGivenXP());
-                        switch (e->getType())
-                        {
-                        case TRIANGLE:
-                            AddScore(1);
-                            break;
-
-                        case CIRCLE:
-                            AddScore(1);
-                            break;
-
-                        case SQUARE:
-                            AddScore(2);
-                            break;
-
-                        case BOSS:
-                            AddScore(50);
-                            break;
-                        }
-                        delete e;
-                        enemyIt = itsEnemies.erase(enemyIt);
-
-                    }
-                    else
-                        ++enemyIt;
-                }
+            if (hitbox.contains(ex, ey))
+            {
+                e->takeDamage(itsWeapon->getItsDamage());
+                std::cout<<"j'ai touché un ennemi !"<<std::endl;
             }
 
-            ++enemyIt;
+            if (e->isDead())
+            {
+                std::cout<<"j'ai tué un ennemi !"<<std::endl;
+                std::cout<<std::endl;
+                itsAvatar->addXP(e->getItsGivenXP());
+                switch (e->getType())
+                {
+                case TRIANGLE:
+                    AddScore(1);
+                    break;
+                case CIRCLE:
+                    AddScore(1);
+                    break;
+                case SQUARE:
+                    AddScore(2);
+                    break;
+                case BOSS:
+                    AddScore(50);
+                    break;
+                }
+                delete e;
+                enemyIt = itsEnemies.erase(enemyIt);
+            }
+            else
+            {
+                ++enemyIt;
+            }
         }
     }
 
@@ -457,16 +434,6 @@ void Game::GameLoop()
             }
         }
     }
-    else // Sinon, tester si c'est un Katana
-    {
-        if (Katana* katana = dynamic_cast<Katana*>(itsWeapon))
-        {
-            if (itsWeapon->getIsShooting())
-            {
-                itsWeapon->setIsShooting(false);
-            }
-        }
-    }
 
 
     for (Enemy* enemy : itsEnemies)
@@ -507,6 +474,15 @@ void Game::GameLoop()
     itsAvatar->move(itsBorder);
 
     Collision();
+
+    //Pas appelé avant car sinon ne gère pas la collision (l'autre solution serait de mettre isShooting à false dans la collision)
+    if (Katana* katana = dynamic_cast<Katana*>(itsWeapon))
+    {
+        if (itsWeapon->getIsShooting())
+        {
+            itsWeapon->setIsShooting(false);
+        }
+    }
 
     if (itsAvatar->getItsHP() == 0)
     {

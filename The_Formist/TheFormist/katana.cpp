@@ -1,58 +1,32 @@
 #include "katana.h"
 #include <cmath>
-#include <vector>
 
+Katana::Katana(int baseDamage, float baseAttackSpeed, QImage* sprite)
+    : Weapon(baseDamage, baseAttackSpeed, sprite)
+{
+}
+
+Katana::~Katana()
+{
+}
 
 float Katana::getItsRange() const
 {
     return itsRange;
 }
 
-
-float Katana::getDirX() const
+void Katana::addItsRange()
 {
-    return dirX;
+    itsRange ++;
 }
 
-float Katana::getDirY() const
+// Calcule la zone d'attaque du katana en fonction de la position de l'avatar et du ciblage souris
+QRectF Katana::katanaAreaDamage(std::pair<float, float> avatarPos, std::pair<int, int> aMouseTarget)
 {
-    return dirY;
-}
-
-Katana::Katana(std::pair<float, float> aTarget, std::pair<float, float> aPosition, std::pair<int, int> aSize, int baseDamage, float baseAttackSpeed, QImage* sprite)
-    : Weapon(baseDamage, baseAttackSpeed, sprite)
-{
-    itsPosition = aPosition;
-
-    float dx = aTarget.first - aPosition.first;
-    float dy = aTarget.second - aPosition.second;
-
-    float distance = std::sqrt(dx * dx + dy * dy);
-
-    if (distance != 0) {
-        dirX = dx / distance;
-        dirY = dy / distance;
-    }
-    else {
-        dirX = 0;
-        dirY = 0;
-    }
-
-    itsRectF = QRectF(aPosition.first, aPosition.second, aSize.first, aSize.second);
-
-    itsRange = 200;
-}
-
-
-
-Katana::~Katana()
-{
-}
-
-std::vector<float> Katana::katanaAreaDamage(Avatar* aAvatar, pair<int,int> aMouseTarget)
-{
-    float avatarX = aAvatar->getItsPosition().first;
-    float avatarY = aAvatar->getItsPosition().second;
+    float avatarX = avatarPos.first;
+    float avatarY = avatarPos.second;
+    float width = itsRange*2;
+    float height = itsRange;
 
     float dx = aMouseTarget.first - avatarX;
     float dy = aMouseTarget.second - avatarY;
@@ -61,9 +35,9 @@ std::vector<float> Katana::katanaAreaDamage(Avatar* aAvatar, pair<int,int> aMous
     float dirX = dx / norm;
     float dirY = dy / norm;
 
-    float range = this->getItsRange();
-    float angle = M_PI / 4; // 45 degrés, sans .0f
-    float cosHalfAngle = std::cos(angle / 2);
+    float startX = avatarX + dirX * (height / 2);
+    float startY = avatarY + dirY * (height / 2);
 
-    return {avatarX, avatarY, dirX, dirY, range, cosHalfAngle};
+    return QRectF(startX - width / 2, startY - height / 2, width, height);
 }
+
