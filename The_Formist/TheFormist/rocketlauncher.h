@@ -9,7 +9,7 @@ private:
     std::pair<int,int> itsBaseAreaSize;
     float itsAreaSizeMult = 1;
 public:
-    RocketLauncher(int aBaseDamage, float aAttackSpeed, std::pair<int,int> aBaseAreaSize, QImage *aSprite = nullptr);
+    RocketLauncher(int aBaseDamage, float aAttackSpeed, std::pair<int,int> aProjSize, std::pair<int,int> aBaseAreaSize);
     std::pair<float, float> getItsAreaSize() const;
 };
 

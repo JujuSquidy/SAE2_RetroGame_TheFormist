@@ -60,6 +60,11 @@ std::vector<AreaDamage *> Game::getItsAreaDamages() const
     return itsAreaDamages;
 }
 
+QMediaPlayer *Game::getBackgroundMusicPlayer() const
+{
+    return backgroundMusicPlayer;
+}
+
 Game::Game(WeaponType type, QObject *parent)
     : QObject{parent}
 {
@@ -69,16 +74,16 @@ Game::Game(WeaponType type, QObject *parent)
     switch (type)
     {
     case GUN:
-        itsWeapon = new Gun(10, 1);   //initialisation d'un gun
+        itsWeapon = new Gun(10, 2, {5,5});   //initialisation d'un gun
         break;
     case KATANA:
-        itsWeapon = new Katana(50,1); //initialisation d'un katana
+        itsWeapon = new Katana(50, 2); //initialisation d'un katana
         break;
     case FIREBALL:
-        itsWeapon = new FireBall(5,1,{100,100},nullptr);
+        itsWeapon = new FireBall(5,1,{100,100},{5,5});
         break;
     case ROCKETLAUNCHER:
-        itsWeapon = new RocketLauncher(10,1,{100,100},nullptr);
+        itsWeapon = new RocketLauncher(10,1,{5,5},{100,100});
         break;
     }
     itsTimer = new QTimer(this);
@@ -96,10 +101,11 @@ Game::Game(WeaponType type, QObject *parent)
     itsPowerUpTimer->start(30000);
 
     audioOutput = new QAudioOutput(this);
+
     backgroundMusicPlayer = new QMediaPlayer(this);
     backgroundMusicPlayer->setAudioOutput(audioOutput);
 
-    backgroundMusicPlayer->setSource(QUrl("qrc:/Music/musique_gen.mp3"));
+    backgroundMusicPlayer->setSource(QUrl("qrc:/Music/Game.mp3"));
     backgroundMusicPlayer->setLoops(QMediaPlayer::Infinite);  // <--- boucle infinie
 
     audioOutput->setVolume(1); // volume entre 0.0 et 1.0
@@ -261,13 +267,13 @@ void Game::Collision()
                 {
                     FireBall * FB = dynamic_cast<FireBall*>(itsWeapon);
                     //---------------------------------Création de la zone de dégats-------------------------------------------//
-                    AreaDamage * AD = new AreaDamage(
-                        FB->getItsAreaSize(),                                               // taille de la zone d'effet
-                        {proj->getItsRectF().center().x()-(FB->getItsAreaSize().first/2),   // Position x du QRect de l'explosion
-                         proj->getItsRectF().center().y()-(FB->getItsAreaSize().second/2)}, // Position y du QRect de l'explosion
-                        5,                                                                  // Nombre de dégats infligés avant disparition de la zone
-                        FB->getItsDamage()                                                  // Dégats infligés par l'explosion
-                        );
+                        AreaDamage * AD = new AreaDamage(
+                                                    FB->getItsAreaSize(),                                               // taille de la zone d'effet
+                                                    {proj->getItsRectF().center().x()-(FB->getItsAreaSize().first/2),   // Position x du QRect de l'explosion
+                                                     proj->getItsRectF().center().y()-(FB->getItsAreaSize().second/2)}, // Position y du QRect de l'explosion
+                                                    5,                                                                  // Nombre de dégats infligés avant disparition de la zone
+                                                    FB->getItsDamage()                                                  // Dégats infligés par l'explosion
+                                                    );
                     //--------------------------------------------------------------------------------------------------------//
                     itsAreaDamages.push_back(AD);
                 }
@@ -342,7 +348,7 @@ void Game::Collision()
     {
         if (katana && katana->getIsShooting())
         {
-            QRectF hitbox = katana->katanaAreaDamage(itsAvatar->getItsPosition(), mouseTarget);
+            QRectF hitbox = katana->katanaAreaDamage({itsAvatar->getItsQRect()->center().x(),itsAvatar->getItsQRect()->center().y()}, mouseTarget);
 
             for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
             {
@@ -498,33 +504,30 @@ void Game::GameOver()
 
 void Game::GameLoop()
 {
-    QRect* avatarRect = itsAvatar->getItsQRect();
     updateTemporaryBoosts();
     if(RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon))
     {
         if (itsWeapon->getIsShooting())
         {
-            if (rw->getItsMultipleProjectileDelay().elapsed() > 30)
+            if (rw->getItsMultipleProjectileDelay().elapsed() > itsWeapon->getItsAttackSpeed()/3)
             {
-                std::pair<int,int> avatarPos = itsAvatar->getItsPosition();
+                std::pair<int,int> avatarCenter = {itsAvatar->getItsQRect()->center().x(),itsAvatar->getItsQRect()->center().y()};
 
-                if (mouseTarget != avatarPos)
+                if (mouseTarget != avatarCenter)
                 {
-                    QPoint center = avatarRect->center();
-
                     if (rw->getNbProjectilesShooted() < rw->getItsNbProjectiles())
                     {
                         std::pair<int,int> target = mouseTarget;
-                        Projectile* p = new Projectile(target, {center.x(), center.y()}, {5,5}, 10, 5);
+                        Projectile* p = new Projectile(target, {avatarCenter.first, avatarCenter.second}, rw->getItsProjSize(), 5, 5);
                         itsAvatarProjectiles.push_back(p);
                         rw->addNbProjectilesShooted();
                     }
-                    else if (rw->getNbReverseProjectilesShooted() < rw->getItsNbReverseProjectile())
+                    if (rw->getNbReverseProjectilesShooted() < rw->getItsNbReverseProjectile())
                     {
-                        int dx = mouseTarget.first - avatarPos.first;
-                        int dy = mouseTarget.second - avatarPos.second;
-                        std::pair<int,int> reversedTarget = {avatarPos.first - dx, avatarPos.second - dy};
-                        Projectile* p = new Projectile(reversedTarget, {center.x(), center.y()}, {5,5}, 10, 5);
+                        int dx = mouseTarget.first - avatarCenter.first;
+                        int dy = mouseTarget.second - avatarCenter.second;
+                        std::pair<int,int> reversedTarget = {avatarCenter.first - dx, avatarCenter.second - dy};
+                        Projectile* p = new Projectile(reversedTarget, {avatarCenter.first, avatarCenter.second}, rw->getItsProjSize(), 5, 5);
                         itsAvatarProjectiles.push_back(p);
                         rw->addNbReverseProjectilesShooted();
                     }
@@ -540,6 +543,7 @@ void Game::GameLoop()
         }
     }
 
+    QRect* avatarRect = itsAvatar->getItsQRect();
     for (Enemy* enemy : itsEnemies)
     {
         std::pair<float, float> oldPos = enemy->getItsPosition();
@@ -559,7 +563,8 @@ void Game::GameLoop()
             Projectile* p = new Projectile(
                 std::pair<float,float>(avatarRect->center().x(), avatarRect->center().y()),
                 enemy->getItsPosition(),
-                {5,5}, 10,
+                {5,5},
+                2,
                 enemy->getItsStrength()
                 );
             itsEnemyProjectiles.push_back(p);
@@ -690,19 +695,19 @@ void Game::upgrade()
         switch (upgrade)
         {
             case MORE_PROJECTILE:
-            if (RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon))
-            {
-                if (rw->getItsNbProjectiles() < 3)
+                if (RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon))
                 {
-                    rw->AddNbProjectile();
+                    if (rw->getItsNbProjectiles() < 3)
+                    {
+                        rw->AddNbProjectile();
+                        return;
+                    }
+                }
+                else if (Katana* katana = dynamic_cast<Katana*>(itsWeapon))
+                {
+                    katana->addItsRange();
                     return;
                 }
-            }
-            else if (Katana* katana = dynamic_cast<Katana*>(itsWeapon))
-            {
-                katana->addItsRange();
-                return;
-            }
                 break;
 
             case REVERSE_PROJECTILE:

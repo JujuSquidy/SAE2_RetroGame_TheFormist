@@ -34,6 +34,7 @@ private:
 
     int nbReverseProjectilesShooted = 0;
 
+    std::pair<int,int> itsProjSize;
 
 public:
     /**
@@ -42,7 +43,7 @@ public:
  * @param aAttackSpeed Rate of fire for the weapon.
  * @param aSprite Visual representation of the weapon.
  */
-    RangedWeapon(int aBaseDamage, float aAttackSpeed, QImage *aSprite = nullptr);
+    RangedWeapon(int aBaseDamage, float aAttackSpeed, std::pair<int,int> aProjSize);
 
     /**
  * @brief Gets the number of projectiles fired simultaneously.
@@ -76,6 +77,7 @@ public:
     int getNbReverseProjectilesShooted() const;
     void attack();
     float getItsProjectileSpeed() const;
+    std::pair<int, int> getItsProjSize() const;
 };
 
 #endif // RANGEDWEAPON_H

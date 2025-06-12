@@ -1,8 +1,8 @@
 #include "katana.h"
 #include <cmath>
 
-Katana::Katana(int baseDamage, float baseAttackSpeed, QImage* sprite)
-    : Weapon(baseDamage, baseAttackSpeed, sprite)
+Katana::Katana(int baseDamage, float baseAttackSpeed)
+    : Weapon(baseDamage, baseAttackSpeed)
 {
 }
 

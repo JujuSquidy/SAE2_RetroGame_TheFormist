@@ -14,7 +14,7 @@ private:
 
 
 public:
-    Katana(int baseDamage, float baseAttackSpeed, QImage* sprite = nullptr);
+    Katana(int baseDamage, float baseAttackSpeed);
     ~Katana();
 
     float getItsRange() const;

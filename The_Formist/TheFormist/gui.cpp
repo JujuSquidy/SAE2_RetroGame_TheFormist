@@ -14,7 +14,7 @@ GUI::GUI(Game * aGame, QWidget *parent)
 
     itsTimer = new QTimer(this);
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(update()));
-    itsTimer->start(33);
+    itsTimer->start(17);
     connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
 
     mainMenu = new MainMenu(this);
@@ -493,6 +493,11 @@ void GUI::onGameOver()
     connect(itsGOM, &GameOverMenu::replayRequested, this, &GUI::restartGame);
     connect(itsGOM, &GameOverMenu::quitRequested, this, &GUI::close);
     itsGOM->isVisible = true;
+    itsGame->getBackgroundMusicPlayer()->stop();
+    itsGOM->getGameOverMusicPlayer()->setPosition(0);  // Remet au début
+    itsGOM->getGameOverMusicPlayer()->play();
+    qDebug() << "GO player state:" << itsGOM->getGameOverMusicPlayer()->playbackState();
+    qDebug() << "GO player error:" << itsGOM->getGameOverMusicPlayer()->errorString();
     update();
 }
 

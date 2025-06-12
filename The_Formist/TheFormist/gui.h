@@ -25,6 +25,7 @@ private:
      * @brief Pointer to the Game instance that contains game logic and state.
      */
     Game* itsGame;
+
     GameOverMenu* itsGOM = nullptr;
     MainMenu* mainMenu;
 

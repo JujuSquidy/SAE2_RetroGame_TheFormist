@@ -97,6 +97,7 @@ private :
     bool bootsActive;
 
     QMediaPlayer* backgroundMusicPlayer;
+
     QAudioOutput* audioOutput;
 
 
@@ -177,6 +178,8 @@ public:
     void updateTemporaryBoosts();
 
     std::vector<AreaDamage *> getItsAreaDamages() const;
+
+    QMediaPlayer *getBackgroundMusicPlayer() const;
 
 public slots:
     /**

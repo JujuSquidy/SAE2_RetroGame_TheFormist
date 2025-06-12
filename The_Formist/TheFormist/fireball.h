@@ -10,7 +10,7 @@ private:
     float itsAreaSizeMult = 1;
     int itsFireBallRange = 350;
 public:
-    FireBall(int aBaseDamage, float aAttackSpeed, std::pair<int, int> aBaseAreaSize, QImage *aSprite);
+    FireBall(int aBaseDamage, float aAttackSpeed, std::pair<int, int> aProjSize, std::pair<int, int> aBaseAreaSize);
     std::pair<float,float> getItsAreaSize() const;
     int getItsFireBallRange() const;
 };
