@@ -14,7 +14,7 @@ GUI::GUI(Game * aGame, QWidget *parent)
 
     itsTimer = new QTimer(this);
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(update()));
-    itsTimer->start(33);
+    itsTimer->start(17);
     connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
 
     boots.load(":/Pictures/boots.png");

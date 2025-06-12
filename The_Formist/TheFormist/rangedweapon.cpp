@@ -30,7 +30,12 @@ float RangedWeapon::getItsProjectileSpeed() const
     return itsProjectileSpeed;
 }
 
-RangedWeapon::RangedWeapon(int aBaseDamage, float aAttackSpeed, QImage *aSprite) : Weapon(aBaseDamage, aAttackSpeed, aSprite)
+std::pair<int, int> RangedWeapon::getItsProjSize() const
+{
+    return itsProjSize;
+}
+
+RangedWeapon::RangedWeapon(int aBaseDamage, float aAttackSpeed, std::pair<int,int> aProjSize) : Weapon(aBaseDamage, aAttackSpeed), itsProjSize(aProjSize)
 {
 
 }
@@ -61,5 +66,5 @@ void RangedWeapon::attack()
     nbProjectilesShooted = 0;
     nbReverseProjectilesShooted = 0;
     itsMultipleProjectileDelay.start();
-    itsTimer->start(500 / (itsAttackSpeedMult * itsPUAttackSpeedMult * itsBaseAttackSpeed));
+    itsTimer->start(1000 / (itsAttackSpeedMult * itsPUAttackSpeedMult * itsBaseAttackSpeed));
 }
