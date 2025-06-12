@@ -35,9 +35,25 @@ void GameOverMenu::handleClick(const QPoint& pos)
 void GameOverMenu::loadScores() {
     topScores.clear();
 
-    QFile file("leaderboard.txt");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return;
+    QString path = getScoresFilePath();
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        // Si le fichier n'existe pas, initialiser depuis la ressource
+        QFile res(":/LB/leaderboard.txt");
+        if (res.open(QIODevice::ReadOnly)) {
+            if (file.open(QIODevice::WriteOnly)) {
+                file.write(res.readAll());
+                file.close();
+            }
+            res.close();
+            // Réouvrir le fichier pour lecture
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                return; // Échec total
+            }
+        } else {
+            return; // Pas de ressource, rien à charger
+        }
+    }
 
     QTextStream in(&file);
     while (!in.atEnd()) {
@@ -54,7 +70,6 @@ void GameOverMenu::loadScores() {
 
 void GameOverMenu::saveScores() {
     if (!itsPlayerName.trimmed().isEmpty()) {
-        // Ajouter le score uniquement si un nom est saisi
         ScoreEntry current = { itsPlayerName.left(6), itsScore, itsTimeStr };
         topScores.append(current);
 
@@ -65,9 +80,10 @@ void GameOverMenu::saveScores() {
         if (topScores.size() > 5)
             topScores.resize(5);
 
-        QFile file("leaderboard.txt");
-        QTextStream out(&file);
+        QString path = getScoresFilePath();
+        QFile file(path);
         if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream out(&file);
             for (int i = 0; i < topScores.size(); ++i) {
                 const ScoreEntry& entry = topScores[i];
                 out << entry.name.left(6) << " " << entry.score << " " << entry.time << "\n";
@@ -75,9 +91,17 @@ void GameOverMenu::saveScores() {
             file.close();
         }
     } else {
-        // Aucun nom → on recharge le leaderboard existant
         loadScores();
     }
+}
+
+QString GameOverMenu::getScoresFilePath() const {
+    QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir dir(appDataPath);
+    if (!dir.exists()) {
+        dir.mkpath(".");  // créer le dossier s'il n'existe pas
+    }
+    return dir.filePath("leaderboard.txt");
 }
 
 QVector<ScoreEntry> GameOverMenu::getTopScores() const {

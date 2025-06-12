@@ -429,13 +429,15 @@ void Game::Collision()
             }
             else if(p->getItsType() == SYRINGE)
             {
-                p->ActivateSyringe();
-                p->setIsPicked(true);
-                it++;
+                if(!p->getIsPicked())
+                {
+                    p->ActivateSyringe();
+                    p->setIsPicked(true);
+                }
+                ++it;
                 break;
-
             }
-            else if(p->getItsType() == BLOOD)
+            else if(p->getItsType() == BLOOD )
             {
                 itsAvatar->addHP(10);
                 delete p;
@@ -443,18 +445,24 @@ void Game::Collision()
                 break;
 
             }
-            else if(p->getItsType() == PEPPER)
+            else if(p->getItsType() == PEPPER )
             {
-                p->ActivatePepper();
-                p->setIsPicked(true);
+                if(!p->getIsPicked())
+                {
+                    p->ActivatePepper();
+                    p->setIsPicked(true);
+                }
                 it++;
                 break;
-
             }
-            else if(p->getItsType() == BOOTS)
+            else if(p->getItsType() == BOOTS )
             {
-                p->ActivateBoots();
-                p->setIsPicked(true);
+                if(!p->getIsPicked())
+                {
+                    p->ActivateBoots();
+                    p->setIsPicked(true);
+                }
+
                 it++;
                 break;
             }
@@ -577,9 +585,11 @@ void Game::GameLoop()
     //prise de niveau et améliorations
     if (itsAvatar->getItsXP() >= itsAvatar->getItsMaxXP())
     {
+        int temp = itsAvatar->getItsXP() - itsAvatar->getItsMaxXP();
+
         itsAvatar->levelUp();
         itsAvatar->addMaxXP(2);
-        itsAvatar->addXP(itsAvatar->getItsXP());
+        itsAvatar->setItsXP(temp);
         if (itsAvatar->getItsLevel() % 5 == 0)
         {
             upgrade();
