@@ -484,6 +484,11 @@ void GUI::onGameOver()
     connect(itsGOM, &GameOverMenu::replayRequested, this, &GUI::restartGame);
     connect(itsGOM, &GameOverMenu::quitRequested, this, &GUI::close);
     itsGOM->isVisible = true;
+    itsGame->getBackgroundMusicPlayer()->stop();
+    itsGOM->getGameOverMusicPlayer()->setPosition(0);  // Remet au début
+    itsGOM->getGameOverMusicPlayer()->play();
+    qDebug() << "GO player state:" << itsGOM->getGameOverMusicPlayer()->playbackState();
+    qDebug() << "GO player error:" << itsGOM->getGameOverMusicPlayer()->errorString();
     update();
 }
 
@@ -491,9 +496,12 @@ void GUI::restartGame()
 {
     delete itsGame;
     itsGame = new Game();
+    itsGOM->getGameOverMusicPlayer()->stop();
     connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
     itsGOM->isVisible = false;
     gameIsOver = false;  // Reset
+    itsGame->getBackgroundMusicPlayer()->play();
+
 }
 
 void GUI::mousePressEvent(QMouseEvent* event)

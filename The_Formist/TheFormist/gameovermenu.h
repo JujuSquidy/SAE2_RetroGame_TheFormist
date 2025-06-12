@@ -9,6 +9,9 @@
 #include <QStandardPaths>
 #include <QDir>
 
+#include <QMediaPlayer>
+#include <QAudioOutput>
+
 struct ScoreEntry {
     QString name;
     int score;
@@ -38,6 +41,11 @@ public:
     QVector<ScoreEntry> getTopScores() const;
     QString getScoresFilePath() const;
 
+    QMediaPlayer *getGameOverMusicPlayer() const;
+
+    void loadScores();
+    void saveScores();
+
     bool isVisible = true;
 
 signals:
@@ -55,8 +63,9 @@ private:
 
     QVector<ScoreEntry> topScores;
 
-    void loadScores();
-    void saveScores();
+    QMediaPlayer* gameOverMusicPlayer;
+
+    QAudioOutput* audioOutput;
 };
 
 #endif // GAMEOVERMENU_H

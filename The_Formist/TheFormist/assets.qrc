@@ -15,6 +15,9 @@
         <file>proj.png</file>
     </qresource>
     <qresource prefix="/Music">
-        <file>musique_gen.mp3</file>
+        <file>Game.mp3</file>
+        <file>GO.mp3</file>
+        <file>Menu.mp3</file>
+        <file>GO.wav</file>
     </qresource>
 </RCC>

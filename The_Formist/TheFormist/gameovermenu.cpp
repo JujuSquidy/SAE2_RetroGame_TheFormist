@@ -6,6 +6,14 @@
 GameOverMenu::GameOverMenu(int score, const QString& timeStr, QObject *parent)
     : QObject(parent), itsScore(score), itsTimeStr(timeStr)
 {
+
+    audioOutput = new QAudioOutput(this);
+    gameOverMusicPlayer = new QMediaPlayer(this);
+    gameOverMusicPlayer->setAudioOutput(audioOutput); // partage la même sortie
+    gameOverMusicPlayer->setSource(QUrl("qrc:/Music/GO.wav"));
+    gameOverMusicPlayer->setLoops(QMediaPlayer::Infinite);
+    audioOutput->setVolume(1); // volume entre 0.0 et 1.0
+    gameOverMusicPlayer->play();
     loadScores();
 }
 
@@ -106,4 +114,9 @@ QString GameOverMenu::getScoresFilePath() const {
 
 QVector<ScoreEntry> GameOverMenu::getTopScores() const {
     return topScores;
+}
+
+QMediaPlayer *GameOverMenu::getGameOverMusicPlayer() const
+{
+    return gameOverMusicPlayer;
 }
