@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,6 +14,7 @@ SOURCES += \
     enemy.cpp \
     game.cpp \
     gun.cpp \
+    katana.cpp \
     main.cpp \
     gui.cpp \
     powerup.cpp \
@@ -29,6 +30,7 @@ HEADERS += \
     game.h \
     gui.h \
     gun.h \
+    katana.h \
     powerup.h \
     projectile.h \
     rangedweapon.h \

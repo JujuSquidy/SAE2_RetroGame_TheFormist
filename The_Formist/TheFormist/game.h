@@ -10,6 +10,9 @@
 #include <QElapsedTimer>
 #include "weapon.h"
 
+#include <QMediaPlayer>
+#include <QAudioOutput>
+
 /**
  * @class Game
  * @brief Manages the core game logic, entities, and real-time updates.
@@ -93,6 +96,10 @@ private :
 
     bool bootsActive;
 
+    QMediaPlayer* backgroundMusicPlayer;
+    QAudioOutput* audioOutput;
+
+
 public:
     /**
  * @brief Constructs the Game object and initializes components.
@@ -163,6 +170,7 @@ public:
 
     QElapsedTimer getItsInGameTimer() const;
 
+    std::pair<int, int> getMouseTarget() const;
 
     std::vector<PowerUp *> getItsPowerUp() const;
 
@@ -196,6 +204,9 @@ signals:
  * @brief Signal emitted when the game is over.
  */
     void gameOver();
+
+    void pauseGame();
+
 
 };
 

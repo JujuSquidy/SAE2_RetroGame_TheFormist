@@ -1,8 +1,8 @@
 #include "game.h"
 #include "gun.h"
 #include "rocketlauncher.h"
+#include "katana.h"
 #include <QRandomGenerator>
-
 
 Avatar *Game::getItsAvatar() const
 {
@@ -44,6 +44,11 @@ QElapsedTimer Game::getItsInGameTimer() const
     return *itsInGameTimer;
 }
 
+
+std::pair<int, int> Game::getMouseTarget() const
+{
+    return mouseTarget;
+}
 std::vector<PowerUp *> Game::getItsPowerUp() const
 {
     return itsPowerUp;
@@ -60,8 +65,9 @@ Game::Game(QObject *parent)
     itsBorder = std::pair(4000,2000);
     gameWindowSize = {960, 540};
     itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
-//    itsWeapon = new Gun(10, 1);
     itsWeapon = new RocketLauncher(10,1,{100,100},nullptr);
+    //itsWeapon = new Katana(50,1); //initialisation d'un katana
+    //itsWeapon = new Gun(10, 1);   //initialisation d'un gun
     itsTimer = new QTimer(this);
 
     itsInGameTimer = new QElapsedTimer;
@@ -76,6 +82,16 @@ Game::Game(QObject *parent)
     itsPowerUpTimer = new QTimer(this);
     connect(itsPowerUpTimer, SIGNAL(timeout()), this, SLOT(spawnPowerUP()));
     itsPowerUpTimer->start(30000);
+
+    audioOutput = new QAudioOutput(this);
+    backgroundMusicPlayer = new QMediaPlayer(this);
+    backgroundMusicPlayer->setAudioOutput(audioOutput);
+
+    backgroundMusicPlayer->setSource(QUrl("qrc:/Music/musique_gen.mp3"));
+    backgroundMusicPlayer->setLoops(QMediaPlayer::Infinite);  // <--- boucle infinie
+
+    audioOutput->setVolume(1); // volume entre 0.0 et 1.0
+    backgroundMusicPlayer->play();
 }
 
 Game::~Game()
@@ -296,6 +312,51 @@ void Game::Collision()
             ++ADit;
         }
     }
+    if(Katana* katana = dynamic_cast<Katana*>(itsWeapon))
+    {
+        if (katana && katana->getIsShooting())
+        {
+            QRectF hitbox = katana->katanaAreaDamage(itsAvatar->getItsPosition(), mouseTarget);
+
+            for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
+            {
+                Enemy* e = *enemyIt;
+                float ex = e->getItsPosition().first;
+                float ey = e->getItsPosition().second;
+
+                if (hitbox.contains(ex, ey))
+                {
+                    e->takeDamage(itsWeapon->getItsDamage());
+                }
+
+                if (e->isDead())
+                {
+                    itsAvatar->addXP(e->getItsGivenXP());
+                    switch (e->getType())
+                    {
+                    case TRIANGLE:
+                        AddScore(1);
+                        break;
+                    case CIRCLE:
+                        AddScore(1);
+                        break;
+                    case SQUARE:
+                        AddScore(2);
+                        break;
+                    case BOSS:
+                        AddScore(50);
+                        break;
+                    }
+                    delete e;
+                    enemyIt = itsEnemies.erase(enemyIt);
+                }
+                else
+                {
+                    ++enemyIt;
+                }
+            }
+        }
+    }
 
     for (std::vector<Projectile*>::iterator enProjIt = itsEnemyProjectiles.begin(); enProjIt != itsEnemyProjectiles.end(); )
     {
@@ -404,9 +465,9 @@ void Game::GameOver()
 void Game::GameLoop()
 {
     QRect* avatarRect = itsAvatar->getItsQRect();
-
     updateTemporaryBoosts();
     if(RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon))
+    {
         if (itsWeapon->getIsShooting())
         {
             if (rw->getItsMultipleProjectileDelay().elapsed() > 30)
@@ -435,6 +496,7 @@ void Game::GameLoop()
                     }
                     rw->getItsMultipleProjectileDelay().start();
                 }
+
                 if (rw->getNbProjectilesShooted() >= rw->getItsNbProjectiles() &&
                     rw->getNbReverseProjectilesShooted() >= rw->getItsNbReverseProjectile())
                 {
@@ -442,6 +504,7 @@ void Game::GameLoop()
                 }
             }
         }
+    }
 
     for (Enemy* enemy : itsEnemies)
     {
@@ -482,6 +545,15 @@ void Game::GameLoop()
 
     Collision();
 
+    //Pas appelé avant car sinon ne gère pas la collision (l'autre solution serait de mettre isShooting à false dans la collision)
+    if (Katana* katana = dynamic_cast<Katana*>(itsWeapon))
+    {
+        if (itsWeapon->getIsShooting())
+        {
+            itsWeapon->setIsShooting(false);
+        }
+    }
+
     if (itsAvatar->getItsHP() == 0)
     {
         GameOver();
@@ -499,6 +571,7 @@ void Game::GameLoop()
         }
     }
 }
+
 
 
 std::vector<Enemy *> Game::getItsEnemies() const
@@ -573,32 +646,49 @@ void Game::spawnEnemy()
 
 void Game::upgrade()
 {
-    RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon);
+
     std::vector<int> availableUpgrades = {MORE_PROJECTILE, REVERSE_PROJECTILE, MORE_DAMAGE, MORE_HP};
-    std::shuffle(availableUpgrades.begin(), availableUpgrades.end(), *QRandomGenerator::global());
+    std::shuffle(availableUpgrades.begin(), availableUpgrades.end(), *QRandomGenerator::global());    
 
     for (int upgrade : availableUpgrades)
     {
         switch (upgrade)
         {
             case MORE_PROJECTILE:
+            if (RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon))
+            {
                 if (rw->getItsNbProjectiles() < 3)
                 {
                     rw->AddNbProjectile();
                     return;
                 }
+            }
+            else if (Katana* katana = dynamic_cast<Katana*>(itsWeapon))
+            {
+                katana->addItsRange();
+                return;
+            }
                 break;
 
             case REVERSE_PROJECTILE:
-                if (rw->getItsNbReverseProjectile() < 2)
+                if (RangedWeapon* rw = dynamic_cast<RangedWeapon*>(itsWeapon))
                 {
-                    rw->AddNbReverseProjectile();
+                    if (rw->getItsNbReverseProjectile() < 2)
+                    {
+                        rw->AddNbReverseProjectile();
+                        return;
+                    }
+                }
+                else if (Katana* katana = dynamic_cast<Katana*>(itsWeapon))
+
+                {
+                    itsWeapon->addItsAttackSpeed();
                     return;
                 }
                 break;
 
             case MORE_DAMAGE:
-                rw->AddBaseDamage(2);
+                itsWeapon->AddBaseDamage(2);
                 return;
 
             case MORE_HP:

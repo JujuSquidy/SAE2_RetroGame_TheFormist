@@ -69,3 +69,9 @@ void Weapon::setAttackSpeedMult(float m)
     itsAttackSpeedMult = m;
 }
 
+void Weapon::addItsAttackSpeed()
+{
+    itsBaseAttackSpeed += 1;
+}
+
+
