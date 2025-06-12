@@ -60,6 +60,11 @@ std::vector<AreaDamage *> Game::getItsAreaDamages() const
     return itsAreaDamages;
 }
 
+QMediaPlayer *Game::getBackgroundMusicPlayer() const
+{
+    return backgroundMusicPlayer;
+}
+
 Game::Game(QObject *parent)
     : QObject{parent}
 {
@@ -85,10 +90,11 @@ Game::Game(QObject *parent)
     itsPowerUpTimer->start(30000);
 
     audioOutput = new QAudioOutput(this);
+
     backgroundMusicPlayer = new QMediaPlayer(this);
     backgroundMusicPlayer->setAudioOutput(audioOutput);
 
-    backgroundMusicPlayer->setSource(QUrl("qrc:/Music/musique_gen.mp3"));
+    backgroundMusicPlayer->setSource(QUrl("qrc:/Music/Game.mp3"));
     backgroundMusicPlayer->setLoops(QMediaPlayer::Infinite);  // <--- boucle infinie
 
     audioOutput->setVolume(1); // volume entre 0.0 et 1.0
