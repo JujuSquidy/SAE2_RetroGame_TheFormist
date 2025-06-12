@@ -459,7 +459,7 @@ void GUI::drawGameOverMenu(QPainter* painter)
     painter->drawText(QRect(x + 20, y + 80, menuWidth, 30), Qt::AlignLeft, "Time  : " + itsGOM->getTimeString());
 
     // Nom
-    painter->drawText(QRect(x + 20, y + 110, menuWidth, 20), Qt::AlignLeft, "Nom (max 6 caractères) :");
+    painter->drawText(QRect(x + 20, y + 110, menuWidth, 20), Qt::AlignLeft, "Name (max 6 characters) :");
     QRect nameInputRect(x + 20, y + 135, menuWidth - 40, 30);
     itsGOM->setNameInputRect(nameInputRect);
     painter->setBrush(Qt::white);
