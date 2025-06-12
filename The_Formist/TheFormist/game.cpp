@@ -413,13 +413,15 @@ void Game::Collision()
             }
             else if(p->getItsType() == SYRINGE)
             {
-                p->ActivateSyringe();
-                p->setIsPicked(true);
-                it++;
+                if(!p->getIsPicked())
+                {
+                    p->ActivateSyringe();
+                    p->setIsPicked(true);
+                }
+                ++it;
                 break;
-
             }
-            else if(p->getItsType() == BLOOD)
+            else if(p->getItsType() == BLOOD )
             {
                 itsAvatar->addHP(10);
                 delete p;
@@ -427,18 +429,24 @@ void Game::Collision()
                 break;
 
             }
-            else if(p->getItsType() == PEPPER)
+            else if(p->getItsType() == PEPPER )
             {
-                p->ActivatePepper();
-                p->setIsPicked(true);
+                if(!p->getIsPicked())
+                {
+                    p->ActivatePepper();
+                    p->setIsPicked(true);
+                }
                 it++;
                 break;
-
             }
-            else if(p->getItsType() == BOOTS)
+            else if(p->getItsType() == BOOTS )
             {
-                p->ActivateBoots();
-                p->setIsPicked(true);
+                if(!p->getIsPicked())
+                {
+                    p->ActivateBoots();
+                    p->setIsPicked(true);
+                }
+
                 it++;
                 break;
             }

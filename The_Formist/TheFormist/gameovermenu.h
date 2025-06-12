@@ -6,6 +6,8 @@
 #include <QRect>
 #include <QVector>
 #include <QObject>
+#include <QStandardPaths>
+#include <QDir>
 
 struct ScoreEntry {
     QString name;
@@ -34,6 +36,7 @@ public:
     void handleClick(const QPoint& pos);
 
     QVector<ScoreEntry> getTopScores() const;
+    QString getScoresFilePath() const;
 
     bool isVisible = true;
 
