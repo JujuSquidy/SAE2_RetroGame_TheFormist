@@ -1,7 +1,7 @@
 #include "game.h"
 #include "gun.h"
+#include "rocketlauncher.h"
 #include "katana.h"
-#include "rangedweapon.h"
 #include <QRandomGenerator>
 
 Avatar *Game::getItsAvatar() const
@@ -54,14 +54,20 @@ std::vector<PowerUp *> Game::getItsPowerUp() const
     return itsPowerUp;
 }
 
+std::vector<AreaDamage *> Game::getItsAreaDamages() const
+{
+    return itsAreaDamages;
+}
+
 Game::Game(QObject *parent)
     : QObject{parent}
 {
     itsBorder = std::pair(4000,2000);
     gameWindowSize = {960, 540};
     itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
+    itsWeapon = new RocketLauncher(10,1,{100,100},nullptr);
     //itsWeapon = new Katana(50,1); //initialisation d'un katana
-    itsWeapon = new Gun(10, 1);   //initialisation d'un gun
+    //itsWeapon = new Gun(10, 1);   //initialisation d'un gun
     itsTimer = new QTimer(this);
     itsInGameTimer = new QElapsedTimer;
     itsEnemyTimer = new QTimer(this);
@@ -139,34 +145,33 @@ void Game::updateMouseTarget(int x, int y)
 
 void Game::spawnPowerUP()
 {
+    int centerX = itsAvatar->getItsQRect()->center().x();
+    int centerY = itsAvatar->getItsQRect()->center().y();
+    int viewW  = gameWindowSize.first;
+    int viewH  = gameWindowSize.second;
+    int margin = 20;
 
-        int centerX = itsAvatar->getItsQRect()->center().x();
-        int centerY = itsAvatar->getItsQRect()->center().y();
-        int viewW  = gameWindowSize.first;
-        int viewH  = gameWindowSize.second;
-        int margin = 20;
+    int left   = centerX - viewW/2  + margin;
+    int right  = centerX + viewW/2  - margin;
+    int top    = centerY - viewH/2  + margin;
+    int bottom = centerY + viewH/2  - margin;
 
-        int left   = centerX - viewW/2  + margin;
-        int right  = centerX + viewW/2  - margin;
-        int top    = centerY - viewH/2  + margin;
-        int bottom = centerY + viewH/2  - margin;
+    left   = qMax(0, left);
+    right  = qMin(itsBorder.first, right);
+    top    = qMax(0, top);
+    bottom = qMin(itsBorder.second, bottom);
 
-        left   = qMax(0, left);
-        right  = qMin(itsBorder.first, right);
-        top    = qMax(0, top);
-        bottom = qMin(itsBorder.second, bottom);
+    // Pick a random position in that rect
+    int x = QRandomGenerator::global()->bounded(left,  right+1);
+    int y = QRandomGenerator::global()->bounded(top,   bottom+1);
 
-        // Pick a random position in that rect
-        int x = QRandomGenerator::global()->bounded(left,  right+1);
-        int y = QRandomGenerator::global()->bounded(top,   bottom+1);
+    // Pick a random power-up type
+    std::uniform_int_distribution<int> typeDist(0, 4);
+    PType ptype = static_cast<PType>(typeDist(*QRandomGenerator::global()));
 
-        // Pick a random power-up type
-        std::uniform_int_distribution<int> typeDist(0, 4);
-        PType ptype = static_cast<PType>(typeDist(*QRandomGenerator::global()));
-
-        // Create and register
-        PowerUp* pu = new PowerUp({x,y}, ptype);
-        itsPowerUp.push_back(pu);
+    // Create and register
+    PowerUp* pu = new PowerUp({x,y}, ptype);
+    itsPowerUp.push_back(pu);
 }
 
 void Game::Collision()
@@ -225,6 +230,20 @@ void Game::Collision()
             }
             if (hit)
             {
+                if(typeid(*itsWeapon) == typeid(RocketLauncher))
+                {
+                    RocketLauncher * RL = dynamic_cast<RocketLauncher*>(itsWeapon);
+                    //---------------------------------Création de la zone de dégats-------------------------------------------//
+                        AreaDamage * AD = new AreaDamage(
+                                                    RL->getItsAreaSize(),                                               // taille de la zone d'effet
+                                                    {proj->getItsRectF().center().x()-(RL->getItsAreaSize().first/2),   // Position x du QRect de l'explosion
+                                                     proj->getItsRectF().center().y()-(RL->getItsAreaSize().second/2)}, // Position y du QRect de l'explosion
+                                                    1,                                                                  // Nombre de dégats infligés avant disparition de la zone
+                                                    RL->getItsDamage()                                                  // Dégats infligés par l'explosion
+                                                    );
+                    //--------------------------------------------------------------------------------------------------------//
+                    itsAreaDamages.push_back(AD);
+                }
                 delete proj;
                 avProjIt = itsAvatarProjectiles.erase(avProjIt);
             }
@@ -233,6 +252,65 @@ void Game::Collision()
         }
     }
 
+    for(std::vector<AreaDamage*>::iterator ADit = itsAreaDamages.begin(); ADit != itsAreaDamages.end(); )
+    {
+        AreaDamage* AD = *ADit;
+        if(AD->getIsBurning())
+        {
+            if(AD->expired())
+            {
+                delete AD;
+                ADit = itsAreaDamages.erase(ADit);
+            }
+            else
+            {
+                for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
+                {
+                    Enemy* e = *enemyIt;
+
+                    if (AD->getItsRectF().intersects(e->getItsRectF()))
+                    {
+                        e->takeDamage(AD->getItsDamage());
+                        if (e->isDead())
+                        {
+                            itsAvatar->addXP(e->getItsGivenXP());
+                            switch (e->getType())
+                            {
+                            case TRIANGLE:
+                                AddScore(1);
+                                break;
+
+                            case CIRCLE:
+                                AddScore(1);
+                                break;
+
+                            case SQUARE:
+                                AddScore(2);
+                                break;
+
+                            case BOSS:
+                                AddScore(50);
+                                break;
+                            }
+                            delete e;
+                            enemyIt = itsEnemies.erase(enemyIt);
+                        }
+                        else
+                            ++enemyIt;
+                    }
+                    else
+                        ++enemyIt;
+                }
+            AD->addTick();
+            AD->resetBurn();
+            ++ADit;
+            }
+        }
+        else
+        {
+            ++ADit;
+        }
+    }
     if(Katana* katana = dynamic_cast<Katana*>(itsWeapon))
     {
         if (katana && katana->getIsShooting())
@@ -415,20 +493,17 @@ void Game::GameLoop()
                         itsAvatarProjectiles.push_back(p);
                         rw->addNbReverseProjectilesShooted();
                     }
+                    rw->getItsMultipleProjectileDelay().start();
+                }
 
-                        rw->getItsMultipleProjectileDelay().start();
-                    }
-
-                    if (rw->getNbProjectilesShooted() >= rw->getItsNbProjectiles() &&
-                        rw->getNbReverseProjectilesShooted() >= rw->getItsNbReverseProjectile())
-                    {
-                        itsWeapon->setIsShooting(false);
-                    }
+                if (rw->getNbProjectilesShooted() >= rw->getItsNbProjectiles() &&
+                    rw->getNbReverseProjectilesShooted() >= rw->getItsNbReverseProjectile())
+                {
+                    itsWeapon->setIsShooting(false);
                 }
             }
         }
-
-
+    }
 
     for (Enemy* enemy : itsEnemies)
     {

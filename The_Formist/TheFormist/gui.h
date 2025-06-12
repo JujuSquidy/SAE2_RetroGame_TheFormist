@@ -2,6 +2,7 @@
 #define GUI_H
 
 #include "game.h"
+#include "gameovermenu.h"
 #include <QMouseEvent>
 #include <QWidget>
 #include <QMessageBox>
@@ -23,6 +24,7 @@ private:
      * @brief Pointer to the Game instance that contains game logic and state.
      */
     Game* itsGame;
+    GameOverMenu* itsGOM = nullptr;
 
     /**
      * @brief Qt timer that regularly triggers screen updates and game loop refresh.
@@ -95,6 +97,8 @@ protected:
  */
     void restartGame();
 
+    void mousePressEvent(QMouseEvent* event) override;
+
 
 private:
     /**
@@ -124,6 +128,8 @@ private:
  */
     void drawPowerUP(QPainter * aPainter);
 
+    void drawAreaDamage(QPainter * aPainter);
+
     /**
  * @brief Draws the player life bar.
  * @param aPainter ainter used for rendering.
@@ -135,6 +141,8 @@ private:
     void drawPlayerXPBar(QPainter *aPainter, float offsetX, float offsetY, int screenH, int screenW);
 
     void drawTimer(QPainter *aPainter, float offsetX, float offsetY, int screenW);
+
+    void drawGameOverMenu(QPainter* painter);
 
     void updateMousePos();    
 };

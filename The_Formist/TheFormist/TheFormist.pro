@@ -13,6 +13,7 @@ SOURCES += \
     avatar.cpp \
     enemy.cpp \
     game.cpp \
+    gameovermenu.cpp \
     gun.cpp \
     katana.cpp \
     main.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
     powerup.cpp \
     projectile.cpp \
     rangedweapon.cpp \
+    rocketlauncher.cpp \
     weapon.cpp
 
 HEADERS += \
@@ -27,12 +29,14 @@ HEADERS += \
     avatar.h \
     enemy.h \
     game.h \
+    gameovermenu.h \
     gui.h \
     gun.h \
     katana.h \
     powerup.h \
     projectile.h \
     rangedweapon.h \
+    rocketlauncher.h \
     weapon.h
 
 # Default rules for deployment.
