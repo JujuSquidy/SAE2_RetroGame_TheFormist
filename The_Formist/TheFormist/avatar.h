@@ -94,7 +94,7 @@ public:
     /**
  * @brief Default constructor initializing the avatar.
  */
-    Avatar(std::pair<int, int> aStartPos, QImage* aSprite = nullptr);
+    Avatar(std::pair<int, int> aStartPos);
 
     /**
  * @brief Moves the avatar according to input or game logic.
@@ -217,6 +217,10 @@ public:
 
     float getItsPUSpeedMult() const;
     void setItsPUSpeedMult(float newItsPUSpeedMult);
+    bool getIsLeft() const;
+    bool getIsRight() const;
+    bool getIsUp() const;
+    bool getIsDown() const;
 };
 
 #endif // AVATAR_H

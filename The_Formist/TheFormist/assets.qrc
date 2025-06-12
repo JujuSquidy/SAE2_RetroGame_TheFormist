@@ -13,6 +13,14 @@
         <file>background.png</file>
         <file>icon.png</file>
         <file>proj.png</file>
+        <file>avatarD.png</file>
+        <file>avatarDStand.png</file>
+        <file>avatarL.png</file>
+        <file>avatarLStand.png</file>
+        <file>avatarR.png</file>
+        <file>avatarRStand.png</file>
+        <file>avatarU.png</file>
+        <file>avatarUStand.png</file>
     </qresource>
     <qresource prefix="/Music">
         <file>Game.mp3</file>

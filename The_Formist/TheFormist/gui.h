@@ -48,6 +48,14 @@ private:
     QImage triangle;
     QImage square;
     QImage avatar;
+    QImage avatarL;
+    QImage avatarR;
+    QImage avatarU;
+    QImage avatarD;
+    QImage avatarLStand;
+    QImage avatarRStand;
+    QImage avatarUStand;
+    QImage avatarDStand;
     QImage background;
     QImage proje;
 

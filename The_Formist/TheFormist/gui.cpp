@@ -3,8 +3,11 @@
 #include <QPainter>
 #include "katana.h"
 
-int avatarHeight = 30;
-int avatarWidth = 30;
+int avatarHeight = 64;
+int avatarWidth = 48;
+
+enum Pos {RIGHT,LEFT,UP,DOWN};
+Pos LastAvatarDir = RIGHT;
 
 GUI::GUI(Game * aGame, QWidget *parent)
     : QWidget(parent), itsGame(aGame)
@@ -28,9 +31,16 @@ GUI::GUI(Game * aGame, QWidget *parent)
     square.load(":/Pictures/square.png");
     triangle.load(":/Pictures/triangle.png");
     avatar.load(":/Pictures/avatar.png");
+    avatarR.load(":/Pictures/avatarR.png");
+    avatarL.load(":/Pictures/avatarL.png");
+    avatarU.load(":/Pictures/avatarU.png");
+    avatarD.load(":/Pictures/avatarD.png");
+    avatarRStand.load(":/Pictures/avatarRStand.png");
+    avatarLStand.load(":/Pictures/avatarLStand.png");
+    avatarUStand.load(":/Pictures/avatarUStand.png");
+    avatarDStand.load(":/Pictures/avatarDStand.png");
     background.load(":/Pictures/background.png");
     proje.load(":/Pictures/proj.png");
-
 }
 
 GUI::~GUI()
@@ -156,7 +166,45 @@ void GUI::keyReleaseEvent(QKeyEvent *event)
 
 void GUI::drawAvatar(QPainter *aPainter)
 {
-    aPainter->drawImage(*itsGame->getItsAvatar()->getItsQRect(), avatar);
+    Avatar * Av = itsGame->getItsAvatar();
+    if(Av->getIsRight() && !Av->getIsLeft())
+    {
+        aPainter->drawImage(*itsGame->getItsAvatar()->getItsQRect(), avatarR);
+        LastAvatarDir=RIGHT;
+    }
+    else if(Av->getIsLeft() && !Av->getIsRight())
+    {
+        aPainter->drawImage(*itsGame->getItsAvatar()->getItsQRect(), avatarL);
+        LastAvatarDir=LEFT;
+    }
+    else if(Av->getIsUp() && !Av->getIsDown())
+    {
+        aPainter->drawImage(*itsGame->getItsAvatar()->getItsQRect(), avatarU);
+        LastAvatarDir=UP;
+    }
+    else if(Av->getIsDown() && !Av->getIsUp())
+    {
+        aPainter->drawImage(*itsGame->getItsAvatar()->getItsQRect(), avatarD);
+        LastAvatarDir=DOWN;
+    }
+    else
+    {
+        switch(LastAvatarDir)
+        {
+            case RIGHT :
+                aPainter->drawImage(*itsGame->getItsAvatar()->getItsQRect(), avatarRStand);
+                break;
+            case LEFT :
+                aPainter->drawImage(*itsGame->getItsAvatar()->getItsQRect(), avatarLStand);
+                break;
+            case UP :
+                aPainter->drawImage(*itsGame->getItsAvatar()->getItsQRect(), avatarUStand);
+                break;
+            case DOWN :
+                aPainter->drawImage(*itsGame->getItsAvatar()->getItsQRect(), avatarDStand);
+                break;
+        }
+    }
 }
 
 void GUI::drawEnemies(QPainter *aPainter)

@@ -26,17 +26,36 @@ void Avatar::setItsPUSpeedMult(float newItsPUSpeedMult)
     itsPUSpeedMult = newItsPUSpeedMult;
 }
 
-Avatar::Avatar(std::pair<int,int> aStartPos, QImage* aSprite) : itsSprite(aSprite)
+bool Avatar::getIsLeft() const
+{
+    return isLeft;
+}
+
+bool Avatar::getIsRight() const
+{
+    return isRight;
+}
+
+bool Avatar::getIsUp() const
+{
+    return isUp;
+}
+
+bool Avatar::getIsDown() const
+{
+    return isDown;
+}
+
+Avatar::Avatar(std::pair<int,int> aStartPos) : itsPosition(aStartPos)
 {
     itsLevel = 1;
     itsHP = 100;
     itsMaxHP = 100;
-    itsPosition = aStartPos;
     itsMaxXP = 50;
     itsBaseSpeed = 1;
     itsSpeedMult = 1;
     itsXP = 0;
-    itsQRect = new QRect(itsPosition.first, itsPosition.second, 30, 30);
+    itsQRect = new QRect(itsPosition.first, itsPosition.second, 48, 64);
 }
 
 void Avatar::move(std::pair<int,int> aBorder)

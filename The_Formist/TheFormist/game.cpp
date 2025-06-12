@@ -45,7 +45,6 @@ QElapsedTimer Game::getItsInGameTimer() const
     return *itsInGameTimer;
 }
 
-
 std::pair<int, int> Game::getMouseTarget() const
 {
     return mouseTarget;
@@ -478,7 +477,6 @@ void Game::Collision()
             ++it;
         }
     }
-
 }
 
 
