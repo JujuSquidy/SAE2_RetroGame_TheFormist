@@ -1,4 +1,5 @@
 #include "game.h"
+#include "fireball.h"
 #include "gun.h"
 #include "rocketlauncher.h"
 #include "katana.h"
@@ -65,9 +66,10 @@ Game::Game(QObject *parent)
     itsBorder = std::pair(4000,2000);
     gameWindowSize = {960, 540};
     itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
-    itsWeapon = new RocketLauncher(10,1,{100,100},nullptr);
+    //itsWeapon = new RocketLauncher(10,1,{100,100},nullptr);
     //itsWeapon = new Katana(50,1); //initialisation d'un katana
     //itsWeapon = new Gun(10, 1);   //initialisation d'un gun
+    itsWeapon = new FireBall(5,1,{100,100},nullptr);
     itsTimer = new QTimer(this);
     itsInGameTimer = new QElapsedTimer;
     itsEnemyTimer = new QTimer(this);
@@ -228,7 +230,7 @@ void Game::Collision()
                 else
                     ++enemyIt;
             }
-            if (hit)
+            if (hit || (typeid(*itsWeapon)==typeid(FireBall) && proj->getItsDistanceTraveled() >= dynamic_cast<FireBall*>(itsWeapon)->getItsFireBallRange()))
             {
                 if(typeid(*itsWeapon) == typeid(RocketLauncher))
                 {
@@ -241,6 +243,20 @@ void Game::Collision()
                                                     1,                                                                  // Nombre de dégats infligés avant disparition de la zone
                                                     RL->getItsDamage()                                                  // Dégats infligés par l'explosion
                                                     );
+                    //--------------------------------------------------------------------------------------------------------//
+                    itsAreaDamages.push_back(AD);
+                }
+                else if(typeid(*itsWeapon) == typeid(FireBall))
+                {
+                    FireBall * FB = dynamic_cast<FireBall*>(itsWeapon);
+                    //---------------------------------Création de la zone de dégats-------------------------------------------//
+                    AreaDamage * AD = new AreaDamage(
+                        FB->getItsAreaSize(),                                               // taille de la zone d'effet
+                        {proj->getItsRectF().center().x()-(FB->getItsAreaSize().first/2),   // Position x du QRect de l'explosion
+                         proj->getItsRectF().center().y()-(FB->getItsAreaSize().second/2)}, // Position y du QRect de l'explosion
+                        5,                                                                  // Nombre de dégats infligés avant disparition de la zone
+                        FB->getItsDamage()                                                  // Dégats infligés par l'explosion
+                        );
                     //--------------------------------------------------------------------------------------------------------//
                     itsAreaDamages.push_back(AD);
                 }
@@ -545,7 +561,7 @@ void Game::GameLoop()
     Collision();
 
     //Pas appelé avant car sinon ne gère pas la collision (l'autre solution serait de mettre isShooting à false dans la collision)
-    if (Katana* katana = dynamic_cast<Katana*>(itsWeapon))
+    if (dynamic_cast<Katana*>(itsWeapon))
     {
         if (itsWeapon->getIsShooting())
         {
@@ -677,7 +693,7 @@ void Game::upgrade()
                         return;
                     }
                 }
-                else if (Katana* katana = dynamic_cast<Katana*>(itsWeapon))
+                else if (dynamic_cast<Katana*>(itsWeapon))
 
                 {
                     itsWeapon->addItsAttackSpeed();

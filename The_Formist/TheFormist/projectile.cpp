@@ -13,6 +13,11 @@ int Projectile::getItsDamage() const
     return itsDamage;
 }
 
+float Projectile::getItsDistanceTraveled() const
+{
+    return itsDistanceTraveled;
+}
+
 Projectile::Projectile(std::pair<float, float> aTarget, std::pair<float, float> aPosition, std::pair<int,int> aSize, int aSpeed, int aDamage)
     : itsPosition(aPosition), itsSize(aSize), itsSpeed(aSpeed), itsDamage(aDamage)
 {
@@ -37,6 +42,7 @@ void Projectile::move()
     itsPosition.first += (dirX * itsSpeed);
     itsPosition.second += (dirY * itsSpeed);
     itsRectF.moveTo(itsPosition.first,itsPosition.second);
+    itsDistanceTraveled += std::sqrt(dirX * dirX + dirY * dirY)*itsSpeed;
 }
 
 std::pair<float, float> Projectile::getItsPosition() const
