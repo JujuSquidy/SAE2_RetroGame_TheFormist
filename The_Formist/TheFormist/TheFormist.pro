@@ -13,6 +13,7 @@ SOURCES += \
     avatar.cpp \
     enemy.cpp \
     game.cpp \
+    gameovermenu.cpp \
     gun.cpp \
     main.cpp \
     gui.cpp \
@@ -26,6 +27,7 @@ HEADERS += \
     avatar.h \
     enemy.h \
     game.h \
+    gameovermenu.h \
     gui.h \
     gun.h \
     powerup.h \

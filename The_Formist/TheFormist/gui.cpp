@@ -69,20 +69,28 @@ void GUI::paintEvent(QPaintEvent *event)
     if (offsetY > mapH - screenH) offsetY = mapH - screenH;
 
     // Appliquer la translation inversée
+    painter.save();  // Sauvegarde avant translation
     painter.translate(-offsetX, -offsetY);
 
     painter.drawImage(QRectF(0, 0, mapW, mapH), background);
-
-    // Dessin relatif à la carte
     drawAvatar(&painter);
     drawProjectiles(&painter);
     drawEnemies(&painter);
     drawPowerUP(&painter);
 
+    // === Partie HUD et Menu Game Over : coordonnées écran ===
     drawPlayerLifeBar(&painter, offsetX, offsetY, screenH);
     drawPlayerXPBar(&painter, offsetX, offsetY, screenH, screenW);
     drawScore(&painter, offsetX, offsetY, screenW);
     drawTimer(&painter, offsetX, offsetY, screenW);
+
+    painter.restore();  // Revenir au repère écran
+
+    if (itsGOM && itsGOM->isVisible)
+    {
+        qDebug() << "Drawing Game Over Menu";
+        drawGameOverMenu(&painter);  // NE DOIT PAS être affecté par la translation
+    }
 
     updateMousePos();
 }
@@ -332,29 +340,53 @@ void GUI::updateMousePos()
     itsGame->updateMouseTarget(mouseWorldPos.x(), mouseWorldPos.y());
 }
 
+void GUI::drawGameOverMenu(QPainter* painter)
+{
+    int screenWidth = width();
+    int screenHeight = height();
+    int menuWidth = 300;
+    int menuHeight = 200;
+
+    int x = (screenWidth - menuWidth) / 2;
+    int y = (screenHeight - menuHeight) / 2;
+
+    QRect backgroundRect(x, y, menuWidth, menuHeight);
+    painter->setOpacity(1.0);
+    painter->setBrush(Qt::black);
+    painter->setPen(Qt::white);
+    painter->drawRect(backgroundRect);
+
+    QFont font("Arial", 14, QFont::Bold);
+    painter->setFont(font);
+    painter->drawText(QRect(x, y + 10, menuWidth, 30), Qt::AlignCenter, "GAME OVER");
+    painter->drawText(QRect(x, y + 50, menuWidth, 30), Qt::AlignCenter, "Score: " + QString::number(itsGOM->getScore()));
+    painter->drawText(QRect(x, y + 80, menuWidth, 30), Qt::AlignCenter, "Time: " + itsGOM->getTimeString());
+
+    QRect replayBtn(x + 40, y + 130, 100, 30);
+    QRect quitBtn(x + 160, y + 130, 100, 30);
+
+    itsGOM->setReplayButtonRect(replayBtn);
+    itsGOM->setQuitButtonRect(quitBtn);
+
+    painter->setBrush(Qt::gray);
+    painter->drawRect(replayBtn);
+    painter->drawRect(quitBtn);
+    painter->drawText(replayBtn, Qt::AlignCenter, "Rejouer");
+    painter->drawText(quitBtn, Qt::AlignCenter, "Quitter");
+}
+
 void GUI::onGameOver()
 {
+    int elapsedMs = itsGame->getItsInGameTimer().elapsed();
+    QString timeStr = QString("%1:%2").arg(elapsedMs / 60000).arg((elapsedMs / 1000) % 60, 2, 10, QChar('0'));
+
     gameIsOver = true;
-    int elapsedMs = itsGame->getItsInGameTimer().elapsed();  // Temps en millisecondes
-    int seconds = (elapsedMs / 1000) % 60;
-    int minutes = elapsedMs / 60000;
 
-    itsFinalTimer = QString("%1:%2")
-                        .arg(minutes)
-                        .arg(seconds, 2, 10, QChar('0'));
-
-    QMessageBox::information(this, "Game Over",
-                             "Vous avez perdu !\nScore: " + QString::number(itsGame->getItsScore()) +
-                                 "\nTime survived: " + itsFinalTimer);
-
-    QMessageBox::StandardButton ret = QMessageBox::question(this, "Rejouer ?", "Voulez-vous recommencer ?", QMessageBox::Yes | QMessageBox::No);
-
-    if (ret == QMessageBox::Yes)
-    {
-        restartGame();
-    }else{
-        close();
-    }
+    itsGOM = new GameOverMenu(itsGame->getItsScore(), timeStr, this);
+    connect(itsGOM, &GameOverMenu::replayRequested, this, &GUI::restartGame);
+    connect(itsGOM, &GameOverMenu::quitRequested, this, &GUI::close);
+    itsGOM->isVisible = true;
+    update();
 }
 
 void GUI::restartGame()
@@ -362,5 +394,15 @@ void GUI::restartGame()
     delete itsGame;
     itsGame = new Game();
     connect(itsGame, &Game::gameOver, this, &GUI::onGameOver);
+    itsGOM->isVisible = false;
     gameIsOver = false;  // Reset
+}
+
+void GUI::mousePressEvent(QMouseEvent* event)
+{
+    if (itsGOM && itsGOM->isVisible)
+    {
+        itsGOM->handleClick(event->pos());
+        return;
+    }
 }
