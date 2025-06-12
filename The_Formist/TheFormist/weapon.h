@@ -82,6 +82,11 @@ public:
     float getItsAttackSpeed() const;
 
     /**
+ * @brief Add 1 to the base attack speed.
+ */
+    void addItsAttackSpeed();
+
+    /**
      * @brief Returns whether the weapon is currently firing.
      * @return True if shooting, false otherwise.
      */
