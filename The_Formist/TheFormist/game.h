@@ -202,6 +202,9 @@ signals:
  */
     void gameOver();
 
+    void pauseGame();
+
+
 };
 
 #endif // GAME_H
