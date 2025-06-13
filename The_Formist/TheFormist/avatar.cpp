@@ -60,6 +60,7 @@ Avatar::Avatar(std::pair<int,int> aStartPos) : itsPosition(aStartPos)
 
 void Avatar::move(std::pair<int,int> aBorder)
 {
+    // Initialize movement deltas
     float dx = 0;
     float dy = 0;
 
@@ -73,7 +74,7 @@ void Avatar::move(std::pair<int,int> aBorder)
     else if (isDown && !isUp)
         dy += 1;
 
-    // Normalisation pour ne pas aller plus vite en diagonale
+    // Normalize the direction vector to avoid faster diagonal movement (pythagore's theory)
     float length = std::sqrt(dx*dx + dy*dy);
     if (length > 0)
     {
@@ -81,14 +82,19 @@ void Avatar::move(std::pair<int,int> aBorder)
         dy /= length;
     }
 
+    // Calculate actual movement speed using base speed and multipliers
     float speed = itsBaseSpeed * itsSpeedMult * itsPUSpeedMult;
+
+    // Compute future positions based on speed and direction
     float futurePosX = itsPosition.first  + dx * speed;
     float futurePosY = itsPosition.second + dy * speed;
+
     if(futurePosX >= 0 and futurePosX+itsQRect->width() <= aBorder.first)
         itsPosition.first  += dx * speed;
     if(futurePosY >= 0 and futurePosY+itsQRect->height() <= aBorder.second)
         itsPosition.second += dy * speed;
 
+    // Move the visual representation (QRect) to the new position
     itsQRect->moveTo(itsPosition.first, itsPosition.second);
 }
 
@@ -160,6 +166,8 @@ int Avatar::getItsHP() const
 void Avatar::addHP(int aHP)
 {
     itsHP+=aHP;
+
+    // Make sure HP does not exceed the maximum allowed
     if(itsHP > itsMaxHP)
     {
         itsHP = itsMaxHP;
@@ -188,9 +196,13 @@ void Avatar::desactivateShield()
 
 void Avatar::takeDamage(int amount)
 {
+    // Either it's the first time taking damage (invalid time), or enough time has passed since last damage
+
     if (!lastDamageTime.isValid() || lastDamageTime.elapsed() >= 500) {
         itsHP -= amount;
         if (itsHP < 0) itsHP = 0;
+
+        // Restart the damage cooldown timer
         lastDamageTime.restart();
     }
 }

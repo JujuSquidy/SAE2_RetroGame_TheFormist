@@ -121,7 +121,7 @@ void GUI::paintEvent(QPaintEvent *event)
 
 void GUI::keyPressEvent(QKeyEvent *event)
 {
-    // Handle key press events for left and right arrow keys
+    // Handle key release events for keyboard direction keys
     if (event->key() == Qt::Key_Q)
         itsGame->getItsAvatar()->moveLeft(true);
 
@@ -134,9 +134,11 @@ void GUI::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_S)
         itsGame->getItsAvatar()->moveDown(true);
 
+    // If the game is over and the Game Over Menu (itsGOM) is active, handle player name input
     if (gameIsOver && itsGOM) {
         QString name = itsGOM->getPlayerName();
 
+        // Handle Backspace key to delete last character of the player name
         if (event->key() == Qt::Key_Backspace) {
             if (!name.isEmpty()) {
                 name.chop(1);
@@ -145,6 +147,7 @@ void GUI::keyPressEvent(QKeyEvent *event)
             }
         } else {
             QString text = event->text();
+            // Only add character if text is not empty and name length < 6
             if (!text.isEmpty() && name.length() < 6) {
                 QChar c = text.at(0);
                 if (c.isLetterOrNumber()) {
@@ -159,7 +162,7 @@ void GUI::keyPressEvent(QKeyEvent *event)
 
 void GUI::keyReleaseEvent(QKeyEvent *event)
 {
-    // Handle key release events for left and right arrow keys
+    // Handle key release events for keyboard direction keys
     if (event->key() == Qt::Key_Q)
         itsGame->getItsAvatar()->moveLeft(false);
 
