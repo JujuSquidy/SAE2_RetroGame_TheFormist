@@ -5,6 +5,10 @@
 #include <utility>
 #include <QElapsedTimer>
 
+/**
+ * @enum EType
+ * @brief Represents the different types of enemies.
+ */
 enum EType{
     CIRCLE,
     TRIANGLE,
@@ -12,6 +16,13 @@ enum EType{
     BOSS
 };
 
+
+/**
+ * @class Enemy
+ * @brief Represents an enemy entity in the game.
+ *
+ * Handles the enemy's position, health, strength, type, and behavior such as shooting and movement.
+ */
 class Enemy
 {
 private:
@@ -86,6 +97,7 @@ public:
     /**
  * @brief Constructor for Enemy.
  * @param aPosition Initial position of the enemy (x, y).
+ * @param aType The type of the ennemy.
  * @param aSprite Pointer to the sprite image for the enemy.
  */
     Enemy(std::pair<float,float> aPosition, EType itsType, float aMult);
@@ -167,7 +179,6 @@ public:
  * @return The enemy's strength value.
  */
     int getItsStrength() const;
-
 };
 
 #endif // ENEMY_H

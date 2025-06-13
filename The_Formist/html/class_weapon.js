@@ -1,0 +1,26 @@
+var class_weapon =
+[
+    [ "Weapon", "class_weapon.html#a06d6b737c3716a924a5d7169da0f99de", null ],
+    [ "~Weapon", "class_weapon.html#a420e7ba3d2017e6de3e93eb579cfd3fa", null ],
+    [ "AddBaseDamage", "class_weapon.html#a57874dc278aa69246efecaff02c52aa9", null ],
+    [ "addItsAttackSpeed", "class_weapon.html#a6e7df64842e13074ee5154f67b2f1974", null ],
+    [ "attack", "class_weapon.html#adc1d2f4577f583a6ecad3be14b9ee459", null ],
+    [ "getIsShooting", "class_weapon.html#a71c1102f1e752307efbb83c7140bca66", null ],
+    [ "getItsAttackSpeed", "class_weapon.html#a9cfbc5e6135ec76374b51aa9e9bedc0f", null ],
+    [ "getItsBaseDamage", "class_weapon.html#a97c83d02f345151fc7d789784ce7b8fc", null ],
+    [ "getItsDamage", "class_weapon.html#af38ddf0a087d20c6cf4e5381b7265551", null ],
+    [ "setAttackSpeedMult", "class_weapon.html#ae43fc8856dcb687c56d6aca25178a68d", null ],
+    [ "setDamageMult", "class_weapon.html#a859762befadf7a143ea126a2224adf19", null ],
+    [ "setIsShooting", "class_weapon.html#ab872316234d6abb4efca31c26fec0311", null ],
+    [ "setItsPUAttackSpeedMult", "class_weapon.html#a57c70990867051ad224829af940cc559", null ],
+    [ "setItsPUDamageMult", "class_weapon.html#a6a4f6a24b9ad4269cc987d68435f115b", null ],
+    [ "isShooting", "class_weapon.html#aa546d4d559c3fe1d7aefa13f62eb2890", null ],
+    [ "itsAttackSpeedMult", "class_weapon.html#a7dc92474c8a08e803abf65180fc26c1e", null ],
+    [ "itsBaseAttackSpeed", "class_weapon.html#a77ce3b89b1969c4baf799974f4facf45", null ],
+    [ "itsBaseDamage", "class_weapon.html#a1e122be359830d031dd11ba16be0ecd7", null ],
+    [ "itsDamageMult", "class_weapon.html#ae0a4287b5e2f238c503aecda9aa1af82", null ],
+    [ "itsPUAttackSpeedMult", "class_weapon.html#a8d5c43318db34ffafb8b3f16bfdd5626", null ],
+    [ "itsPUDamageMult", "class_weapon.html#a1d9874a03afe881377d7a055da140753", null ],
+    [ "itsSprite", "class_weapon.html#acf108c3e54951aa896f5e3cb9d8dbb5f", null ],
+    [ "itsTimer", "class_weapon.html#af16cc24cc8d31673d8004a8aab8395de", null ]
+];

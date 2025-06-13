@@ -4,6 +4,10 @@
 #include <QTimer>
 #include <QImage>
 
+    /**
+ * @enum WeaponType
+ * @brief Enumeration of the different weapon types available in the game.
+ */
 enum WeaponType {
     GUN,
     KATANA,
@@ -11,7 +15,7 @@ enum WeaponType {
     ROCKETLAUNCHER
 };
 
-/**
+    /**
  * @class Weapon
  * @brief Base class for all weapons in the game.
  *
@@ -42,6 +46,9 @@ private:
  */
     bool isShooting = false;
 
+    /**
+ * @brief Damage multiplier from power-ups.
+ */
     float itsPUDamageMult = 1;
 
 protected :
@@ -49,6 +56,10 @@ protected :
  * @brief Internal timer for managing attack intervals.
  */
     QTimer * itsTimer;
+
+    /**
+ * @brief Attack speed multiplier from power-ups.
+ */
     float itsPUAttackSpeedMult = 1;
 
     /**
@@ -73,8 +84,7 @@ public:
     /**
  * @brief Constructs a Weapon with specified base damage, attack speed, and sprite.
  * @param aBaseDamage The initial damage dealt by the weapon.
- * @param aAttackSpeed The base interval between attacks.
- * @param aSprite The graphical sprite representing the weapon.
+ * @param anAttackSpeed The base interval between attacks.
  */
     Weapon(int aBaseDamage, float anAttackSpeed);
 
@@ -95,15 +105,15 @@ public:
     void addItsAttackSpeed();
 
     /**
-     * @brief Returns whether the weapon is currently firing.
-     * @return True if shooting, false otherwise.
-     */
+ * @brief Returns whether the weapon is currently firing.
+ * @return True if shooting, false otherwise.
+ */
     bool getIsShooting() const;
 
     /**
-     * @brief Sets whether the weapon is currently firing.
-     * @param newIsShooting Boolean flag to set shooting state.
-     */
+ * @brief Sets whether the weapon is currently firing.
+ * @param newIsShooting Boolean flag to set shooting state.
+ */
     void setIsShooting(bool newIsShooting);
 
     /**
@@ -114,15 +124,15 @@ public:
     int getItsDamage() const;
 
     /**
-     * @brief Get the damage multiplicator
-     * @return A float representing current damage multiplicator
-     */
+ * @brief Get the damage multiplicator
+ * @return A float representing current damage multiplicator
+ */
     float getItsBaseDamage() const;
 
     /**
-     * @brief Set the damage multiplicator
-     * @param aDamageMult float to set the new value
-     */
+ * @brief Set the damage multiplicator
+ * @param aBaseDamage float to set the new value
+ */
     void AddBaseDamage(float aBaseDamage);
 
     /**
@@ -137,7 +147,16 @@ public:
  */
     void setAttackSpeedMult(float m);
 
+    /**
+ * @brief Sets the attack speed multiplier from power-ups.
+ * @param newItsPUAttackSpeedMult New power-up attack speed multiplier.
+ */
     void setItsPUAttackSpeedMult(float newItsPUAttackSpeedMult);
+
+    /**
+ * @brief Sets the damage multiplier from power-ups.
+ * @param newItsPUDamageMult New power-up damage multiplier.
+ */
     void setItsPUDamageMult(float newItsPUDamageMult);
 
 

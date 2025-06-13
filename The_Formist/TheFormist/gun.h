@@ -14,10 +14,10 @@ public:
     /**
  * @brief Constructs a Gun with the given base damage, attack speed, and sprite.
  * @param aBaseDamage Base damage dealt by the gun.
- * @param aAttackSpeed Time interval between shots.
- * @param aSprite Visual representation of the gun.
+ * @param anAttackSpeed Time interval between shots.
+ * @param aProjSize Specifie the projectile's size.
  */
-    Gun(int aBaseDamage, float aAttackSpeed, std::pair<int,int> aProjSize);
+    Gun(int aBaseDamage, float anAttackSpeed, std::pair<int,int> aProjSize);
 };
 
 #endif // GUN_H
