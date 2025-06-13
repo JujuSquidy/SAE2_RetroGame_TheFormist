@@ -79,7 +79,7 @@ private:
     QImage syringe;
 
 /**
- * @brief Image for the blood effect or power-up.
+ * @brief Image for the blood bootle power-up.
  */
     QImage blood;
 
@@ -94,17 +94,17 @@ private:
     QImage boss;
 
 /**
- * @brief Image representing a circular enemy or projectile.
+ * @brief Image representing a circular enemy.
  */
     QImage circle;
 
 /**
- * @brief Image representing a triangular enemy or projectile.
+ * @brief Image representing a triangular enemy.
  */
     QImage triangle;
 
 /**
- * @brief Image representing a square enemy or projectile.
+ * @brief Image representing a square enemy.
  */
     QImage square;
 

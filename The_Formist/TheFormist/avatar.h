@@ -101,11 +101,13 @@ private :
 public:
     /**
  * @brief Default constructor initializing the avatar.
+ * @param aStartPos Pair to represents the start position of the avatar.
  */
     Avatar(std::pair<int, int> aStartPos);
 
     /**
  * @brief Moves the avatar according to input or game logic.
+ * @param aBorder Pair to represents the game's size limit.
  */
     void move(std::pair<int,int> aBorder);
 
