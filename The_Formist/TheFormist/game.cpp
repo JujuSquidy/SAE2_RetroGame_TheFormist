@@ -67,9 +67,15 @@ QMediaPlayer *Game::getBackgroundMusicPlayer() const
 Game::Game(WeaponType type, QObject *parent)
     : QObject{parent}
 {
+    // Set the size of the game world and the visible game window.
+
     itsBorder = std::pair(4000,2000);
     gameWindowSize = {960, 540};
+
+    // Create the player's avatar, positioned in the center of the game world
     itsAvatar = new Avatar(std::pair(itsBorder.first/2,itsBorder.second/2));
+
+    // Initialize the player's weapon based on the selected type
     switch (type)
     {
     case GUN:
@@ -85,6 +91,8 @@ Game::Game(WeaponType type, QObject *parent)
         itsWeapon = new RocketLauncher(10,1,{5,5},{100,100});
         break;
     }
+
+    // Create and set up timers for the game
     itsTimer = new QTimer(this);
     itsInGameTimer = new QElapsedTimer;
     itsEnemyTimer = new QTimer(this);
@@ -101,6 +109,7 @@ Game::Game(WeaponType type, QObject *parent)
 
     audioOutput = new QAudioOutput(this);
 
+    // Create and configure the background music player
     backgroundMusicPlayer = new QMediaPlayer(this);
     backgroundMusicPlayer->setAudioOutput(audioOutput);
 
@@ -113,45 +122,52 @@ Game::Game(WeaponType type, QObject *parent)
 
 Game::~Game()
 {
-    // Supprimer tous les projectiles
+    // Delete all avatar projectiles
     for (Projectile* p : itsAvatarProjectiles) {
         delete p;
     }
     itsAvatarProjectiles.clear();
 
+    // Delete all enemy projectiles
     for (Projectile* p : itsEnemyProjectiles) {
         delete p;
     }
     itsEnemyProjectiles.clear();
 
-    // Supprimer les ennemis
+    // Delete all enemies
     for (Enemy* e : itsEnemies) {
         delete e;
     }
     itsEnemies.clear();
 
+    // Delete all power-ups
     for (PowerUp* p : itsPowerUp)
         delete p;
     itsPowerUp.clear();
 
-    // Supprimer l'avatar
+    // Delete the avatar
     delete itsAvatar;
     itsAvatar = nullptr;
 
+    // Delete the player's weapon
     delete itsWeapon;
     itsWeapon = nullptr;
 
+    // Stop and delete the main game timer
     itsTimer->stop();
     delete itsTimer;
     itsTimer = nullptr;
 
+    // Stop and delete the enemy spawn timer
     itsEnemyTimer->stop();
     delete itsEnemyTimer;
     itsEnemyTimer = nullptr;
 
+    // Delete the in-game timer
     delete itsInGameTimer;
     itsInGameTimer = nullptr;
 
+    // Delete the power-up spawn timer
     delete itsPowerUpTimer;
     itsPowerUpTimer = nullptr;
 }
@@ -197,6 +213,8 @@ void Game::Collision()
     for (std::vector<Projectile*>::iterator avProjIt = itsAvatarProjectiles.begin(); avProjIt != itsAvatarProjectiles.end(); )
     {
         Projectile* proj = *avProjIt;
+
+        // Remove projectile if it leaves game bounds
         if(proj->getItsPosition().first < 0 || proj->getItsPosition().first > 4000 || proj->getItsPosition().second < 0 || proj->getItsPosition().second > 2000)
         {
             delete proj;
@@ -206,6 +224,7 @@ void Game::Collision()
         {
             bool hit = false;
 
+            // Check collision with enemies
             for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
             {
                 Enemy* e = *enemyIt;
@@ -216,6 +235,7 @@ void Game::Collision()
                     hit = true;
                     if (e->isDead())
                     {
+                        // Grant XP and score based on enemy type
                         itsAvatar->addXP(e->getItsGivenXP());
                         switch (e->getType())
                         {
@@ -235,45 +255,46 @@ void Game::Collision()
                                 AddScore(50*itsScoreMult);
                                 break;
                         }
-                        delete e;
+                        delete e; // Remove dead enemy
                         enemyIt = itsEnemies.erase(enemyIt);
                     }
                     else
                         ++enemyIt;
 
-                    break; // projectile touche un ennemi, on sort
+                    break; // One projectile can hit only one enemy
                 }
                 else
                     ++enemyIt;
             }
+
+            // Handle projectile impact or range expiration
             if (hit || (typeid(*itsWeapon)==typeid(FireBall) && proj->getItsDistanceTraveled() >= dynamic_cast<FireBall*>(itsWeapon)->getItsFireBallRange()))
             {
+                // RocketLauncher explosion effect
                 if(typeid(*itsWeapon) == typeid(RocketLauncher))
                 {
                     RocketLauncher * RL = dynamic_cast<RocketLauncher*>(itsWeapon);
-                    //---------------------------------Création de la zone de dégats-------------------------------------------//
                         AreaDamage * AD = new AreaDamage(
-                                                    RL->getItsAreaSize(),                                               // taille de la zone d'effet
-                                                    {proj->getItsRectF().center().x()-(RL->getItsAreaSize().first/2),   // Position x du QRect de l'explosion
-                                                     proj->getItsRectF().center().y()-(RL->getItsAreaSize().second/2)}, // Position y du QRect de l'explosion
-                                                    1,                                                                  // Nombre de dégats infligés avant disparition de la zone
-                                                    RL->getItsDamage()                                                  // Dégats infligés par l'explosion
+                                                    RL->getItsAreaSize(),                                               // AoE size
+                                                    {proj->getItsRectF().center().x()-(RL->getItsAreaSize().first/2),   // x position of QRect
+                                                     proj->getItsRectF().center().y()-(RL->getItsAreaSize().second/2)}, // y position of QRect
+                                                    1,                                                                  // Damage dealt before AoE's disaparence
+                                                    RL->getItsDamage()                                                  // Damage dealt by AoE
                                                     );
-                    //--------------------------------------------------------------------------------------------------------//
                     itsAreaDamages.push_back(AD);
                 }
+
+                // FireBall explosion effect
                 else if(typeid(*itsWeapon) == typeid(FireBall))
                 {
                     FireBall * FB = dynamic_cast<FireBall*>(itsWeapon);
-                    //---------------------------------Création de la zone de dégats-------------------------------------------//
                         AreaDamage * AD = new AreaDamage(
-                                                    FB->getItsAreaSize(),                                               // taille de la zone d'effet
-                                                    {proj->getItsRectF().center().x()-(FB->getItsAreaSize().first/2),   // Position x du QRect de l'explosion
-                                                     proj->getItsRectF().center().y()-(FB->getItsAreaSize().second/2)}, // Position y du QRect de l'explosion
-                                                    5,                                                                  // Nombre de dégats infligés avant disparition de la zone
-                                                    FB->getItsDamage()                                                  // Dégats infligés par l'explosion
+                                                    FB->getItsAreaSize(),                                               // AoE size
+                                                    {proj->getItsRectF().center().x()-(FB->getItsAreaSize().first/2),   // x position of QRect
+                                                     proj->getItsRectF().center().y()-(FB->getItsAreaSize().second/2)}, // y position of QRect
+                                                    5,                                                                  // Damage dealt before AoE's disaparence
+                                                    FB->getItsDamage()                                                   // Damage dealt by AoE
                                                     );
-                    //--------------------------------------------------------------------------------------------------------//
                     itsAreaDamages.push_back(AD);
                 }
                 delete proj;
@@ -287,7 +308,7 @@ void Game::Collision()
     for(std::vector<AreaDamage*>::iterator ADit = itsAreaDamages.begin(); ADit != itsAreaDamages.end(); )
     {
         AreaDamage* AD = *ADit;
-        if(AD->getIsBurning())
+        if(AD->getIsBurning())  // Active area
         {
             if(AD->expired())
             {
@@ -296,6 +317,7 @@ void Game::Collision()
             }
             else
             {
+                // Check damage to all enemies within area
                 for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
                 {
                     Enemy* e = *enemyIt;
@@ -333,8 +355,8 @@ void Game::Collision()
                     else
                         ++enemyIt;
                 }
-            AD->addTick();
-            AD->resetBurn();
+            AD->addTick(); // Increment internal counter
+            AD->resetBurn(); // Prepare for next burn tick
             ++ADit;
             }
         }
@@ -347,8 +369,10 @@ void Game::Collision()
     {
         if (katana && katana->getIsShooting())
         {
+            // Get katana hitbox from player to mouse target
             QRectF hitbox = katana->katanaAreaDamage({itsAvatar->getItsQRect()->center().x(),itsAvatar->getItsQRect()->center().y()}, mouseTarget);
 
+            // Deal damage to all enemies inside the hitbox
             for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); )
             {
                 Enemy* e = *enemyIt;
@@ -392,6 +416,7 @@ void Game::Collision()
     for (std::vector<Projectile*>::iterator enProjIt = itsEnemyProjectiles.begin(); enProjIt != itsEnemyProjectiles.end(); )
     {
         Projectile * proj = *enProjIt;
+        // Remove if outside bounds
         if(proj->getItsPosition().first < 0 || proj->getItsPosition().first > 4000 || proj->getItsPosition().second < 0 || proj->getItsPosition().second > 2000)
         {
             delete proj;
@@ -403,11 +428,11 @@ void Game::Collision()
             {
                 if (itsAvatar->getHasShield() == true)
                 {
-                    itsAvatar->desactivateShield();  // Bouclier actif => pare le coup
+                    itsAvatar->desactivateShield();  // Shield absorbs the hit
                 }
                 else
                 {
-                    itsAvatar->takeDamage(proj->getItsDamage());  // Pas de bouclier => prend les dégâts
+                    itsAvatar->takeDamage(proj->getItsDamage());  // Avatar takes damage
                 }
 
                 delete proj;
@@ -418,14 +443,14 @@ void Game::Collision()
         }
     }
 
-    // === COLLISION ENNEMIS / AVATAR ===
+    //Colision between enemies and avatar
     for (std::vector<Enemy*>::iterator enemyIt = itsEnemies.begin(); enemyIt != itsEnemies.end(); ++enemyIt)
     {
         Enemy* e = *enemyIt;
 
         if (e->getItsRectF().intersects(*itsAvatar->getItsQRect()) && e->getType() != TRIANGLE)
         {
-            itsAvatar->takeDamage(e->getItsStrength());
+            itsAvatar->takeDamage(e->getItsStrength()); // Apply contact damage
         }
     }
 
@@ -437,7 +462,7 @@ void Game::Collision()
         {
             if(p->getItsType() == SHIELD)
             {
-                itsAvatar->activateShield();
+                itsAvatar->activateShield(); // Enable shield
                 delete p;
                 it = itsPowerUp.erase(it);
                 break;
@@ -455,7 +480,7 @@ void Game::Collision()
             }
             else if(p->getItsType() == BLOOD )
             {
-                itsAvatar->addHP(20);
+                itsAvatar->addHP(20); // Restore health
                 delete p;
                 it = itsPowerUp.erase(it);
                 break;
@@ -493,6 +518,7 @@ void Game::Collision()
 
 void Game::GameOver()
 {
+    //Stop all timers and emit a signal
     itsTimer->stop();
     itsEnemyTimer->stop();
     itsPowerUpTimer->stop();
@@ -507,12 +533,15 @@ void Game::GameLoop()
     {
         if (itsWeapon->getIsShooting())
         {
+            // Fire projectiles at intervals based on weapon's attack speed
             if (rw->getItsMultipleProjectileDelay().elapsed() > itsWeapon->getItsAttackSpeed()/3)
             {
+                // Get the avatar's center position
                 std::pair<int,int> avatarCenter = {itsAvatar->getItsQRect()->center().x(),itsAvatar->getItsQRect()->center().y()};
 
                 if (mouseTarget != avatarCenter)
                 {
+                    // Forward projectiles
                     if (rw->getNbProjectilesShooted() < rw->getItsNbProjectiles())
                     {
                         std::pair<int,int> target = mouseTarget;
@@ -520,6 +549,7 @@ void Game::GameLoop()
                         itsAvatarProjectiles.push_back(p);
                         rw->addNbProjectilesShooted();
                     }
+                    // Reverse projectiles
                     if (rw->getNbReverseProjectilesShooted() < rw->getItsNbReverseProjectile())
                     {
                         int dx = mouseTarget.first - avatarCenter.first;
@@ -529,9 +559,10 @@ void Game::GameLoop()
                         itsAvatarProjectiles.push_back(p);
                         rw->addNbReverseProjectilesShooted();
                     }
+                    // Restart the delay timer for the next projectile
                     rw->getItsMultipleProjectileDelay().start();
                 }
-
+                // Stop shooting if all projectiles (forward + reverse) are fired
                 if (rw->getNbProjectilesShooted() >= rw->getItsNbProjectiles() &&
                     rw->getNbReverseProjectilesShooted() >= rw->getItsNbReverseProjectile())
                 {
@@ -546,16 +577,16 @@ void Game::GameLoop()
     {
         std::pair<float, float> oldPos = enemy->getItsPosition();
 
-        // Déplacement vers l'avatar
+        // Move the enemy toward the avatar
         enemy->act(std::pair<float, float>(avatarRect->center().x(), avatarRect->center().y()));
 
-        // l'empêche de traverser l'avatar
+        // Prevent enemies from overlapping the avatar
         if (enemy->getItsRectF().intersects(*avatarRect))
         {
             enemy->setItsPosition(oldPos);
         }
 
-        // Tir de l'ennemi
+        // Enemy shoots at the avatar
         if (enemy->getIsShooting())
         {
             Projectile* p = new Projectile(
@@ -566,23 +597,24 @@ void Game::GameLoop()
                 enemy->getItsStrength()
                 );
             itsEnemyProjectiles.push_back(p);
-            enemy->setIsShooting(false);
+            enemy->setIsShooting(false); // Reset shooting state
         }
     }
 
-    // Mettre à jour la position des projectiles
+    // Update projectiles position
     for (Projectile * aProj : itsAvatarProjectiles)
         aProj->move();
 
     for (Projectile * eProj : itsEnemyProjectiles)
         eProj->move();
 
-
+    // Move the avatar within the bounds
     itsAvatar->move(itsBorder);
 
+    // HAndles collisions
     Collision();
 
-    //Pas appelé avant car sinon ne gère pas la collision (l'autre solution serait de mettre isShooting à false dans la collision)
+    //Reset shooting state for melee weapons like the Katana
     if (dynamic_cast<Katana*>(itsWeapon))
     {
         if (itsWeapon->getIsShooting())
@@ -591,22 +623,22 @@ void Game::GameLoop()
         }
     }
 
+    // Check if avatar died
     if (itsAvatar->getItsHP() == 0)
     {
         GameOver();
         return;
     }
-    //prise de niveau et améliorations
+    //Handle avatar leveling up
     if (itsAvatar->getItsXP() >= itsAvatar->getItsMaxXP())
     {
         int temp = itsAvatar->getItsXP() - itsAvatar->getItsMaxXP();
-
-        itsAvatar->levelUp();
-        itsAvatar->addMaxXP(2);
+        itsAvatar->levelUp(); // Increase level
+        itsAvatar->addMaxXP(2); // Increase XP needed for next level
         itsAvatar->addMaxHP(5);
         itsAvatar->addHP(5);
-        itsWeapon->AddBaseDamage(1);
-        itsAvatar->setItsXP(temp);
+        itsWeapon->AddBaseDamage(1); 
+        itsAvatar->setItsXP(temp); // Set leftover XP
         if (itsAvatar->getItsLevel() % 5 == 0)
         {
             upgrade();
@@ -746,6 +778,7 @@ void Game::upgrade()
     }
 }
 
+// Handle active and expired power-ups
 void Game::updateTemporaryBoosts()
 {
     for (std::vector<PowerUp*>::iterator it = itsPowerUp.begin(); it != itsPowerUp.end();)
@@ -753,6 +786,7 @@ void Game::updateTemporaryBoosts()
         PowerUp* p = *it;
         if (p->getIsFinished() == false && p->getIsPicked() == true) // Check if the boost is active
         {
+            // Apply power-up effects depending on its type
             if(p->getItsType() == SYRINGE)
             {
                 itsWeapon->setItsPUDamageMult(2);
@@ -765,10 +799,12 @@ void Game::updateTemporaryBoosts()
             {
                 itsAvatar->setItsPUSpeedMult(2);
             }
-            it++; // on avance proprement l'itérateur
+            it++; // Move to the next power-up
         }
+        // If the power-up effect has ended
         else if (p->getIsFinished() == true)
         {
+            // Reset any multipliers previously applied
             if(p->getItsType() == SYRINGE)
             {
                 itsWeapon->setItsPUDamageMult(1);
@@ -783,11 +819,11 @@ void Game::updateTemporaryBoosts()
             }
 
             delete p;
-            it = itsPowerUp.erase(it); // ne pas faire it++ ici
+            it = itsPowerUp.erase(it);
         }
         else
         {
-            // Aucun cas géré => avancer l'itérateur quand même
+            // If not picked or not expired, just move to the next
             it++;
         }
     }

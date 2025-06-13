@@ -15,9 +15,8 @@ MainMenu::MainMenu(QObject* parent)
     audioOutput = new QAudioOutput(this);
     menuMusicPlayer->setAudioOutput(audioOutput);
 
-    // Exemple avec un fichier dans les ressources
     menuMusicPlayer->setSource(QUrl("qrc:/Music/Menu.mp3"));
-    audioOutput->setVolume(1);  // Volume entre 0.0 et 1.0
+    audioOutput->setVolume(1);
     menuMusicPlayer->play();
 }
 

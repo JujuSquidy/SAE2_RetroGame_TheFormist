@@ -34,6 +34,8 @@ Enemy::Enemy(std::pair<float,float> aPosition, EType aType, float aMult)
 {
     itsPosition = aPosition;
     itsType = aType;
+
+    // Initialize enemy based on type
     switch (aType)
     {
     case BOSS:
@@ -92,6 +94,7 @@ bool Enemy::isDead()
 
 void Enemy::act(std::pair<float, float> aTarget)
 {
+    // adjusting for the center of the current object (itsRectF)
     float dx = aTarget.first - itsRectF.width()/2 - itsPosition.first;
     float dy = aTarget.second - itsRectF.height()/2 - itsPosition.second;
 
@@ -101,11 +104,12 @@ void Enemy::act(std::pair<float, float> aTarget)
     {
         if(itsShootCD.elapsed() > 1500)
         {
+            // Reset the cooldown timer and shoot
             itsShootCD.start();
             shoot();
         }
     }
-    else
+    else // If not in range or not a TRIANGLE type, move toward the target
     {
         if (distance != 0)
         {
@@ -119,8 +123,11 @@ void Enemy::act(std::pair<float, float> aTarget)
             dirY = 0;
         }
 
+        // Update position based on direction and speed
         itsPosition.first += (dirX * itsSpeed);
         itsPosition.second += (dirY * itsSpeed);
+
+        // Move the visual representation to the new position
         itsRectF.moveTo(itsPosition.first, itsPosition.second);
     }
 }

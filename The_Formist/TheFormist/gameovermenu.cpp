@@ -6,15 +6,15 @@
 GameOverMenu::GameOverMenu(int score, const QString& timeStr, QObject *parent)
     : QObject(parent), itsScore(score), itsTimeStr(timeStr)
 {
-
+    // Setup audio output and music player for Game Over music
     audioOutput = new QAudioOutput(this);
     gameOverMusicPlayer = new QMediaPlayer(this);
-    gameOverMusicPlayer->setAudioOutput(audioOutput); // partage la même sortie
+    gameOverMusicPlayer->setAudioOutput(audioOutput);
     gameOverMusicPlayer->setSource(QUrl("qrc:/Music/GO.wav"));
     gameOverMusicPlayer->setLoops(QMediaPlayer::Infinite);
-    audioOutput->setVolume(1); // volume entre 0.0 et 1.0
+    audioOutput->setVolume(1);
     gameOverMusicPlayer->play();
-    loadScores();
+    loadScores(); // Load existing high scores from file
 }
 
 int GameOverMenu::getScore() const { return itsScore; }
@@ -27,6 +27,7 @@ QRect GameOverMenu::getQuitButtonRect() const { return quitButtonRect; }
 
 void GameOverMenu::handleClick(const QPoint& pos)
 {
+    // Check if click was inside the replay button rectangle
     if (replayButtonRect.contains(pos))
     {
         saveScores();
@@ -77,7 +78,9 @@ void GameOverMenu::loadScores() {
 }
 
 void GameOverMenu::saveScores() {
+    // Only save if player has entered a name
     if (!itsPlayerName.trimmed().isEmpty()) {
+        // Create a new score entry for current player
         ScoreEntry current = { itsPlayerName.left(6), itsScore, itsTimeStr };
         topScores.append(current);
 
@@ -85,11 +88,13 @@ void GameOverMenu::saveScores() {
             return a.score > b.score;
         });
 
+        // Keep only top 5 scores
         if (topScores.size() > 5)
             topScores.resize(5);
 
         QString path = getScoresFilePath();
         QFile file(path);
+        // Open file to write updated leaderboard
         if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             QTextStream out(&file);
             for (int i = 0; i < topScores.size(); ++i) {
@@ -99,6 +104,7 @@ void GameOverMenu::saveScores() {
             file.close();
         }
     } else {
+        // Player name empty, just reload scores (do not save)
         loadScores();
     }
 }
@@ -107,7 +113,7 @@ QString GameOverMenu::getScoresFilePath() const {
     QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     QDir dir(appDataPath);
     if (!dir.exists()) {
-        dir.mkpath(".");  // créer le dossier s'il n'existe pas
+        dir.mkpath(".");  // Create directory if it doesn't exist
     }
     return dir.filePath("leaderboard.txt");
 }
