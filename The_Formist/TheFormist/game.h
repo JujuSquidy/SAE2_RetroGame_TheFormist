@@ -42,6 +42,11 @@ private :
  */
     float itsEnemyHPMult = 1;
 
+    /**
+ * @brief Float used to set the multplier for ennemies's given score.
+ */
+    float itsScoreMult = 1;
+
 /**
  * @brief Timer used to manage power-up spawns.
  */

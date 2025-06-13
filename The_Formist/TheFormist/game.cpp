@@ -679,6 +679,7 @@ void Game::spawnEnemy()
         if(itsEnemySpawnTime>500)
         {
             itsEnemySpawnTime-=100;
+            itsScoreMult+= 1;
             itsEnemyTimer->start(itsEnemySpawnTime);
         }
         itsEnemyHPMult += 0.1;
