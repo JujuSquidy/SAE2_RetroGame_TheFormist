@@ -27,11 +27,14 @@ class Game : public QObject
 
 private :
 
-    /**
- * @brief Timer used to manage enemies apparition
+/**
+ * @brief Timer used to manage enemy spawns.
  */
     QTimer *itsEnemyTimer;
 
+/**
+ * @brief Timer used to manage power-up spawns.
+ */
     QTimer *itsPowerUpTimer;
 
     /**
@@ -39,8 +42,14 @@ private :
  */
     QTimer *itsTimer;
 
+/**
+ * @brief Timer tracking in-game time.
+ */
     QElapsedTimer *itsInGameTimer;
 
+/**
+ * @brief Boolean ndicate whether the boss has spawned.
+ */
     int NoBoss = 1;
 
     /**
@@ -83,6 +92,9 @@ private :
  */
     std::vector<PowerUp*> itsPowerUp;
 
+/**
+ * @brief List of active area damage instances in the game.
+ */
     std::vector<AreaDamage*> itsAreaDamages;
 
     /**
@@ -90,20 +102,37 @@ private :
  */
     std::pair<int,int> mouseTarget;
 
+/**
+ * @brief Dimensions of the game window (width, height).
+ */
     std::pair<int,int> gameWindowSize;
 
+/**
+ * @brief Timer used to manage the temporary speed boost.
+ */
     QElapsedTimer bootsTimer;
 
+/**
+ * @brief Boolean indicating whether a temporary speeed boost is currently active.
+ */
     bool bootsActive;
 
+/**
+ * @brief Background music player.
+ */
     QMediaPlayer* backgroundMusicPlayer;
 
+/**
+ * @brief Audio output device for the music.
+ */
     QAudioOutput* audioOutput;
 
 
 public:
-    /**
+/**
  * @brief Constructs the Game object and initializes components.
+ * @param type The weapon type selected at game start.
+ * @param parent The parent QObject, if any.
  */
     Game(WeaponType type, QObject *parent = nullptr);
 
@@ -165,20 +194,51 @@ public:
  */
     std::vector<Projectile *> getItsEnemyProjectiles() const;
 
+/**
+ * @brief Gets the current score.
+ * @return The score as a long integer.
+ */
     long getItsScore() const;
 
+/**
+ * @brief Increases the player's score.
+ * @param aScore Amount to add to the score.
+ */
     void AddScore(long aScore);
 
+/**
+ * @brief Gets the in-game timer.
+ * @return QElapsedTimer object.
+ */
     QElapsedTimer getItsInGameTimer() const;
 
+/**
+ * @brief Gets the current mouse target position.
+ * @return A pair of integers (x, y).
+ */
     std::pair<int, int> getMouseTarget() const;
 
+/**
+ * @brief Gets the list of active power-ups in the game.
+ * @return Vector of pointers to PowerUp objects.
+ */
     std::vector<PowerUp *> getItsPowerUp() const;
 
+/**
+ * @brief Updates temporary boosts and their state.
+ */
     void updateTemporaryBoosts();
 
+/**
+ * @brief Gets the list of active area damage zones.
+ * @return Vector of pointers to AreaDamage objects.
+ */
     std::vector<AreaDamage *> getItsAreaDamages() const;
 
+/**
+ * @brief Gets the background music player.
+ * @return Pointer to QMediaPlayer.
+ */
     QMediaPlayer *getBackgroundMusicPlayer() const;
 
 public slots:
@@ -208,8 +268,10 @@ signals:
  */
     void gameOver();
 
+/**
+ * @brief Signal emitted to pause the game.
+ */
     void pauseGame();
-
 
 };
 

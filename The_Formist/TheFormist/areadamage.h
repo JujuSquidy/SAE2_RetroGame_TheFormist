@@ -14,14 +14,20 @@ class AreaDamage : public QObject, public Projectile
 {
     Q_OBJECT
 private:
-    /**
- * @brief Size of the damage area (width, height).
- */
 
+/**
+ * @brief Number of ticks that have elapsed since the effect started.
+ */
     int itsNbOfTicks = 0;
 
+/**
+ * @brief Timer used to manage the update ticks for the area effect.
+ */
     QTimer * itsTimer;
 
+/**
+ * @brief Indicates whether the area is currently active (burning).
+ */
     bool isBurning = 1;
 
     /**
@@ -31,18 +37,44 @@ private:
 public:
     /**
  * @brief Constructs an AreaDamage.
- * @param aArea Dimensions of the area affected by the damage.
+ * @param anArea Dimensions of the area affected by the damage.
  * @param aPosition Initial position of the area effect.
- * @param aDuration How long the area damage persists.
+ * @param aNbOfTicks How long the area damage persists.
  * @param aDamage Damage applied to entities within the area.
  */
     AreaDamage(std::pair<int,int> anArea, std::pair<int,int> aPosition, int aNbOfTicks, int aDamage);
+
+/**
+ * @brief Gets the dimensions of the affected area.
+ * @return A pair representing the width and height of the area.
+ */
     std::pair<int, int> getItsArea() const;
+
+/**
+ * @brief Increments the tick counter for the area effect.
+ */
     void addTick();
+
+/**
+ * @brief Resets the burning state of the area effect.
+ */
     void resetBurn();
+
+/**
+ * @brief Checks whether the area is currently burning.
+ * @return True if burning, otherwise false.
+ */
     bool getIsBurning() const;
+
+/**
+ * @brief Checks whether the area effect has expired.
+ * @return True if the number of ticks reached itsFinalTick, otherwise false.
+ */
     bool expired();
 public slots:
+/**
+ * @brief Handles the burning logic on each tick.
+ */
     void burn();
 };
 
