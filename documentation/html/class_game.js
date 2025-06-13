@@ -43,6 +43,7 @@ var class_game =
     [ "itsPowerUp", "class_game.html#a9784af7fc3cbd24810cc49d99a3fa66b", null ],
     [ "itsPowerUpTimer", "class_game.html#a4e5f29289ecd9c29c2671cd8b263f3c3", null ],
     [ "itsScore", "class_game.html#abbdb25b79671f35f80463c92119aeaf3", null ],
+    [ "itsScoreMult", "class_game.html#a9cd0f725d481fdc4fea4bf03689137db", null ],
     [ "itsTimer", "class_game.html#a9af684e0ad9be192f976ac62647d0efb", null ],
     [ "itsWeapon", "class_game.html#adf21dbba201d63765629519328dd71d7", null ],
     [ "mouseTarget", "class_game.html#a8fface24f54d929e1b986ef9f4a74207", null ],

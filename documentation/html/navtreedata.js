@@ -24,7 +24,7 @@
 */
 var NAVTREE =
 [
-  [ "TheFormist", "index.html", [
+  [ "The Formist", "index.html", [
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -51,7 +51,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"class_main_menu.html#a22e4e9827c77e479cd982df71aee60b8"
+"class_main_menu.html#a12af5dc444e819469b0a357c6727098b"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';
