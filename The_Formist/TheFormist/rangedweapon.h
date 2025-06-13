@@ -4,7 +4,7 @@
 #include "weapon.h"
 #include <QElapsedTimer>
 
-/**
+    /**
  * @class RangedWeapon
  * @brief Represents a weapon that fires projectiles from a distance.
  *
@@ -28,22 +28,34 @@ private:
  */
     int itsNbReverseProjectile = 0;
 
+    /**
+ * @brief Timer managing delay between multiple projectile shots.
+ */
     QElapsedTimer itsMultipleProjectileDelay;
 
+    /**
+ * @brief Counter for the number of projectiles shot.
+ */
     int nbProjectilesShooted = 0;
 
+    /**
+ * @brief Counter for the number of reverse projectiles shot.
+ */
     int nbReverseProjectilesShooted = 0;
 
+    /**
+ * @brief Size (width, height) of each projectile.
+ */
     std::pair<int,int> itsProjSize;
 
 public:
     /**
  * @brief Constructs a RangedWeapon with specified damage, attack speed, and sprite.
  * @param aBaseDamage Base damage per projectile.
- * @param aAttackSpeed Rate of fire for the weapon.
- * @param aSprite Visual representation of the weapon.
+ * @param anAttackSpeed Rate of fire for the weapon.
+ * @param aProjSize Specifie the projectile's size.
  */
-    RangedWeapon(int aBaseDamage, float aAttackSpeed, std::pair<int,int> aProjSize);
+    RangedWeapon(int aBaseDamage, float anAttackSpeed, std::pair<int,int> aProjSize);
 
     /**
  * @brief Gets the number of projectiles fired simultaneously.
@@ -69,14 +81,49 @@ public:
  */
     void AddNbReverseProjectile();
 
-
+    /**
+ * @brief Returns the timer managing delay between multiple projectile shots.
+ * @return QElapsedTimer The timer object.
+ */
     QElapsedTimer getItsMultipleProjectileDelay() const;
+
+    /**
+ * @brief Gets the count of projectiles that have been shot.
+ * @return int Number of projectiles shot.
+ */
     int getNbProjectilesShooted() const;
+
+    /**
+ * @brief Increments the count of projectiles shot by one.
+ */
     void addNbProjectilesShooted();
+
+    /**
+ * @brief Increments the count of reverse projectiles shot by one.
+ */
     void addNbReverseProjectilesShooted();
+
+    /**
+ * @brief Gets the count of reverse projectiles that have been shot.
+ * @return int Number of reverse projectiles shot.
+ */
     int getNbReverseProjectilesShooted() const;
+
+    /**
+ * @brief Executes an attack action with the weapon.
+ */
     void attack();
+
+    /**
+ * @brief Gets the speed of the projectiles fired by the weapon.
+ * @return float Projectile speed.
+ */
     float getItsProjectileSpeed() const;
+
+    /**
+ * @brief Gets the size (width, height) of the projectiles.
+ * @return std::pair<int,int> Projectile size.
+ */
     std::pair<int, int> getItsProjSize() const;
 };
 

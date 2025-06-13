@@ -2,7 +2,7 @@
 #define PROJECTILE_H
 #include <QImage>
 
-/**
+    /**
  * @class Projectile
  * @brief Represents a moving projectile in the game, typically fired by a player or enemy.
  *
@@ -42,8 +42,14 @@ private :
  */
     int itsDamage;
 
+    /**
+ * @brief Distance the projectile has traveled so far.
+ */
     float itsDistanceTraveled = 0;
 
+    /**
+ * @brief Rectangular bounding box for collision detection.
+ */
     QRectF itsRectF;
 
 public:
@@ -77,10 +83,14 @@ public:
 
     /**
  * @brief Gets the amount of damage this projectile inflicts.
- *
  * @return int The damage value.
  */
     int getItsDamage() const;
+
+    /**
+ * @brief Returns the total distance the projectile has traveled.
+ * @return float Distance traveled.
+ */
     float getItsDistanceTraveled() const;
 };
 

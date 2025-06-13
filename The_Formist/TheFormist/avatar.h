@@ -5,13 +5,11 @@
 #include <QElapsedTimer>
 #include <utility>
 
-/**
- * @class Avatar
- * @brief Represents the player character in the game.
- *
- * Handles the avatar's position, movement, experience, level, health, and invincibility state.
- */
 
+/**
+ * @enum UType
+ * @brief Types of power-ups or upgrades available to the avatar.
+ */
 enum UType{
     REVERSE_PROJECTILE,
     MORE_PROJECTILE,
@@ -20,6 +18,12 @@ enum UType{
 
 };
 
+/**
+ * @class Avatar
+ * @brief Represents the player character in the game.
+ *
+ * Handles the avatar's position, movement, experience, level, health, and invincibility state.
+ */
 class Avatar
 {
 private :
@@ -80,19 +84,30 @@ private :
  */
     int itsMaxXP;
 
+/**
+ * @brief Timer used to track time since last damage was taken.
+ */
     QElapsedTimer lastDamageTime;
 
+/**
+ * @brief Indicates whether the avatar currently has an active shield.
+ */
     bool hasShield = false;
 
+/**
+ * @brief Power-up speed multiplier affecting avatar movement.
+ */
     float itsPUSpeedMult = 1;
 public:
     /**
  * @brief Default constructor initializing the avatar.
+ * @param aStartPos Pair to represents the start position of the avatar.
  */
     Avatar(std::pair<int, int> aStartPos);
 
     /**
  * @brief Moves the avatar according to input or game logic.
+ * @param aBorder Pair to represents the game's size limit.
  */
     void move(std::pair<int,int> aBorder);
 
@@ -206,15 +221,56 @@ public:
  */
     void addLevel();
 
+/**
+ * @brief Activates the avatar's shield.
+ */
     void activateShield();
+
+/**
+ * @brief Deactivates the avatar's shield.
+ */
     void desactivateShield();
+
+/**
+ * @brief Checks if the avatar currently has a shield.
+ * @return True if the shield is active, false otherwise.
+ */
     bool getHasShield() const;
 
+/**
+ * @brief Gets the speed multiplier from power-ups.
+ * @return The power-up speed multiplier.
+ */
     float getItsPUSpeedMult() const;
+
+/**
+ * @brief Sets the speed multiplier from power-ups.
+ * @param newItsPUSpeedMult The new speed multiplier value.
+ */
     void setItsPUSpeedMult(float newItsPUSpeedMult);
+
+/**
+ * @brief Checks if left movement is active.
+ * @return True if moving left, false otherwise.
+ */
     bool getIsLeft() const;
+
+/**
+ * @brief Checks if right movement is active.
+ * @return True if moving right, false otherwise.
+ */
     bool getIsRight() const;
+
+/**
+ * @brief Checks if upward movement is active.
+ * @return True if moving up, false otherwise.
+ */
     bool getIsUp() const;
+
+/**
+ * @brief Checks if downward movement is active.
+ * @return True if moving down, false otherwise.
+ */
     bool getIsDown() const;
 };
 
