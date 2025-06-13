@@ -49,9 +49,9 @@ Enemy::Enemy(std::pair<float,float> aPosition, EType aType, float aMult)
         break;
 
     case TRIANGLE:
-        itsMaxHP=10;
+        itsMaxHP=10*aMult*2;
         itsHP=itsMaxHP;
-        itsGivenXP=1;
+        itsGivenXP=2;
         itsStrength = 10;
         itsSpeed = 0.85;
         itsShootCD.start();
@@ -60,17 +60,17 @@ Enemy::Enemy(std::pair<float,float> aPosition, EType aType, float aMult)
         break;
 
     case SQUARE:
-        itsMaxHP=15;
+        itsMaxHP=15*aMult*2;
         itsHP=itsMaxHP;
-        itsGivenXP=2;
+        itsGivenXP=3;
         itsStrength = 15;
-        itsSpeed = 0.6;
+        itsSpeed = 0.7;
         itsRectF = QRectF(itsPosition.first, itsPosition.second, 30.0, 30.0);
 
         break;
 
     case CIRCLE:
-        itsMaxHP=10;
+        itsMaxHP=10*aMult*2;
         itsHP=itsMaxHP;
         itsGivenXP=1;
         itsStrength = 5;
