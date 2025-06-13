@@ -121,18 +121,22 @@ void GUI::paintEvent(QPaintEvent *event)
 
 void GUI::keyPressEvent(QKeyEvent *event)
 {
-    // Handle key press events for left and right arrow keys
-    if (event->key() == Qt::Key_Q)
-        itsGame->getItsAvatar()->moveLeft(true);
+    if(itsGame)
+    {
+        // Handle key press events for left and right arrow keys
+        if (event->key() == Qt::Key_Q)
+            itsGame->getItsAvatar()->moveLeft(true);
 
-    if (event->key() == Qt::Key_D)
-        itsGame->getItsAvatar()->moveRight(true);
+        if (event->key() == Qt::Key_D)
+            itsGame->getItsAvatar()->moveRight(true);
 
-    if (event->key() == Qt::Key_Z)
-        itsGame->getItsAvatar()->moveUp(true);
+        if (event->key() == Qt::Key_Z)
+            itsGame->getItsAvatar()->moveUp(true);
 
-    if (event->key() == Qt::Key_S)
-        itsGame->getItsAvatar()->moveDown(true);
+        if (event->key() == Qt::Key_S)
+            itsGame->getItsAvatar()->moveDown(true);
+    }
+
 
     if (gameIsOver && itsGOM) {
         QString name = itsGOM->getPlayerName();
@@ -159,18 +163,21 @@ void GUI::keyPressEvent(QKeyEvent *event)
 
 void GUI::keyReleaseEvent(QKeyEvent *event)
 {
-    // Handle key release events for left and right arrow keys
-    if (event->key() == Qt::Key_Q)
-        itsGame->getItsAvatar()->moveLeft(false);
+    if(itsGame)
+    {
+        // Handle key release events for left and right arrow keys
+        if (event->key() == Qt::Key_Q)
+            itsGame->getItsAvatar()->moveLeft(false);
 
-    if (event->key() == Qt::Key_D)
-        itsGame->getItsAvatar()->moveRight(false);
+        if (event->key() == Qt::Key_D)
+            itsGame->getItsAvatar()->moveRight(false);
 
-    if (event->key() == Qt::Key_Z)
-        itsGame->getItsAvatar()->moveUp(false);
+        if (event->key() == Qt::Key_Z)
+            itsGame->getItsAvatar()->moveUp(false);
 
-    if (event->key() == Qt::Key_S)
-        itsGame->getItsAvatar()->moveDown(false);
+        if (event->key() == Qt::Key_S)
+            itsGame->getItsAvatar()->moveDown(false);
+    }
 }
 
 void GUI::drawAvatar(QPainter *aPainter)

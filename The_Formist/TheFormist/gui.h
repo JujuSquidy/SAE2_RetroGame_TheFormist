@@ -61,7 +61,7 @@ private:
  */
     WeaponType currentWeaponType;
 
-    // Game element sprites
+// Game element sprites
 
 /**
  * @brief Image representing the boots power-up.
@@ -153,11 +153,15 @@ private:
  */
     QImage background;
 
+    /**
+ * @brief Image representing an explosion.
+ */
+    QImage explosion;
+
 /**
  * @brief Image used for rendering projectiles.
  */
     QImage proje;
-    QImage explosion;
 
 public:
 /**
