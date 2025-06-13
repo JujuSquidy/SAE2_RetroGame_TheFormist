@@ -71,27 +71,27 @@ PowerUp::PowerUp(std::pair<int,int> aPosition, PType aType) {
     switch (aType)
     {
     case SHIELD:
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 20, 20);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 30, 30);
 
         break;
 
     case SYRINGE:
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 20, 20);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 30, 30);
 
         break;
 
     case BLOOD:
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 20, 20);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 30, 30);
 
         break;
 
     case PEPPER:
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 20, 20);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 30, 30);
 
         break;
 
     case BOOTS:
-        itsRectF = QRectF(itsPosition.first, itsPosition.second, 20, 20);
+        itsRectF = QRectF(itsPosition.first, itsPosition.second, 30, 30);
 
         break;
     }

@@ -98,9 +98,9 @@ public:
  * @brief Constructor for Enemy.
  * @param aPosition Initial position of the enemy (x, y).
  * @param aType The type of the ennemy.
- * @param aSprite Pointer to the sprite image for the enemy.
+ * @param aMult By how much ennemies max HPs are multiplied.
  */
-    Enemy(std::pair<float,float> aPosition, EType itsType, float aMult);
+    Enemy(std::pair<float,float> aPosition, EType aType, float aMult);
 
     /**
  * @brief Makes the enemy shoot a projectile.
