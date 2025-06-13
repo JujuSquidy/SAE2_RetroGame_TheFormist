@@ -30,18 +30,18 @@ void Enemy::setItsPosition(const std::pair<float, float> &newItsPosition)
     itsPosition = newItsPosition;
 }
 
-Enemy::Enemy(std::pair<float,float> aPosition, EType aType, QImage* aSprite)
+Enemy::Enemy(std::pair<float,float> aPosition, EType aType, float aMult)
 {
     itsPosition = aPosition;
     itsType = aType;
     switch (aType)
     {
     case BOSS:
-        itsMaxHP=50;
+        itsMaxHP=200*aMult;
         itsHP=itsMaxHP;
         itsGivenXP=50;
         itsStrength = 20;
-        itsSpeed = 1;
+        itsSpeed = 0.95;
         itsRectF = QRectF(itsPosition.first, itsPosition.second, 50.0, 50.0);
 
         break;

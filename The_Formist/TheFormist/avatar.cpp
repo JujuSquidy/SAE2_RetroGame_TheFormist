@@ -94,15 +94,7 @@ void Avatar::move(std::pair<int,int> aBorder)
 
 void Avatar::addXP(int aNB)
 {
-    if ((itsXP += aNB) > itsMaxXP)
-    {
-        int temp = itsMaxXP - itsXP +aNB;
-        itsXP = temp;
-    }
-    else
-    {
-        itsXP += aNB;
-    }
+    itsXP += aNB;
 }
 
 void Avatar::levelUp()

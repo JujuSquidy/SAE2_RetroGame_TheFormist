@@ -18,7 +18,6 @@ public:
  * @param aSprite Visual representation of the gun.
  */
     Gun(int aBaseDamage, float aAttackSpeed, std::pair<int,int> aProjSize);
-
 };
 
 #endif // GUN_H

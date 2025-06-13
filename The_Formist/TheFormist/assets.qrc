@@ -5,7 +5,6 @@
         <file>syringe.png</file>
         <file>blood.png</file>
         <file>pepper.png</file>
-        <file>avatar.png</file>
         <file>boss.png</file>
         <file>circle.png</file>
         <file>square.png</file>
@@ -21,6 +20,7 @@
         <file>avatarRStand.png</file>
         <file>avatarU.png</file>
         <file>avatarUStand.png</file>
+        <file>explosion.png</file>
     </qresource>
     <qresource prefix="/Music">
         <file>Game.mp3</file>

@@ -51,7 +51,6 @@ private:
     QImage circle;
     QImage triangle;
     QImage square;
-    QImage avatar;
     QImage avatarL;
     QImage avatarR;
     QImage avatarU;
@@ -62,6 +61,7 @@ private:
     QImage avatarDStand;
     QImage background;
     QImage proje;
+    QImage explosion;
 
 public:
     /**

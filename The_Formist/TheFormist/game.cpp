@@ -92,7 +92,7 @@ Game::Game(WeaponType type, QObject *parent)
     connect(itsTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     connect(itsEnemyTimer, SIGNAL(timeout()), this, SLOT(spawnEnemy()));
     itsTimer->start(10);
-    itsEnemyTimer->start(1500);
+    itsEnemyTimer->start(itsEnemySpawnTime);
     itsInGameTimer->start();
 
     itsPowerUpTimer = new QTimer(this);
@@ -669,16 +669,22 @@ void Game::spawnEnemy()
     }
 
     Enemy* e;
-    if(itsInGameTimer->elapsed() > (120000 * NoBoss))
+    if(itsInGameTimer->elapsed() > (60000 * NoBoss))
     {
-        e = new Enemy({x, y}, BOSS);
+        e = new Enemy({x, y}, BOSS, itsEnemyHPMult);
         NoBoss++;
+        if(itsEnemySpawnTime>500)
+        {
+            itsEnemySpawnTime-=100;
+            itsEnemyTimer->start(itsEnemySpawnTime);
+        }
+        itsEnemyHPMult += 0.1;
     }
     else
     {
         std::uniform_int_distribution<int> distrib(0, 2);
         int tEnemy = distrib(*QRandomGenerator::global());
-        e = new Enemy({x, y}, EType(tEnemy));
+        e = new Enemy({x, y}, EType(tEnemy), itsEnemyHPMult);
     }
     itsEnemies.push_back(e);
 }
