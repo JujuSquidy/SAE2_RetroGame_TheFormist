@@ -34,7 +34,6 @@ GUI::GUI(Game * aGame, QWidget *parent)
     circle.load(":/Pictures/circle.png");
     square.load(":/Pictures/square.png");
     triangle.load(":/Pictures/triangle.png");
-    avatar.load(":/Pictures/avatar.png");
     avatarR.load(":/Pictures/avatarR.png");
     avatarL.load(":/Pictures/avatarL.png");
     avatarU.load(":/Pictures/avatarU.png");
@@ -45,6 +44,7 @@ GUI::GUI(Game * aGame, QWidget *parent)
     avatarDStand.load(":/Pictures/avatarDStand.png");
     background.load(":/Pictures/background.png");
     proje.load(":/Pictures/proj.png");
+    explosion.load(":/Pictures/explosion.png");
 }
 
 GUI::~GUI()
@@ -300,7 +300,7 @@ void GUI::drawAreaDamage(QPainter *aPainter)
     aPainter->setPen(QPen(QColor(255,165,0)));
     aPainter->setBrush(Qt::SolidPattern);
     for(AreaDamage * AD : itsGame->getItsAreaDamages())
-        aPainter->drawRect(AD->getItsRectF());
+        aPainter->drawImage(AD->getItsRectF(), explosion);
 }
 
 void GUI::drawPlayerLifeBar(QPainter *aPainter, float offsetX, float offsetY, int screenH)

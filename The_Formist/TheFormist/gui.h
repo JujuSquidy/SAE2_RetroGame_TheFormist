@@ -109,11 +109,6 @@ private:
     QImage square;
 
 /**
- * @brief Default avatar image.
- */
-    QImage avatar;
-
-/**
  * @brief Avatar image facing left.
  */
     QImage avatarL;
@@ -162,6 +157,7 @@ private:
  * @brief Image used for rendering projectiles.
  */
     QImage proje;
+    QImage explosion;
 
 public:
 /**

@@ -32,6 +32,10 @@ private :
  */
     QTimer *itsEnemyTimer;
 
+    int itsEnemySpawnTime = 1500;
+
+    float itsEnemyHPMult = 1;
+
 /**
  * @brief Timer used to manage power-up spawns.
  */

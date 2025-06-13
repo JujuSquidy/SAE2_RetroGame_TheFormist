@@ -100,7 +100,7 @@ public:
  * @param aType The type of the ennemy.
  * @param aSprite Pointer to the sprite image for the enemy.
  */
-    Enemy(std::pair<float,float> aPosition, EType aType, QImage* aSprite = nullptr);
+    Enemy(std::pair<float,float> aPosition, EType itsType, float aMult);
 
     /**
  * @brief Makes the enemy shoot a projectile.
@@ -179,7 +179,6 @@ public:
  * @return The enemy's strength value.
  */
     int getItsStrength() const;
-
 };
 
 #endif // ENEMY_H

@@ -18,7 +18,6 @@ public:
  * @param aProjSize Specifie the projectile's size.
  */
     Gun(int aBaseDamage, float anAttackSpeed, std::pair<int,int> aProjSize);
-
 };
 
 #endif // GUN_H
