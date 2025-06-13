@@ -122,8 +122,10 @@ void GUI::paintEvent(QPaintEvent *event)
 void GUI::keyPressEvent(QKeyEvent *event)
 {
     // Handle key release events for keyboard direction keys
-    if (event->key() == Qt::Key_Q)
-        itsGame->getItsAvatar()->moveLeft(true);
+    if(itsGame)
+    {
+        if (event->key() == Qt::Key_Q)
+            itsGame->getItsAvatar()->moveLeft(true);
 
         if (event->key() == Qt::Key_D)
             itsGame->getItsAvatar()->moveRight(true);
@@ -165,8 +167,10 @@ void GUI::keyPressEvent(QKeyEvent *event)
 void GUI::keyReleaseEvent(QKeyEvent *event)
 {
     // Handle key release events for keyboard direction keys
-    if (event->key() == Qt::Key_Q)
-        itsGame->getItsAvatar()->moveLeft(false);
+    if(itsGame)
+    {
+        if (event->key() == Qt::Key_Q)
+            itsGame->getItsAvatar()->moveLeft(false);
 
         if (event->key() == Qt::Key_D)
             itsGame->getItsAvatar()->moveRight(false);
