@@ -34,6 +34,7 @@ private:
  * @brief Number of ticks before the area disappear.
  */
     int itsFinalTick;
+
 public:
     /**
  * @brief Constructs an AreaDamage.

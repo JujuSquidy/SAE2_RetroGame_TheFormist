@@ -220,19 +220,19 @@ void Game::Collision()
                         switch (e->getType())
                         {
                             case TRIANGLE:
-                                AddScore(1);
+                                AddScore(2*itsScoreMult);
                                 break;
 
                             case CIRCLE:
-                                AddScore(1);
+                                AddScore(1*itsScoreMult);
                                 break;
 
                             case SQUARE:
-                                AddScore(2);
+                                AddScore(3*itsScoreMult);
                                 break;
 
                             case BOSS:
-                                AddScore(50);
+                                AddScore(50*itsScoreMult);
                                 break;
                         }
                         delete e;
@@ -309,19 +309,19 @@ void Game::Collision()
                             switch (e->getType())
                             {
                             case TRIANGLE:
-                                AddScore(1);
+                                AddScore(2*itsScoreMult);
                                 break;
 
                             case CIRCLE:
-                                AddScore(1);
+                                AddScore(1*itsScoreMult);
                                 break;
 
                             case SQUARE:
-                                AddScore(2);
+                                AddScore(3*itsScoreMult);
                                 break;
 
                             case BOSS:
-                                AddScore(50);
+                                AddScore(50*itsScoreMult);
                                 break;
                             }
                             delete e;
@@ -366,16 +366,16 @@ void Game::Collision()
                     switch (e->getType())
                     {
                     case TRIANGLE:
-                        AddScore(1);
+                        AddScore(2*itsScoreMult);
                         break;
                     case CIRCLE:
-                        AddScore(1);
+                        AddScore(1*itsScoreMult);
                         break;
                     case SQUARE:
-                        AddScore(2);
+                        AddScore(3*itsScoreMult);
                         break;
                     case BOSS:
-                        AddScore(50);
+                        AddScore(50*itsScoreMult);
                         break;
                     }
                     delete e;
@@ -603,6 +603,9 @@ void Game::GameLoop()
 
         itsAvatar->levelUp();
         itsAvatar->addMaxXP(2);
+        itsAvatar->addMaxHP(5);
+        itsAvatar->addHP(5);
+        itsWeapon->AddBaseDamage(1);
         itsAvatar->setItsXP(temp);
         if (itsAvatar->getItsLevel() % 5 == 0)
         {
@@ -724,7 +727,6 @@ void Game::upgrade()
                     }
                 }
                 else if (dynamic_cast<Katana*>(itsWeapon))
-
                 {
                     itsWeapon->addItsAttackSpeed();
                     return;
@@ -732,12 +734,12 @@ void Game::upgrade()
                 break;
 
             case MORE_DAMAGE:
-                itsWeapon->AddBaseDamage(2);
+                itsWeapon->AddBaseDamage(3);
                 return;
 
             case MORE_HP:
-                itsAvatar->addHP(5);
-                itsAvatar->addMaxHP(5);
+                itsAvatar->addMaxHP(10);
+                itsAvatar->addHP(10);
                 return;
         }
     }

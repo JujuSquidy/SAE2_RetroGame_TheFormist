@@ -1,6 +1,5 @@
 #include "avatar.h"
 
-
 std::pair<float, float> Avatar::getItsPosition() const
 {
     return itsPosition;
